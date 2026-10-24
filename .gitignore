@@ -7,6 +7,9 @@ __pycache__/
 *.pyc
 .pytest_cache/
 
+# Downloaded source files (PDFs, pages) stay local; see output/sources.md for URLs
+data/raw/
+
 # Generated plans stay local; only curated examples are committed
 plans/*
 !plans/examples/

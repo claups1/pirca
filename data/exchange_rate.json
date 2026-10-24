@@ -1,0 +1,14 @@
+{
+  "pair": "USD/PEN",
+  "pen_per_usd": 3.447,
+  "raw_value": "3.44671428571429",
+  "date": "2026-10-22",
+  "series_code": "PD04638PD",
+  "series_name": "Tipo de cambio - TC Interbancario (S/ por US$) - Venta",
+  "publisher": "Banco Central de Reserva del Perú (BCRP), BCRPData",
+  "source_url": "https://estadisticas.bcrp.gob.pe/estadisticas/series/api/PD04638PD/json/2026-10-01/2026-10-24/esp",
+  "human_readable_url": "https://estadisticas.bcrp.gob.pe/estadisticas/series/diarias/resultados/PD04638PD/html/2026-10-01/2026-10-24/",
+  "raw_file": "data/raw/bcrp/PD04638PD_2026-10.json",
+  "retrieved": "2026-10-24",
+  "note": "Latest available value at retrieval (2026-10-23 was n.d.). Rounded to 3 decimals, as the series metadata specifies. Kept fixed so plan costs are reproducible."
+}

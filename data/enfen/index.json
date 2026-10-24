@@ -1,0 +1,47 @@
+{
+  "source": "Comisión Multisectorial ENFEN — https://enfen.imarpe.gob.pe/comunicados/",
+  "retrieved": "2026-10-24",
+  "next_communique": "Viernes 30 de octubre de 2026 (per ENFEN-2026-18)",
+  "communiques": [
+    {
+      "id": "ENFEN-2026-18",
+      "date": "2026-10-16",
+      "status": "Alerta de El Niño Costero",
+      "headline": "EL NIÑO COSTERO SE EXTENDERÍA HASTA EL OTOÑO DE 2027",
+      "key_quote": "Frente a la costa peruana (región Niño 1+2) es más probable que calentamiento del mar (El Niño costero) se mantenga con una magnitud de extraordinaria hasta enero de 2027, para luego disminuir a fuerte hasta inicios del otoño de 2027.",
+      "piura_relevance": "Caudales: Superiores a lo normal, principalmente, desde noviembre en los ríos Tumbes, Chira, Piura, La Leche y Jequetepeque.",
+      "file": "data/enfen/ENFEN-2026-18.txt",
+      "source_url": "https://enfen.imarpe.gob.pe/download/comunicado-oficial-enfen-n-18-2026/?wpdmdl=2165"
+    },
+    {
+      "id": "ENFEN-2026-17",
+      "date": "2026-09-28",
+      "status": "Alerta de El Niño Costero",
+      "headline": "EL NIÑO COSTERO SE PROLONGARÍA HASTA EL OTOÑO DE 2027",
+      "key_quote": "El Niño Costero (región Niño 1+2) se mantendría con una magnitud extraordinaria, respecto al calentamiento del mar, hasta enero 2027, reduciendo su magnitud hacia el otoño de 2027.",
+      "piura_relevance": "Para el trimestre octubre – diciembre, precipitaciones superiores a lo normal en la costa norte [...] Esta condición favorecería a un incremento de los caudales por encima de sus valores habituales en los ríos Tumbes, Chira, Piura, la Leche y Jequetepeque, principalmente.",
+      "file": "data/enfen/ENFEN-2026-17.txt",
+      "source_url": "https://enfen.imarpe.gob.pe/download/comunicado-oficial-enfen-n-17-2026/?wpdmdl=2161"
+    },
+    {
+      "id": "ENFEN-2026-16",
+      "date": "2026-09-14",
+      "status": "Alerta de El Niño Costero",
+      "headline": "RESUMEN EJECUTIVO",
+      "key_quote": "ENFEN sostiene que El Niño Costero (región Niño 1+2) continuaría hasta mediados de otoño de 2027, con la más alta probabilidad de una magnitud extraordinaria de setiembre 2026 a enero de 2027.",
+      "piura_relevance": "Con relación a las lluvias, se esperan condiciones por encima de lo normal en la costa norte, con posibles episodios de lluvias de moderada a fuerte intensidad desde noviembre.",
+      "file": "data/enfen/ENFEN-2026-16.txt",
+      "source_url": "https://enfen.imarpe.gob.pe/download/comunicado-oficial-enfen-n-16-2026/?wpdmdl=2158"
+    },
+    {
+      "id": "ENFEN-2026-15",
+      "date": "2026-08-28",
+      "status": "Alerta de El Niño Costero",
+      "headline": "RESUMEN EJECUTIVO",
+      "key_quote": "En la región Niño 1+2, se mantiene una alta probabilidad de que El Niño Costero persista hasta el verano de 2027, con una magnitud extraordinaria de setiembre 2026 a enero de 2027 (≥ 62%), y entre fuerte y extraordinaria en febrero y marzo de 2027.",
+      "piura_relevance": "Es la costa norte se presentarían lluvias con valores superiores a lo normal, con probables precipitaciones de débil a moderada intensidad desde noviembre.",
+      "file": "data/enfen/ENFEN-2026-15.txt",
+      "source_url": "https://enfen.imarpe.gob.pe/download/comunicado-oficial-enfen-n-15-2026/?wpdmdl=2145"
+    }
+  ]
+}
