@@ -133,3 +133,40 @@ Add a command-line script that runs one sample shop profile end to end and print
 ## Prompt 13 — Commit agent system
 
 `Commit the agent system as it is first.`
+
+## Prompt 14 — Make the plan readable for a shop owner
+
+```
+The Pirca plan works, but it isn't readable for a shop owner yet. Read output/sample_run_console.txt and fix these, then rerun the sample and show me the new Spanish plan:
+
+1. Units: every fact carries a unit (soles, days, weeks, percent, count). fill_placeholders formats them in the plan's language, e.g. "14 días" / "14 days", "3 semanas" / "3 weeks", "40%". Agents never write units after a placeholder.
+2. Action names, not codes: the plan names each action in the owner's language with its cost, e.g. "Estantes elevados (S/ 120)". Catalog IDs may appear only as a small citation in brackets after the name, never alone.
+3. Illustrative estimates: mark them with an asterisk (*) and add one footnote line at the end ("* Costo o beneficio estimado, no medido."). Don't repeat the warning in every sentence.
+4. No internal terms in the owner's plan: never mention the optimizer, planner, critic, agents, or exposure score. Show the risk level (alto/medio/bajo), not the score number.
+5. Correct, plain Spanish with "tú" imperatives ("Mueve tu mercadería…", not "Tú mueve…").
+6. Length: at most about 300 words. Section 7 ("Lo que revisamos") is at most 2 sentences about what situations the plan was tested against, in owner language.
+7. Add offline tests for: units in fill_placeholders, no bare CAT IDs, and no banned internal words in a final plan.
+
+Keep the disclaimer and the source citations.
+```
+
+## Prompt 15 — Fix the wrong "unverified district" sentence
+
+`Yes, fix the wrong unverified-district sentence: only mention UNVERIFIED when the district really is, then rerun the sample and show me the plan.`
+
+## Prompt 16 — Affordable, realistic advice
+
+```
+The Pirca plan format is good, but the advice has problems. Fix them in code where possible:
+
+1. Affordability: the supplier stock-up must fit the owner's money. Cap extra stock at what's left after the emergency fund gap and the prep budget. If nothing is left, say so ("primero completa tu fondo de emergencia") instead of recommending a purchase. The total recommended spending in the plan must never exceed the cash on hand.
+2. Perishables: products marked perishable (bread, dairy, fruit, etc.) get 0 extra days and the advice "pide entregas pequeñas y frecuentes". Only non-perishables get a stock-up.
+3. Cost units: show the catalog's cost unit next to every price, e.g. "S/ 36 al año" / "S/ 36 per year", "S/ 7.70 por saco".
+4. Add a code check (in verify_draft or a new check) that fails when recommended spending exceeds cash on hand, and an offline test for it. This is also a safety defense for the report: "the app never recommends spending money the owner doesn't have".
+
+Rerun the sample and show me the new Spanish plan.
+```
+
+## Prompt 17 — Commit readability and affordability fixes
+
+`Commit the working tree changes with a sensible message.`

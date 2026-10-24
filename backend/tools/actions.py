@@ -27,7 +27,8 @@ def active_hazards(p: ShopProfile) -> list[str]:
 
 
 def _action_view(a: dict, p: ShopProfile) -> dict:
-    view = {k: a[k] for k in ("id", "action", "hazards", "cost_min_pen", "cost_max_pen", "cost_unit",
+    view = {k: a[k] for k in ("id", "action", "name_es", "name_en", "hazards", "cost_min_pen", "cost_max_pen",
+                              "cost_unit", "cost_unit_es", "cost_unit_en",
                               "cost_status", "protects", "protects_status",
                               "cost_source_url", "protects_source_url", "recommendation_source_url")}
     view["cost_is_illustrative"] = _is_illustrative(a["cost_status"])
@@ -66,6 +67,11 @@ def _loss_bases(p: ShopProfile) -> dict[str, float]:
             "dengue": week / p.workers, "power_outage": week if p.perishables else 0.0, "theft": 0.0}
 
 
+def cost_key(action_id: str) -> str:
+    """Fact key for an action's cost: CAT-02 -> cat_02_cost."""
+    return action_id.lower().replace("-", "_") + "_cost"
+
+
 def _knapsack(items: list[dict], budget: int) -> set[str]:
     """0/1 knapsack on whole soles; returns the IDs that maximize total benefit."""
     n = len(items)
@@ -88,7 +94,8 @@ def _knapsack(items: list[dict], budget: int) -> set[str]:
 def optimize_budget(profile: dict | ShopProfile, budget: float | None = None) -> dict:
     """Best set of catalog actions within the prep budget (zero-cost actions always included)."""
     p = parse_profile(profile)
-    budget = p.prep_budget if budget is None else budget
+    requested = p.prep_budget if budget is None else budget
+    budget = min(requested, p.cash_on_hand)  # never plan to spend money the owner doesn't have
     catalog = get_action_catalog(p)
     bases = _loss_bases(p)
 
@@ -98,7 +105,7 @@ def optimize_budget(profile: dict | ShopProfile, budget: float | None = None) ->
         benefit = round((a["protects"] or 0) * max(bases.get(h, 0.0) for h in a["hazards"]), 2)
         entry = {**a, "cost_used": cost, "expected_benefit": benefit}
         if cost is None:
-            excluded.append({"id": a["id"], "action": a["action"],
+            excluded.append({"id": a["id"], "action": a["action"], "name_es": a["name_es"], "name_en": a["name_en"],
                              "reason": "cost depends on the shop; sized by compute_cash_buffer / compute_supplier_buffer"})
         elif cost == 0:
             selected.append({**entry, "why": "zero cost, always included"})
@@ -115,9 +122,12 @@ def optimize_budget(profile: dict | ShopProfile, budget: float | None = None) ->
         else:
             reason = (f"costs S/ {it['cost_used']:,.2f}, more than the S/ {budget:,.2f} budget"
                       if it["cost_used"] > budget else "lower value per sol than the selected actions for this budget")
-            excluded.append({"id": it["id"], "action": it["action"], "reason": reason})
+            excluded.append({"id": it["id"], "action": it["action"], "name_es": it["name_es"],
+                             "name_en": it["name_en"], "reason": reason})
 
     notes = ["Costs use each action's lowest sourced price (cost_min_pen)."]
+    if budget < requested:
+        notes.append(f"The prep budget was capped at cash on hand (S/ {budget:,.2f}).")
     if any(s["id"] == "CAT-10" for s in selected):
         notes.append("CAT-10 at S/ 36/year is the minimum microcredit-linked micro-insurance premium; "
                      "a stand-alone SME multirriesgo policy costs up to S/ 1,944/year.")
@@ -126,6 +136,13 @@ def optimize_budget(profile: dict | ShopProfile, budget: float | None = None) ->
              "selected_count": len(selected), "excluded_count": len(excluded),
              "expected_benefit": round(sum(s["expected_benefit"] for s in selected), 2),
              "illustrative_selected_count": len(illustrative)}
+    # One cost fact per costed action, e.g. {cat_02_cost}, so the plan can show "Sacos de arena (S/ 77)".
+    # Only selected purchases get a cost fact, so every {cat_NN_cost} in a plan is recommended spending.
+    for it in selected:
+        if it.get("cost_used"):
+            facts[cost_key(it["id"])] = round(it["cost_used"], 2)
+    for s in selected:
+        s["cost_fact_key"] = cost_key(s["id"]) if s.get("cost_used") else None  # free actions have no cost fact
     return {"tool": "optimize_budget", "facts": facts, "sources": [s["id"] for s in selected],
             "assumptions": A.describe("action_benefit_model"),
             "selected": selected, "excluded": excluded, "illustrative_selected": illustrative,

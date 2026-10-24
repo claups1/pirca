@@ -5,6 +5,7 @@ full profile get it from the run context, never from the model.
 """
 
 import json
+import re
 from datetime import date
 
 from backend import config
@@ -32,7 +33,8 @@ from backend.tools import (
     validate_profile,
     verify_draft,
 )
-from backend.tools.profile import parse_profile
+from backend.tools.drafting import recommended_spending
+from backend.tools.profile import district_level, parse_profile
 
 # ---------------------------------------------------------------- worker tools
 
@@ -74,10 +76,14 @@ WORKER_TOOLS = {
         function_schema("optimize_budget", f"Best set of actions within the prep budget. {NO_ARGS}"),
         lambda ctx, a: optimize_budget(ctx.profile)),
     "verify_draft": ToolSpec(
-        function_schema("verify_draft", "Code checks on a draft: typed numbers, unknown placeholders, unknown "
-                        "source IDs, evacuation orders, own forecasts. The facts come from this run.",
-                        {"draft": {"type": "string"}}, ("draft",)),
-        lambda ctx, a: verify_draft(a["draft"], ctx.facts)),
+        function_schema("verify_draft", "Code checks on a draft: typed numbers, unknown placeholders, units next "
+                        "to placeholders, unknown source IDs, evacuation orders, own forecasts. Set final_plan "
+                        "true for the owner's plan to also check action names, asterisks, internal terms, "
+                        "grammar, length and section 7. The facts come from this run.",
+                        {"draft": {"type": "string"}, "final_plan": {"type": "boolean"}}, ("draft",)),
+        lambda ctx, a: verify_draft(a["draft"], ctx.facts, final_plan=bool(a.get("final_plan")),
+                                    district_unverified=_district_unverified(ctx),
+                                    language=ctx.language)),
     "run_scenario": ToolSpec(
         function_schema("run_scenario", "Recompute this shop's numbers under one stress scenario.",
                         {"scenario": {"type": "string", "enum": list(SCENARIOS)}}, ("scenario",)),
@@ -127,9 +133,17 @@ def critic_message(ctx: RunContext) -> str:
                     planner_draft=ctx.state["draft"], facts=ctx.facts)
 
 
+def _district_unverified(ctx: RunContext) -> bool:
+    return district_level(ctx.profile) == "UNVERIFIED"
+
+
 def manager_message(ctx: RunContext) -> str:
+    # The district's real hazard level comes from code, so the Manager never has to guess it.
+    district = {"name": ctx.profile.district, "hazard_level": district_level(ctx.profile),
+                "unverified": _district_unverified(ctx)}
     return _message(language=ctx.language, today=ctx.today.isoformat(),
-                    shop=_shop(ctx, ("business_type", "district")), profile_warnings=ctx.state["warnings"])
+                    shop=_shop(ctx, ("business_type",)), district=district,
+                    profile_warnings=ctx.state["warnings"])
 
 
 # ------------------------------------------------------------- manager tools
@@ -149,10 +163,21 @@ def _run_planner(ctx: RunContext, args: dict) -> dict:
     return {"planner_draft": draft, "available_facts": dict(ctx.facts)}
 
 
+# The Critic checks the Planner's internal draft, which is not an owner plan, so its
+# verify_draft never applies the owner-plan rules (sections, names, length...).
+CRITIC_TOOLS = {
+    "verify_draft": ToolSpec(
+        function_schema("verify_draft", "Code checks on the Planner's draft: typed numbers, unknown placeholders, "
+                        "units next to placeholders, unknown source IDs, evacuation orders, own forecasts.",
+                        {"draft": {"type": "string"}}, ("draft",)),
+        lambda ctx, a: verify_draft(a["draft"], ctx.facts)),
+}
+
+
 def _run_critic(ctx: RunContext, args: dict) -> dict:
     if "draft" not in ctx.state:
         return {"error": "Run run_planner first."}
-    critique = AgentSession(ctx, "critic", toolset("critic")).send(critic_message(ctx))
+    critique = AgentSession(ctx, "critic", toolset("critic", CRITIC_TOOLS)).send(critic_message(ctx))
     ctx.state["critique"] = critique
     return {"critique": critique, "available_facts": dict(ctx.facts)}
 
@@ -169,12 +194,31 @@ MANAGER_TOOLS = {
 
 # ------------------------------------------------------------------ the run
 
+# The backslash keeps Markdown from turning the footnote into a bullet point.
+FOOTNOTE = {"es": r"\* Costo o beneficio estimado, no medido.",
+            "en": r"\* Estimated cost or benefit, not measured."}
+DISCLAIMER = {
+    "es": "_Pirca no es una agencia oficial. Sigue los avisos de ENFEN, SENAMHI, INDECI y tu municipalidad._",
+    "en": "_Pirca is not an official agency. Follow ENFEN, SENAMHI, INDECI and your municipality._",
+}
+
 WARNING_TEXT = {
     "es": "⚠️ **Aviso:** este plan no pasó la verificación automática de Pirca. Revisa los números y las fuentes "
           "antes de usarlo, y sigue siempre a ENFEN, SENAMHI, INDECI y tu municipalidad.",
     "en": "⚠️ **Warning:** this plan did not pass Pirca's automatic check. Review its numbers and sources before "
           "using it, and always follow ENFEN, SENAMHI, INDECI and your municipality.",
 }
+
+
+def _with_footer(plan: str, language: str) -> str:
+    """Add the estimate footnote (only if an action is marked with *) and the disclaimer."""
+    body = re.sub(r"\*\*[^*\n]+\*\*", "", plan)  # ignore **bold**
+    lines = [plan.rstrip(), ""]
+    if "*" in body:
+        lines.append(FOOTNOTE[language])
+        lines.append("")
+    lines.append(DISCLAIMER[language])
+    return "\n".join(lines) + "\n"
 
 
 def _fix_message(issues: list[dict]) -> str:
@@ -217,14 +261,18 @@ def run_plan(profile: dict, language: str = "es", today: date | None = None, cli
     try:
         manager = AgentSession(ctx, "manager", toolset("manager", MANAGER_TOOLS))
         final = manager.send(manager_message(ctx))
-        check = verify_draft(final.get("plan_markdown", ""), ctx.facts)
-        ctx.emit("final_check", "pirca", attempt=1, ok=check["ok"], issue_count=len(check["issues"]))
+        check = verify_draft(final.get("plan_markdown", ""), ctx.facts, final_plan=True, language=language,
+                             district_unverified=_district_unverified(ctx))
+        ctx.emit("final_check", "pirca", attempt=1, ok=check["ok"], issue_count=len(check["issues"]),
+                 issues=[i["type"] for i in check["issues"]])
         fix_attempted = False
         if not check["ok"]:
             fix_attempted = True
             final = manager.send(_fix_message(check["issues"]))
-            check = verify_draft(final.get("plan_markdown", ""), ctx.facts)
-            ctx.emit("final_check", "pirca", attempt=2, ok=check["ok"], issue_count=len(check["issues"]))
+            check = verify_draft(final.get("plan_markdown", ""), ctx.facts, final_plan=True, language=language,
+                                 district_unverified=_district_unverified(ctx))
+            ctx.emit("final_check", "pirca", attempt=2, ok=check["ok"], issue_count=len(check["issues"]),
+                     issues=[i["type"] for i in check["issues"]])
     except LimitHit as e:
         ctx.emit("run_finished", "pirca", status="stopped_by_limit")
         return {"status": "stopped_by_limit",
@@ -236,7 +284,9 @@ def run_plan(profile: dict, language: str = "es", today: date | None = None, cli
         return {"status": "error", "message": str(e), **_base_result(ctx)}
 
     template = final.get("plan_markdown", "")
-    plan = {cur: fill_placeholders(template, ctx.facts, currency=cur)["text"] for cur in ("pen", "usd")}
+    plan = {cur: _with_footer(fill_placeholders(template, ctx.facts, currency=cur, language=language)["text"],
+                              language)
+            for cur in ("pen", "usd")}
     warning = None if check["ok"] else WARNING_TEXT[language]
     if warning:
         plan = {cur: f"> {warning}\n\n{text}" for cur, text in plan.items()}
@@ -249,6 +299,7 @@ def run_plan(profile: dict, language: str = "es", today: date | None = None, cli
         "plan": plan,  # {"pen": ..., "usd": ...}: the interface's currency toggle picks one
         "warning": warning,
         "verification": {"ok": check["ok"], "issues": check["issues"], "fix_attempted": fix_attempted},
+        "affordability": recommended_spending(template, ctx.facts),
         "summary_en": final.get("summary_en", ""),
         "decisions": final.get("decisions", []),
         "open_issues": list(final.get("open_issues", [])) + _workflow_gaps(ctx),

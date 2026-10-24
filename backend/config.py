@@ -32,9 +32,10 @@ PRICES_PER_MILLION = {
 # How many times each agent may run. The Planner and Critic get one revision each.
 MAX_AGENT_RUNS = {"manager": 1, "risk_analyst": 1, "planner": 2, "critic": 2}
 # Tool calls each agent may make in one run (the Manager's include running the workers).
-MAX_TOOL_CALLS = {"manager": 8, "risk_analyst": 12, "planner": 8, "critic": 10}
-# Per-tool caps inside an agent, on top of MAX_TOOL_CALLS.
-MAX_CALLS_PER_TOOL = {"risk_analyst": {"score_exposure": 1, "search_documents": 4}}
+MAX_TOOL_CALLS = {"manager": 10, "risk_analyst": 12, "planner": 8, "critic": 10}
+# Per-tool caps inside an agent, on top of MAX_TOOL_CALLS. Extra calls are refused, not fatal.
+MAX_CALLS_PER_TOOL = {"risk_analyst": {"score_exposure": 1, "search_documents": 4},
+                      "manager": {"verify_draft": 3}}
 # Model calls per agent run (each tool round trip is one model call).
 MAX_MODEL_TURNS = 10
 # Cap on each model response, reasoning tokens included.

@@ -12,6 +12,7 @@ YesNoUnknown = Literal["yes", "no", "unknown"]
 class Supplier(BaseModel):
     product: str = Field(min_length=1)
     city: str = Field(min_length=1)
+    perishable: bool | None = None  # None: inferred from the product name (pan, leche, fruta…)
 
 
 class ShopProfile(BaseModel):

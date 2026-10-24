@@ -9,6 +9,7 @@ import pytest
 from backend import config
 from backend.agents.pirca import run_plan
 from backend.agents.usage import cost_usd, usage_from_response
+from tests.test_owner_plan import GOOD_PLAN_ES
 
 TODAY = date(2026, 10, 24)
 PROFILE = dict(
@@ -21,9 +22,7 @@ PROFILE = dict(
 USAGE = {"input_tokens": 1000, "input_tokens_details": {"cached_tokens": 200, "cache_write_tokens": 100},
          "output_tokens": 50, "output_tokens_details": {"reasoning_tokens": 10}}
 
-GOOD_PLAN = ("## 1. Tu riesgo\nTu riesgo es alto [HIST-2017-30]. Mercadería en riesgo: {stock_at_risk}.\n"
-             "## 4. Tu caja de emergencia\nTe faltan {cash_gap}.\n"
-             "## 6. Compras dentro de tu presupuesto\nGastas {total_cost} y te quedan {money_left}.\n")
+GOOD_PLAN = GOOD_PLAN_ES  # a valid seven-section owner plan
 
 
 # ---------------------------------------------------------------- fake model
@@ -144,6 +143,12 @@ def test_end_to_end_with_fake_model():
     result, client = run(happy_scripts(), on_event=seen.append)
     assert result["status"] == "completed", result.get("message")
     assert "S/ 10,000" in result["plan"]["pen"] and "{" not in result["plan"]["pen"]
+    assert "4 semanas" in result["plan"]["pen"] and "S/ 77 por 10 sacos llenos" in result["plan"]["pen"]
+    # Safety: the plan never recommends spending more than the owner's cash
+    assert result["affordability"]["within_cash"]
+    assert result["affordability"]["total"] <= PROFILE["cash_on_hand"]
+    assert "Costo o beneficio estimado, no medido." in result["plan"]["pen"]  # footnote: CAT-02 has *
+    assert result["plan"]["pen"].rstrip().endswith("tu municipalidad._")  # disclaimer added by code
     assert "$" in result["plan"]["usd"] and "S/" not in result["plan"]["usd"]
     assert result["verification"]["ok"] and not result["verification"]["fix_attempted"]
     assert result["agent_runs"] == {"manager": 1, "risk_analyst": 1, "planner": 1, "critic": 1}
@@ -285,3 +290,45 @@ def test_missing_critic_is_reported_as_open_issue():
     scripts = happy_scripts(manager=[call("run_risk_analyst"), call("run_planner"), manager_final()])
     result, _ = run(scripts)
     assert "The critic never ran." in result["open_issues"]
+
+
+def test_manager_is_told_the_real_district_level():
+    _, client = run(happy_scripts())
+    first = next(kw["input"][0]["content"] for agent, kw in client.responses.requests if agent == "manager")
+    assert '"hazard_level": "high"' in first and '"unverified": false' in first
+
+
+def test_manager_is_told_when_district_is_unverified():
+    client = FakeClient(happy_scripts())
+    run_plan({**PROFILE, "district": "Paita"}, language="es", today=TODAY, client=client)
+    first = next(kw["input"][0]["content"] for agent, kw in client.responses.requests if agent == "manager")
+    assert '"hazard_level": "UNVERIFIED"' in first and '"unverified": true' in first
+
+
+def test_false_unverified_claim_triggers_the_fix_step():
+    bad = GOOD_PLAN.replace("Tu riesgo es alto.", "Tu riesgo es alto. No hay historia distrital verificada.")
+    scripts = happy_scripts(manager=[call("run_risk_analyst"), call("run_planner"), call("run_critic"),
+                                     manager_final(bad), manager_final(GOOD_PLAN)])
+    result, _ = run(scripts)
+    assert result["status"] == "completed" and result["verification"]["fix_attempted"]
+    first_check = next(e for e in result["events"] if e["type"] == "final_check")
+    assert "false_unverified_claim" in first_check["issues"]
+
+
+def test_critic_cannot_apply_owner_plan_rules_to_the_planner_draft():
+    _, client = run(happy_scripts())
+    critic_tools = next(kw["tools"] for agent, kw in client.responses.requests if agent == "critic")
+    verify = next(t for t in critic_tools if t["name"] == "verify_draft")
+    assert "final_plan" not in verify["parameters"]["properties"]
+    manager_tools = next(kw["tools"] for agent, kw in client.responses.requests if agent == "manager")
+    assert "final_plan" in next(t for t in manager_tools if t["name"] == "verify_draft")["parameters"]["properties"]
+
+
+def test_manager_self_checks_are_capped_but_run_continues():
+    checks = [call("verify_draft", draft=GOOD_PLAN, final_plan=True) for _ in range(4)]
+    scripts = happy_scripts(manager=[call("run_risk_analyst"), call("run_planner"), call("run_critic"),
+                                     *checks, manager_final()])
+    result, _ = run(scripts)
+    assert result["status"] == "completed"
+    refused = [e for e in result["events"] if e["type"] == "limit_hit" and e["agent"] == "manager"]
+    assert len(refused) == 1 and refused[0]["action"] == "refused"

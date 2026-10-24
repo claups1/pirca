@@ -36,7 +36,8 @@ def describe(event: dict) -> str:
     if t == "limit_hit":
         return f"⛔ LIMIT {event['limit']} ({event['action']}): {event['detail']}"
     if t == "final_check":
-        return f"verify_draft on final plan (attempt {event['attempt']}): ok={event['ok']}, issues={event['issue_count']}"
+        kinds = ", ".join(sorted(set(event.get("issues", [])))) or "none"
+        return f"verify_draft on final plan (attempt {event['attempt']}): ok={event['ok']}, issues: {kinds}"
     if t in ("run_started", "run_finished"):
         return f"{t} {event.get('status', '')}".strip()
     return t
@@ -67,6 +68,9 @@ def main() -> int:
     else:
         print(f"Verification: ok={result['verification']['ok']}, fix attempted={result['verification']['fix_attempted']}")
         print(f"Critic verdict: {result['critic_verdict']} · revision used: {result['revision_used']}")
+        a = result["affordability"]
+        print(f"Affordability: recommends S/ {a['total']:,.2f} of spending; cash on hand S/ {a['cash_on_hand']:,.2f}; "
+              f"within cash: {a['within_cash']}")
         print("\n" + "=" * 80 + f"\nPLAN ({args.currency.upper()})\n" + "=" * 80)
         print(result["plan"][args.currency])
         print("=" * 80)

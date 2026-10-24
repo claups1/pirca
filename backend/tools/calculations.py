@@ -1,10 +1,12 @@
 """Exposure, stock, cash, supplier and scenario tools. All money is in soles."""
 
+import math
+import re
 from datetime import date
 
 from backend.tools import assumptions as A
 from backend.tools import data_store
-from backend.tools.profile import ShopProfile, district_hist_ids, district_level, parse_profile
+from backend.tools.profile import ShopProfile, Supplier, district_hist_ids, district_level, parse_profile
 
 WEEKS_PER_MONTH = 52 / 12
 
@@ -111,8 +113,35 @@ def _route_risk(city: str) -> tuple[str, list[str], str]:
     return ("unknown", [], "No road-cut history for this city in Pirca's data")
 
 
+PERISHABLE_WORDS = ("pan", "leche", "lacteo", "yogur", "queso", "fruta", "verdura", "hortaliza", "carne", "pollo",
+                    "pescado", "marisco", "huevo", "helado", "embutido", "bread", "milk", "dairy", "cheese", "fruit",
+                    "vegetable", "meat", "chicken", "fish", "egg", "yogurt")
+PERISHABLE_RE = re.compile(r"\b(?:" + "|".join(PERISHABLE_WORDS) + r")(?:s|es)?\b")
+
+STOCK_UP_STATUS = ("not_needed", "affordable", "partly_affordable", "complete_emergency_fund_first")
+
+
+def is_perishable(supplier: Supplier) -> bool:
+    """The owner's mark wins; otherwise infer from the product name (pan, lácteos, fruta…)."""
+    if supplier.perishable is not None:
+        return supplier.perishable
+    return bool(PERISHABLE_RE.search(data_store.normalize(supplier.product)))
+
+
+def stock_up_money_available(p: ShopProfile) -> float:
+    """Cash left for a supplier stock-up after the emergency fund and the prep budget."""
+    buffer_needed = compute_cash_buffer(p)["facts"]["buffer_needed"]
+    prep = min(p.prep_budget, p.cash_on_hand)
+    return max(0.0, p.cash_on_hand - buffer_needed - prep)
+
+
 def compute_supplier_buffer(profile: dict | ShopProfile, force_risk: str | None = None) -> dict:
-    """Road-cut risk per supplier city and extra days of stock to buy before the rains."""
+    """Road-cut risk per supplier city and the extra days of stock the owner can afford to buy.
+
+    Perishable products get 0 extra days (small, frequent deliveries instead). The stock-up is
+    capped at the cash left after the emergency fund and the prep budget, so the plan never
+    recommends spending money the owner doesn't have.
+    """
     p = parse_profile(profile)
     targets = A.value("target_stock_days")
     daily_sales = p.weekly_sales / 7
@@ -121,22 +150,46 @@ def compute_supplier_buffer(profile: dict | ShopProfile, force_risk: str | None 
         risk, ids, basis = _route_risk(s.city)
         if force_risk:
             risk, basis = force_risk, f"Scenario: route forced to {force_risk} risk"
-        extra = max(0.0, targets[risk] - p.days_of_stock)
+        perishable = is_perishable(s)
+        needed = 0.0 if perishable else max(0.0, targets[risk] - p.days_of_stock)
         suppliers.append({"supplier": i, "product": s.product, "city": s.city, "road_cut_risk": risk,
-                          "basis": basis, "sources": ids, "target_days": targets[risk], "extra_days": extra})
+                          "basis": basis, "sources": ids, "target_days": targets[risk], "perishable": perishable,
+                          "advice": "small_frequent_deliveries" if perishable else "stock_up",
+                          "extra_days_needed": needed})
         sources += ids
+
+    days_needed = max((s["extra_days_needed"] for s in suppliers), default=0.0)
+    value_needed = daily_sales * days_needed
+    available = stock_up_money_available(p)
+    if value_needed == 0:
+        status, scale = "not_needed", 1.0
+    elif available >= value_needed:
+        status, scale = "affordable", 1.0
+    elif available > 0:
+        status, scale = "partly_affordable", available / value_needed
+    else:
+        status, scale = "complete_emergency_fund_first", 0.0
+    for s in suppliers:
+        s["extra_days"] = float(math.floor(s["extra_days_needed"] * scale))
     extra_days = max((s["extra_days"] for s in suppliers), default=0.0)
+
     facts = {"supplier_count": len(suppliers), "days_of_stock": p.days_of_stock,
+             "extra_days_needed": days_needed, "extra_stock_needed": _money(value_needed),
+             "stock_up_money_available": _money(available),
              "extra_days_to_buy": extra_days,
-             "extra_stock_value": _money(daily_sales * extra_days),
-             "high_risk_suppliers": sum(s["road_cut_risk"] == "high" for s in suppliers)}
+             "extra_stock_value": _money(min(daily_sales * extra_days, available)),
+             "high_risk_suppliers": sum(s["road_cut_risk"] == "high" for s in suppliers),
+             "perishable_suppliers": sum(s["perishable"] for s in suppliers)}
     for s in suppliers:
         facts[f"supplier_{s['supplier']}_extra_days"] = s["extra_days"]
-    notes = ["extra_stock_value is valued at sales prices (weekly sales / 7 per day)."]
-    if p.perishables:
-        notes.append("Stock up only on non-perishables; buy perishables in smaller amounts more often.")
+    notes = ["Stock values are at sales prices (weekly sales / 7 per day).",
+             "stock_up_money_available = cash on hand - emergency fund needed - prep budget (never below 0)."]
+    if status == "complete_emergency_fund_first":
+        notes.append("No cash is left for a stock-up: tell the owner to complete the emergency fund first.")
+    if any(s["perishable"] for s in suppliers):
+        notes.append("Perishable products get no stock-up: ask for small, frequent deliveries.")
     return _envelope("compute_supplier_buffer", facts, sources, ("target_stock_days",),
-                     suppliers=suppliers, notes=notes)
+                     suppliers=suppliers, stock_up_status=status, notes=notes)
 
 
 SCENARIOS = ("rains_one_month_early", "long_closure", "main_bridge_cut", "power_cut_week", "worker_sick_dengue")

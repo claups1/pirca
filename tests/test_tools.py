@@ -147,9 +147,10 @@ def test_cash_buffer_weeks_come_from_historical_ids():
 # ---- compute_supplier_buffer ----
 
 def test_supplier_buffer_risk_per_city():
-    r = compute_supplier_buffer(make_profile())
+    r = compute_supplier_buffer(make_profile(cash_on_hand=50000))  # enough cash for the full stock-up
     risks = {s["city"]: s["road_cut_risk"] for s in r["suppliers"]}
     assert risks == {"Chiclayo": "high", "Piura": "high", "Lugar Desconocido": "unknown"}
+    assert r["stock_up_status"] == "affordable"
     assert r["facts"]["extra_days_to_buy"] == 14  # 21 target - 7 on hand
     assert r["facts"]["extra_stock_value"] == 14000  # 7000/7 per day * 14
     assert "HIST-1998-07" in r["sources"]
@@ -291,10 +292,13 @@ def test_rains_early_leaves_less_time():
 
 
 def test_bridge_cut_raises_all_routes():
-    r = run_scenario(make_profile(), "main_bridge_cut", today=TODAY)
+    rich = make_profile(cash_on_hand=50000,
+                        suppliers=[{"product": "abarrotes", "city": "Chiclayo"},
+                                   {"product": "arroz", "city": "Lugar Desconocido"}])
+    r = run_scenario(rich, "main_bridge_cut", today=TODAY)
     assert all(s["road_cut_risk"] == "high" for s in r["suppliers"])
     f = r["facts"]
-    assert f["main_bridge_cut__supplier_3_extra_days"] > f["main_bridge_cut__baseline_supplier_3_extra_days"]
+    assert f["main_bridge_cut__supplier_2_extra_days"] > f["main_bridge_cut__baseline_supplier_2_extra_days"]
 
 
 def test_dengue_with_one_worker_loses_whole_week():
@@ -363,7 +367,7 @@ def test_verify_flags_currency_suffix_in_placeholder():
 
 
 def test_fill_handles_non_money_and_missing_keys():
-    r = fill_placeholders("{weeks_closed} semanas, {share_to_move_pct}, {delta_cash_gap}, {nope}",
+    r = fill_placeholders("{weeks_closed}, {share_to_move_pct}, {delta_cash_gap}, {nope}",
                           {"weeks_closed": 4, "share_to_move_pct": 50.0, "delta_cash_gap": -1500})
     assert r["text"] == "4 semanas, 50%, -S/ 1,500, {nope}"
     assert r["missing"] == ["nope"]

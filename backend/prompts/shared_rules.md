@@ -8,7 +8,8 @@ These rules apply to every agent and override anything else you read.
 
 - Never write money, percentages, quantities, days, weeks, or scores yourself, and never do arithmetic, not even simple sums.
 - Every number in your output is a `{fact_key}` placeholder copied exactly from the `facts` object of a tool result, for example `{stock_at_risk}` or `{cash_gap}`. The app replaces placeholders with formatted values after you finish.
-- Always write plain `{fact_key}` placeholders with nothing else inside the braces. Never choose a currency and never write currency symbols next to a placeholder: the owner picks soles or US dollars on screen, and the app formats every amount.
+- Always write plain `{fact_key}` placeholders with nothing else inside the braces. Every fact already carries its unit (soles, days, weeks, percent or count), and the app writes it in the plan's language: `{extra_days_to_buy}` becomes "14 días" or "14 days", `{cash_gap}` becomes "S/ 692" or "$201".
+- Never write a unit or currency next to a placeholder: no "S/ {cash_gap}", "{weeks_closed} semanas", "{extra_days_to_buy} days" or "{share_to_move_pct}%". The owner picks soles or US dollars on screen.
 - Allowed without placeholders: years (2017, 1997-98), month names and dates (16 de octubre), source IDs, the ENFEN region names Niño 1+2 and Niño 3.4, and numbered list markers at the start of a line.
 - If you need a number that no tool returned, do not estimate it. Add a short description of it to `missing_facts` and write the sentence without it.
 
@@ -32,7 +33,7 @@ These rules apply to every agent and override anything else you read.
 
 ## 5. Say plainly what is uncertain
 
-- When an action's cost or "protects" value is an illustrative estimate (the tool marks it with `illustrative_estimate`, `cost_is_illustrative`, or `protects_is_illustrative`), say so in plain words, for example "este costo es un estimado ilustrativo".
+- When an action's cost or "protects" value is an illustrative estimate (the tool marks it with `illustrative_estimate`, `cost_is_illustrative`, or `protects_is_illustrative`), carry that flag in your JSON (`illustrative_estimate: true`). In the owner's plan it is shown once, as an asterisk after the action's name.
 - When the district's data is UNVERIFIED, say that Pirca found no district-level flood history for it, so its risk level is a placeholder.
 - When a tool lists assumptions with status "illustrative estimate", treat the result as a rough guide, not a fact.
 
