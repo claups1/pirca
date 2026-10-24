@@ -1,24 +1,65 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pirca — El Niño costero readiness</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta name="theme-color" content="#0B1726">
+  <meta name="description" content="Pirca helps small shop owners in Piura prepare for El Niño costero rains and floods.">
+  <title>Pirca · El Niño costero preparation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap">
+  <link rel="stylesheet" href="styles.css?v=6">
 </head>
 <body>
-  <header>
-    <h1>Pirca</h1>
-    <p class="tagline">Prepara tu negocio en Piura para las lluvias e inundaciones de El Niño costero.</p>
+  <div class="ocean" aria-hidden="true"><span class="deep-1"></span><span class="deep-2"></span><span class="warm"></span></div>
+
+  <header class="site-header glass">
+    <a class="wordmark" href="#/" aria-label="Pirca home"><span class="mark" aria-hidden="true"></span>Pirca</a>
+    <a class="btn btn-primary" href="#/new" id="new-btn"><span aria-hidden="true">+</span><span class="btn-label" data-t="new">New</span></a>
+    <button class="icon-btn" id="help-btn" type="button" aria-haspopup="dialog" data-t-label="help">?</button>
+    <div class="menu-wrap">
+      <button class="icon-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu" data-t-label="menu">☰</button>
+    </div>
   </header>
 
-  <main>
-    <section class="card">
-      <h2>Estado del sistema</h2>
-      <p id="status">Comprobando…</p>
+  <div class="menu glass" id="menu" hidden>
+    <section>
+      <h4 data-t="language">Language</h4>
+      <div class="segmented" role="group" data-t-label="language">
+        <button type="button" data-lang="es">Español</button>
+        <button type="button" data-lang="en">English</button>
+      </div>
     </section>
-  </main>
+    <section>
+      <h4 data-t="currency">Currency</h4>
+      <div class="segmented" role="group" data-t-label="currency">
+        <button type="button" data-currency="pen">S/ Soles</button>
+        <button type="button" data-currency="usd">$ USD</button>
+      </div>
+    </section>
+    <section>
+      <button class="menu-link" type="button" id="my-plans-link" data-t="myPlans">My plans</button>
+    </section>
+    <section>
+      <h4 data-t="openByCode">Open a plan by code</h4>
+      <form class="code-form" id="code-form">
+        <label class="visually-hidden" for="code-input" data-t="planCode">Plan code</label>
+        <input id="code-input" name="code" placeholder="PIU-XXXXXX" autocomplete="off" spellcheck="false" maxlength="10">
+        <button class="btn" type="submit" data-t="open">Open</button>
+      </form>
+      <p class="small muted" id="code-error" role="alert" hidden></p>
+    </section>
+  </div>
 
-  <script src="app.js"></script>
+  <main id="app" tabindex="-1" aria-live="polite"></main>
+
+  <dialog id="help" class="glass" aria-labelledby="help-title">
+    <button class="icon-btn dialog-close" type="button" id="help-close" data-t-label="close">✕</button>
+    <div id="help-body"></div>
+  </dialog>
+
+  <noscript><p style="padding:24px">Pirca needs JavaScript to run.</p></noscript>
+  <script src="app.js?v=6"></script>
 </body>
 </html>

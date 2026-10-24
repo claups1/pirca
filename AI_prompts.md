@@ -192,3 +192,34 @@ Run with one command: uvicorn backend.main:app. Add offline API tests that don't
 ## Prompt 19 — Commit cash fix and API
 
 `Commit the working tree changes with a sensible message.`
+
+## Prompt 20 — Frontend
+
+```
+Build the Pirca frontend in frontend/ as plain HTML/CSS/JS, served by FastAPI. It must look professional and work on a phone.
+
+Visual style: professional "Warm Pacific" glassmorphism, inspired by El Niño's sea-temperature maps (warm coral water over a cool ocean). Restraint is the rule: it should feel like a serious public-service tool, not a flashy demo.
+- Colors (CSS variables): background deep ocean navy #0B1726 with a second navy #1E3A5F; accent coral #F2785C (main buttons, key amounts like stock at risk and cash gap, the active agent); secondary teal #3FB8AF (safe/low risk, success); text #E8EEF5, muted text #A9B6C6. Coral is the only accent color.
+- Risk levels: high = coral #F2785C, medium = amber #F2B84B, low = teal #3FB8AF, always shown with the word too, never color alone.
+- Background: navy with 2–3 large, very soft, blurred shapes in deep blue and a faint coral tint, like warm water spreading. Movement, if any, is slow and subtle, and off when prefers-reduced-motion is set.
+- Glass only on frames: header, agent cards, form groups, and menus use translucent panels with backdrop-filter blur (16–20px), a thin light border (rgba white ~14%), 14px rounded corners, and a soft shadow. No neon glows, no rainbow gradients.
+- Readability first: the plan view and form fields use more opaque dark glass (~85%) so text is always easy to read. Text contrast must meet WCAG AA.
+- Typography: Inter from Google Fonts with a system-font fallback (so it still looks right offline), two weights only (400 and 600), consistent spacing on an 8px grid.
+- Fallback: solid navy panels if backdrop-filter isn't supported. Keep blurred layers few so it stays smooth on phones.
+- Put all colors, blur, radius, and spacing in CSS variables at the top of the stylesheet so the look can be tuned in one place.
+
+Layout and features:
+- Header: "Pirca" wordmark, "+ New" (new plan), "?" (help panel: how it works, the four agents, "not an official forecast"), and a ☰ menu with Language (Español / English), Currency (S/ Soles / $ USD), My plans, and Open a plan by code. The app opens in English + USD; remember the choices in localStorage.
+- Start screen: one sentence on what Pirca does, a "Make my plan" button, and an "Open example (PIU-CAST26)" button so graders can see a full plan without running the agents.
+- The intake form in 5 groups (business, stock, money, suppliers, preparation) with all labels in both languages and short hints. Show the validation warnings before running and let the owner fix or confirm them.
+- Live trace panel while it runs: the four agents (Manager, Risk Analyst, Planner, Critic) as glass cards; the working agent gets a coral outline and a "working…" label. Their tool calls appear as a timeline, with a running counter of input / cached / output tokens and cost in USD.
+- For saved plans, a "Replay trace" button that plays the saved events back at the same pace, so I can take screenshots without a new run.
+- Plan view: show the plan code at the top, fill placeholders in the chosen currency (switching currency must not call the server), add the English summary when the plan is in Spanish, add the fixed disclaimer at the bottom (written in code, not by the model), and a "View in English / Ver en español" button that uses the translate endpoint. Show the run's token totals and cost at the bottom.
+- My plans: a list of codes and labels stored in localStorage, with ⏳ running / ✅ ready status. Closing the page during a run must not lose the plan.
+
+Start the server and check the page in a browser at desktop and phone sizes: the example opens, the toggles work, text is readable over the glass, and there are no console errors. Show me screenshots.
+```
+
+## Prompt 21 — Commit frontend
+
+`Commit the working tree changes with a sensible message.`

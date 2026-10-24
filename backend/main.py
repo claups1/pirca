@@ -14,15 +14,39 @@ from pydantic import BaseModel
 from backend import config
 from backend.api import plans
 from backend.api.routes import router
-from backend.tools import validate_profile
+from backend.tools import data_store, validate_profile
 
 app = FastAPI(title="Pirca", description="El Niño costero preparation plans for small shops in Piura")
 app.include_router(router)
 
 
+@app.middleware("http")
+async def revalidate_frontend(request, call_next):
+    """Browsers must re-check the frontend files on each load, so an update is never hidden by a cache."""
+    response = await call_next(request)
+    if not request.url.path.startswith("/api/"):
+        response.headers["Cache-Control"] = "no-cache"
+    return response
+
+
 class PlanRequest(BaseModel):
     profile: dict
     language: Literal["es", "en"] = "es"
+
+
+EXAMPLE_CODE = "PIU-CAST26"
+
+
+@app.get("/api/meta")
+def meta() -> dict:
+    """What the form needs: districts (with hazard level), the checklist of catalog actions,
+    the example plan code, and the fixed exchange rate for formatting amounts."""
+    districts = [{"name": d["district"], "province": d["province"], "hazard_level": d["flood_hazard_level"]}
+                 for d in data_store.districts().values()]
+    actions = [{"id": a["id"], "name_es": a["name_es"], "name_en": a["name_en"]} for a in data_store.action_catalog()]
+    fx = data_store.exchange_rate()
+    return {"districts": districts, "actions": actions, "example_code": EXAMPLE_CODE,
+            "pen_per_usd": fx["pen_per_usd"], "fx_date": fx["date"], "model": config.MODEL_NAME}
 
 
 @app.post("/api/validate")

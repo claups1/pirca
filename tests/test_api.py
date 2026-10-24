@@ -216,3 +216,17 @@ def test_translation_is_not_held_to_the_length_limit(api, monkeypatch):
     finish(api, code)
     body = api.client.post(f"/api/plans/{code}/translate").json()
     assert body["verification"]["ok"], body["verification"]["issues"]
+
+
+def test_meta_gives_the_form_what_it_needs(api):
+    m = api.client.get("/api/meta").json()
+    names = {d["name"]: d["hazard_level"] for d in m["districts"]}
+    assert names["Castilla"] == "high" and names["Paita"] == "UNVERIFIED"
+    assert len(m["actions"]) == 15 and all(a["name_es"] and a["name_en"] for a in m["actions"])
+    assert m["example_code"] == "PIU-CAST26" and m["pen_per_usd"] > 0
+
+
+def test_finished_plan_includes_deterministic_risk_level(api):
+    code = api.client.post("/api/plans", json={"profile": PROFILE}).json()["code"]
+    finish(api, code)
+    assert api.client.get(f"/api/plans/{code}").json()["result"]["risk_level"] == "high"

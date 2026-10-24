@@ -16,7 +16,7 @@ from pathlib import Path
 from backend import config
 from backend.agents.pirca import _with_footer, run_plan
 from backend.agents.usage import usage_from_response
-from backend.tools import fill_placeholders, verify_draft
+from backend.tools import fill_placeholders, score_exposure, verify_draft
 from backend.tools.drafting import PLACEHOLDER
 from backend.tools.profile import district_level, parse_profile
 
@@ -137,6 +137,11 @@ def plan_status(code: str, after: int = 0) -> dict | None:
         return None
     events = [e for e in record.get("events", []) if e["seq"] > after]
     result = {k: v for k, v in record.items() if k != "events"}
+    if record.get("form"):  # deterministic risk level for the badge (never the model's wording)
+        try:
+            result["risk_level"] = score_exposure(record["form"])["risk_level"]
+        except ValueError:
+            result["risk_level"] = None
     return {"code": code, "status": status_of(record), "events": events, "result": result}
 
 
