@@ -19,6 +19,7 @@ from backend.agents.usage import usage_from_response
 from backend.tools import fill_placeholders, score_exposure, verify_draft
 from backend.tools.drafting import PLACEHOLDER
 from backend.tools.profile import district_level, parse_profile
+from backend.tools.source_info import cited_ids, describe_sources
 
 # No look-alikes: 0/O, 1/I/L are left out.
 CODE_ALPHABET = "23456789ABCDEFGHJKMNPQRSTUVWXYZ"
@@ -137,6 +138,9 @@ def plan_status(code: str, after: int = 0) -> dict | None:
         return None
     events = [e for e in record.get("events", []) if e["seq"] > after]
     result = {k: v for k, v in record.items() if k != "events"}
+    # Plain-language details for every cited source, so the interface can show footnotes instead of raw IDs.
+    texts = [record.get("plan_template", "")] + [t.get("plan_template", "") for t in record.get("translations", {}).values()]
+    result["source_details"] = describe_sources(cited_ids(*texts))
     if record.get("form"):  # deterministic risk level for the badge (never the model's wording)
         try:
             result["risk_level"] = score_exposure(record["form"])["risk_level"]

@@ -1,15 +1,22 @@
 /* Pirca — "Warm Pacific" theme.
    Every color, blur, radius and spacing value lives here so the look can be tuned in one place. */
 :root {
-  /* Ocean */
+  /* Ocean: deep navy into deep sea-teal */
   --navy-900: #0B1726;
   --navy-700: #1E3A5F;
-  /* Accent (the only one) and status colors */
+  --sea-teal: #0E3B4A;
+  --ocean-gradient: linear-gradient(180deg, var(--navy-900) 0%, #0D2737 55%, var(--sea-teal) 100%);
+  /* Warm accent: coral into sunset (main buttons, headline highlight, risk gauge) */
   --coral: #F2785C;
+  --sunset: #FFB347;
+  --warm-gradient: linear-gradient(90deg, var(--coral), var(--sunset));
   --coral-strong: #F58A70;          /* hover */
-  --coral-ink: #0B1726;             /* text on coral buttons */
+  --coral-ink: #0B1726;             /* text on warm buttons */
   --amber: #F2B84B;                 /* medium risk only */
-  --teal: #3FB8AF;                  /* low risk, success */
+  --teal: #2EC4B6;                  /* safe / low risk, ✓ badges */
+  /* Motion */
+  --wave-speed: 22s;
+  --warm-speed: 9s;
   /* Text */
   --text: #E8EEF5;
   --text-muted: #A9B6C6;
@@ -48,7 +55,7 @@ body {
   font-size: 16px;
   line-height: 1.5;
   color: var(--text);
-  background: var(--navy-900);
+  background: var(--navy-900) var(--ocean-gradient) fixed;
   -webkit-font-smoothing: antialiased;
 }
 h1, h2, h3, h4, strong, b, th { font-weight: var(--fw-semibold); }
@@ -64,7 +71,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 [hidden] { display: none !important; }
 
 /* ---------- Background: warm water over a cool ocean ---------- */
-.ocean { position: fixed; inset: 0; z-index: -1; overflow: hidden; contain: paint; background: linear-gradient(180deg, var(--navy-900), #0E1E33 60%, var(--navy-900)); }
+.ocean { position: fixed; inset: 0; z-index: -1; overflow: hidden; contain: paint; background: var(--ocean-gradient); }
 .ocean span { position: absolute; border-radius: 50%; will-change: transform; }
 .ocean .deep-1 { width: 70vmax; height: 70vmax; left: -20vmax; top: -25vmax; background: radial-gradient(circle, rgba(30, 58, 95, 0.75), transparent 65%); }
 .ocean .deep-2 { width: 60vmax; height: 60vmax; right: -25vmax; bottom: -30vmax; background: radial-gradient(circle, rgba(30, 58, 95, 0.6), transparent 65%); }
@@ -104,8 +111,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 .icon-btn { min-width: 40px; padding: 0 12px; }
 .icon-btn:hover, .btn:hover { background: rgba(255, 255, 255, 0.12); }
-.btn-primary { background: var(--coral); border-color: var(--coral); color: var(--coral-ink); }
-.btn-primary:hover { background: var(--coral-strong); }
+.btn-primary { background: var(--warm-gradient); border-color: transparent; color: var(--coral-ink); }
+.btn-primary:hover { background: var(--warm-gradient); filter: brightness(1.06); }
 .btn[disabled] { opacity: 0.55; cursor: not-allowed; }
 .btn-row { display: flex; flex-wrap: wrap; gap: var(--s1); }
 
@@ -267,4 +274,89 @@ dialog ol, dialog ul { padding-left: var(--s3); }
   .timeline .who { grid-column: 2; }
   .timeline .what { grid-column: 1 / -1; }
   .menu { top: 68px; right: var(--s2); width: min(320px, calc(100vw - 32px)); }
+}
+
+/* ================= El Niño theme: hero map, waves, ENFEN chip ================= */
+.hero { position: relative; overflow: hidden; padding-bottom: calc(var(--s5) + 24px); }
+.hero-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: var(--s3); align-items: center; }
+.hero h1 .warm-text { background: var(--warm-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.enfen-chip { display: inline-flex; flex-wrap: wrap; align-items: center; gap: var(--s1); padding: 6px 14px; margin-bottom: var(--s2);
+  border-radius: 999px; border: 1px solid var(--glass-border); background: rgba(11, 23, 38, 0.6); font-size: 14px; }
+.enfen-chip { color: var(--text); text-decoration: none; }
+.enfen-chip:hover { border-color: rgba(255, 179, 71, 0.5); }
+.enfen-chip b { font-weight: var(--fw-semibold); }
+.enfen-chip .meta { color: var(--text-muted); }
+.pulse-dot { position: relative; width: 10px; height: 10px; flex: none; border-radius: 50%; background: var(--coral); }
+.pulse-dot::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: var(--coral);
+  animation: pulse-ring 2.4s ease-out infinite; }
+@keyframes pulse-ring { from { transform: scale(1); opacity: 0.6; } to { transform: scale(2.6); opacity: 0; } }
+.map-figure { margin: 0; }
+.map-figure svg { width: 100%; height: auto; display: block; border-radius: var(--radius); }
+.map-figure figcaption { margin-top: var(--s1); font-size: 14px; color: var(--text-muted); }
+.map-land { fill: #13283B; stroke: rgba(232, 238, 245, 0.35); stroke-width: 1.2; }
+.map-label { fill: var(--text-muted); font-size: 11px; font-family: var(--font); }
+.map-label.strong { fill: var(--text); font-weight: var(--fw-semibold); }
+.map-box { fill: none; stroke: rgba(232, 238, 245, 0.28); stroke-dasharray: 4 4; }
+.warm-water { transform-box: fill-box; transform-origin: right center; animation: warm-spread var(--warm-speed) ease-in-out infinite alternate; }
+.warm-core { animation: warm-pulse 4s ease-in-out infinite; }
+@keyframes warm-spread { from { transform: translateX(-14px) scaleX(0.82); } to { transform: translateX(0) scaleX(1); } }
+@keyframes warm-pulse { 0%, 100% { opacity: 0.55; } 50% { opacity: 0.9; } }
+.piura-dot { fill: var(--sunset); stroke: var(--navy-900); stroke-width: 1.5; }
+.waves { position: absolute; left: 0; right: 0; bottom: 0; height: 56px; pointer-events: none; }
+.waves svg { position: absolute; bottom: 0; left: 0; width: 200%; height: 100%; }
+.waves .w1 { animation: wave-move var(--wave-speed) linear infinite; opacity: 0.35; }
+.waves .w2 { animation: wave-move calc(var(--wave-speed) * 1.5) linear infinite reverse; opacity: 0.25; }
+.waves .w3 { animation: wave-move calc(var(--wave-speed) * 2.2) linear infinite; opacity: 0.18; }
+@keyframes wave-move { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* ================= Plan view: gauge, badges, steps, footnotes ================= */
+.plan-top { padding: var(--s2) var(--s3); margin-bottom: var(--s2); display: grid; grid-template-columns: 1fr auto; gap: var(--s2) var(--s3); align-items: start; }
+.plan-top .btn-row { grid-column: 1 / -1; }
+.badges { display: flex; flex-wrap: wrap; gap: var(--s1); margin: var(--s2) 0 0; padding: 0; list-style: none; }
+.badges li { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; font-size: 13px;
+  border: 1px solid rgba(46, 196, 182, 0.45); background: rgba(46, 196, 182, 0.08); }
+.badges li .icon { color: var(--teal); font-weight: var(--fw-semibold); }
+.badges li.warn { border-color: rgba(242, 184, 75, 0.55); background: rgba(242, 184, 75, 0.08); }
+.badges li.warn .icon { color: var(--amber); }
+.gauge { width: 180px; text-align: center; }
+.gauge svg { width: 100%; height: auto; display: block; overflow: visible; }
+.gauge .track { stroke: rgba(255, 255, 255, 0.12); }
+.gauge .fill { transition: stroke-dashoffset 1.4s cubic-bezier(0.22, 0.61, 0.36, 1); }
+.gauge .needle { transform-origin: 100px 100px; transition: transform 1.4s cubic-bezier(0.22, 0.61, 0.36, 1); }
+.gauge .level { margin-top: -6px; font-weight: var(--fw-semibold); font-size: 18px; }
+.gauge .level span { display: block; font-size: 12px; font-weight: var(--fw-regular); color: var(--text-muted); }
+.steps { list-style: none; margin: var(--s2) 0 var(--s3); padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s2); }
+.steps li { position: relative; padding: var(--s2); border-radius: var(--radius-small); border: 1px solid var(--glass-border); background: rgba(255, 255, 255, 0.03); }
+.steps .step-head { display: flex; align-items: center; gap: var(--s1); margin-bottom: var(--s1); font-weight: var(--fw-semibold); font-size: 15px; }
+.steps .num { display: inline-grid; place-items: center; width: 28px; height: 28px; flex: none; border-radius: 50%;
+  background: var(--warm-gradient); color: var(--coral-ink); font-size: 14px; }
+.steps li + li::before { content: ""; position: absolute; left: calc(-1 * var(--s2)); top: 30px; width: var(--s2); height: 2px; background: rgba(242, 120, 92, 0.6); }
+.steps p { margin: 0 0 6px; font-size: 15px; }
+.fn { display: inline-block; min-width: 18px; padding: 0 3px; margin-left: 1px; border: 0; border-radius: 4px; background: rgba(255, 179, 71, 0.14);
+  color: var(--sunset); font-size: 11px; font-weight: var(--fw-semibold); line-height: 16px; vertical-align: super; cursor: pointer; }
+.fn:hover, .fn[aria-expanded="true"] { background: rgba(255, 179, 71, 0.3); }
+.fn-pop { position: fixed; z-index: 40; max-width: min(340px, calc(100vw - 24px)); padding: var(--s2); font-size: 14px; line-height: 1.45;
+  border-radius: var(--radius-small); border: 1px solid var(--glass-border); background: var(--glass-menu); box-shadow: var(--shadow); }
+.fn-pop .t { font-weight: var(--fw-semibold); margin-bottom: 4px; }
+.fn-pop .d { color: var(--text-muted); font-size: 13px; margin-bottom: 6px; }
+.fn-pop q { display: block; margin-bottom: 8px; }
+.sources { padding: var(--s2) var(--s3); margin-top: var(--s2); font-size: 14px; }
+.sources h4 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); }
+.sources ol { margin: 0; padding-left: var(--s3); }
+.sources li { margin-bottom: 4px; color: var(--text-muted); }
+.sources li a { color: var(--text); }
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse-dot::after, .warm-water, .warm-core, .waves svg { animation: none !important; }
+  .gauge .fill, .gauge .needle { transition: none !important; }
+}
+@media (max-width: 720px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .plan-top { grid-template-columns: 1fr; }
+  .gauge { margin: 0 auto; }
+  .steps { grid-template-columns: 1fr; gap: var(--s1); }
+  .steps li { margin-left: var(--s3); }
+  .steps li + li::before { left: -17px; top: -9px; width: 2px; height: 10px; }
+  .steps li::after { content: ""; position: absolute; left: -21px; top: 22px; width: 10px; height: 10px; border-radius: 50%; background: var(--coral); }
+  .waves { height: 40px; }
 }

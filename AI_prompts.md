@@ -294,3 +294,36 @@ If the example plans' numbers would change, rerun all six examples (same codes) 
 ## Prompt 27 — Commit 2023 data
 
 `Commit the working tree changes with a sensible message.`
+
+## Prompt 28 — Livelier El Niño-themed start screen and plan view
+
+```
+Make Pirca's start screen and plan view more lively and informative, with an El Niño theme, while keeping it professional and readable. All motion is subtle, smooth on phones, and turns off when prefers-reduced-motion is set. No sounds or characters.
+
+Colors (update the CSS variables):
+- Background: gradient from deep navy #0B1726 to deep sea-teal #0E3B4A, so it feels like ocean.
+- Warm accent: coral-to-sunset gradient #F2785C → #FFB347 for main buttons, the hero headline highlight, and the risk gauge.
+- Safe/low risk and ✓ badges: brighter teal #2EC4B6. Keep text colors and contrast (WCAG AA) as they are.
+
+Start screen:
+1. Hero: a stylized SVG of the eastern Pacific and Peru's coastline with Piura marked. A coral "warm water" shape slowly spreads from the west toward the Peruvian coast and pulses gently, like ENFEN sea-temperature maps. Caption: "El Niño costero: unusually warm sea water off Peru brings heavy rain to Piura" (both languages).
+2. Animated waves (2–3 layered SVG waves, slow) along the bottom of the hero.
+3. ENFEN status chip: "ENFEN: <current status>" with a pulsing dot and the communiqué ID and date, read from data/enfen/index.json (never hard-coded). Show it on the plan view too.
+4. Change "Answer 5 short questions" to "Answer 5 short sections" (and the Spanish equivalent).
+
+Plan view:
+5. A half-circle risk gauge that animates to the plan's level (Alto/Medio/Bajo), and the three key amounts count up from 0 when the plan opens.
+6. Safety badges under the plan code on every plan: "Every number from code ✓", "Sources checked ✓", "Within your budget ✓", "No evacuation orders ✓", "Suspicious text: none found" (or a warning if any was found), from the plan's saved verification results, in both languages.
+7. "What to do and when" as a 4-step timeline (Now → On ENFEN alert → During flooding → After): horizontal on desktop, vertical on phone, with the same text as today.
+8. Citations: don't show raw source IDs like [CAT-05] or [HIST-2017-30] to the owner. Replace each citation with a small numbered footnote (¹ ² ³). Tapping or hovering a footnote shows a small popup with the source in plain words: its title, date, the fact or quote, and a link (from the data files). Add a short "Fuentes / Sources" list at the bottom of the plan, numbered the same way. Keep the IDs unchanged in the saved plan, in verify_draft, and in the trace, so the checks still work. Both languages.
+
+Check in the browser on the start screen and on PIU-CAST26 at desktop and phone sizes, in both languages and currencies: no console errors, text readable, footnote popups work on tap. Save screenshots (hero, plan with gauge, badges, timeline, an open footnote popup) to output/screenshots/.
+```
+
+## Prompt 29 — Open the app
+
+`open please`
+
+## Prompt 30 — Commit the El Niño theme
+
+`commit`

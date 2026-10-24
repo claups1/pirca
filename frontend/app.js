@@ -15,7 +15,13 @@ const STR = {
     fact1: "Official sources", fact1b: "ENFEN, INDECI, BCRP and Piura's flood records, with every number cited.",
     fact2: "Four AI agents", fact2b: "An analyst, a planner and a critic check each other before you see the plan.",
     fact3: "Within your means", fact3b: "Pirca never recommends spending money you don't have.",
-    howTitle: "How it works", how: ["Answer 5 short questions", "Four agents check the facts", "Get your plan"],
+    howTitle: "How it works", how: ["Answer 5 short sections", "Four agents check the facts", "Get your plan"],
+    communique: "Communiqué", mapTitle: "Map of the eastern Pacific and Peru's coast with Piura marked",
+    mapCaption: "El Niño costero: unusually warm sea water off Peru brings heavy rain to Piura.",
+    source: "Source", viewSource: "View source", sourcesTitle: "Sources", checksTitle: "Safety checks",
+    badgeNumbers: "Every number from code", badgeSources: "Sources checked", badgeBudget: "Within your budget",
+    badgeEvacuation: "No evacuation orders", badgeSuspiciousNone: "Suspicious text: none found",
+    badgeSuspiciousFound: (n) => `Suspicious text found and ignored: ${n}`,
     formTitle: "Tell us about your shop", formIntro: "Five short groups. Amounts are in soles. Your answers stay with your plan code.",
     useSample: "Fill with a sample shop", addSupplier: "+ Add supplier", remove: "Remove",
     checkAnswers: "Check my answers", checking: "Checking…", fixAnswers: "Fix my answers", confirmRun: "Confirm and make my plan",
@@ -59,7 +65,13 @@ const STR = {
     fact1: "Fuentes oficiales", fact1b: "ENFEN, INDECI, BCRP y los registros de inundaciones de Piura, con cada número citado.",
     fact2: "Cuatro agentes de IA", fact2b: "Un analista, un planificador y un revisor se controlan entre sí antes de que veas el plan.",
     fact3: "Según tu dinero", fact3b: "Pirca nunca te recomienda gastar dinero que no tienes.",
-    howTitle: "Cómo funciona", how: ["Responde 5 preguntas cortas", "Cuatro agentes revisan los datos", "Recibe tu plan"],
+    howTitle: "Cómo funciona", how: ["Responde 5 secciones cortas", "Cuatro agentes revisan los datos", "Recibe tu plan"],
+    communique: "Comunicado", mapTitle: "Mapa del Pacífico oriental y la costa del Perú con Piura marcada",
+    mapCaption: "El Niño costero: el mar frente al Perú se calienta más de lo normal y trae lluvias fuertes a Piura.",
+    source: "Fuente", viewSource: "Ver fuente", sourcesTitle: "Fuentes", checksTitle: "Controles de seguridad",
+    badgeNumbers: "Cada número viene del código", badgeSources: "Fuentes revisadas", badgeBudget: "Dentro de tu presupuesto",
+    badgeEvacuation: "Sin órdenes de evacuación", badgeSuspiciousNone: "Texto sospechoso: no se encontró",
+    badgeSuspiciousFound: (n) => `Texto sospechoso detectado e ignorado: ${n}`,
     formTitle: "Cuéntanos sobre tu negocio", formIntro: "Cinco grupos cortos. Los montos van en soles. Tus respuestas quedan con el código de tu plan.",
     useSample: "Llenar con un negocio de ejemplo", addSupplier: "+ Agregar proveedor", remove: "Quitar",
     checkAnswers: "Revisar mis respuestas", checking: "Revisando…", fixAnswers: "Corregir mis respuestas", confirmRun: "Confirmar y hacer mi plan",
@@ -296,17 +308,101 @@ async function route() {
   window.scrollTo(0, 0);
 }
 
+// ------------------------------------------------------------------ El Niño theme helpers
+
+const REDUCED_MOTION = window.matchMedia("(prefers-reduced-motion: reduce)");
+const ENFEN_STATUS_EN = {
+  "Alerta de El Niño Costero": "Coastal El Niño Alert", "Vigilancia de El Niño Costero": "Coastal El Niño Watch",
+  "Alerta de La Niña Costera": "Coastal La Niña Alert", "Vigilancia de La Niña Costera": "Coastal La Niña Watch",
+  "No Activo": "Not active",
+};
+
+function shortDate(iso) {
+  if (!iso) return "";
+  if (/^\d{4}$/.test(iso)) return iso;
+  const d = new Date(`${iso}T00:00:00`);
+  return Number.isNaN(d.getTime()) ? iso : d.toLocaleDateString(store.lang, { day: "numeric", month: "short", year: "numeric" });
+}
+
+// Current ENFEN status, read from data/enfen/index.json through /api/meta (never hard-coded).
+function enfenChip() {
+  const e = state.meta.enfen;
+  if (!e) return "";
+  const status = store.lang === "en" ? (ENFEN_STATUS_EN[e.status] || e.status) : e.status;
+  return `<a class="enfen-chip" href="${esc(e.source_url)}" target="_blank" rel="noopener noreferrer">
+    <span class="pulse-dot" aria-hidden="true"></span><span>ENFEN: <b>${esc(status)}</b></span>
+    <span class="meta">${esc(t("communique"))} N° ${esc(e.number)} · ${esc(shortDate(e.date))}</span></a>`;
+}
+
+// Stylized eastern Pacific: longitude -95..-68, latitude 3..-20 projected onto a 400 x 300 box.
+const px = (lon) => ((lon + 95) / 27) * 400;
+const py = (lat) => ((3 - lat) / 23) * 300;
+const COAST = [[-77.6, 3], [-78.9, 1.6], [-79.65, 0.97], [-80.9, -1.05], [-80.95, -2.2], [-80.2, -2.7], [-79.9, -3.0],
+  [-80.45, -3.57], [-81.05, -4.1], [-81.27, -4.58], [-81.11, -5.09], [-80.85, -5.55], [-81.18, -5.79], [-80.0, -6.5],
+  [-79.94, -6.84], [-79.57, -7.4], [-79.04, -8.11], [-78.6, -9.07], [-78.15, -10.07], [-77.61, -11.11], [-77.14, -12.05],
+  [-76.22, -13.71], [-76.3, -13.85], [-75.15, -15.36], [-73.7, -16.2], [-72.7, -16.62], [-71.34, -17.64], [-70.32, -18.48],
+  [-70.2, -20]];
+
+function mapSvg() {
+  const land = COAST.map(([lon, lat]) => `${px(lon).toFixed(1)},${py(lat).toFixed(1)}`).join(" ");
+  const ocean = store.lang === "es" ? "Océano Pacífico" : "Pacific Ocean";
+  return `<svg viewBox="0 0 400 300" role="img" aria-labelledby="map-title">
+    <title id="map-title">${esc(t("mapTitle"))}</title>
+    <defs>
+      <radialGradient id="warm-g" cx="65%" cy="50%" r="60%">
+        <stop offset="0%" stop-color="#FFB347" stop-opacity="0.7"/><stop offset="45%" stop-color="#F2785C" stop-opacity="0.45"/>
+        <stop offset="100%" stop-color="#F2785C" stop-opacity="0"/></radialGradient>
+      <linearGradient id="sea-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0E2A3D"/><stop offset="100%" stop-color="#0E3B4A"/></linearGradient>
+    </defs>
+    <rect width="400" height="300" fill="url(#sea-g)"/>
+    <g class="warm-water"><ellipse cx="${px(-85.5)}" cy="${py(-5)}" rx="88" ry="58" fill="url(#warm-g)"/>
+      <ellipse class="warm-core" cx="${px(-83)}" cy="${py(-5.2)}" rx="30" ry="20" fill="url(#warm-g)" opacity="0.6"/></g>
+    <rect class="map-box" x="${px(-90)}" y="${py(0)}" width="${px(-80) - px(-90)}" height="${py(-10) - py(0)}"/>
+    <text class="map-label" x="${px(-89.6)}" y="${py(0) + 14}">Niño 1+2</text>
+    <polygon class="map-land" points="${land} 400,${py(-20)} 400,0 ${px(-77.6)},0"/>
+    <text class="map-label" x="${px(-78.8)}" y="${py(-1.8)}">ECUADOR</text>
+    <text class="map-label strong" x="${px(-76)}" y="${py(-9.5)}">${store.lang === "es" ? "PERÚ" : "PERU"}</text>
+    <text class="map-label" x="${px(-93.5)}" y="${py(-15)}">${esc(ocean)}</text>
+    <circle class="piura-dot" cx="${px(-80.63)}" cy="${py(-5.19)}" r="5"/>
+    <text class="map-label strong" x="${px(-80.63) + 9}" y="${py(-5.19) + 4}">Piura</text>
+  </svg>`;
+}
+
+function wavePath(amplitude, base) {
+  // 8 periods across 2880 units; the SVG is 200% wide and slides by half for a seamless loop.
+  let d = `M0 ${base}`;
+  for (let i = 0; i < 8; i += 1) {
+    const x = i * 360;
+    d += ` C${x + 90} ${base - amplitude} ${x + 270} ${base + amplitude} ${x + 360} ${base}`;
+  }
+  return `${d} V80 H0 Z`;
+}
+
+function wavesSvg() {
+  const layers = [["w3", 10, 40, "#2EC4B6"], ["w2", 8, 48, "#1E3A5F"], ["w1", 6, 56, "#2EC4B6"]];
+  return `<div class="waves" aria-hidden="true">${layers.map(([cls, amp, base, color]) =>
+    `<svg class="${cls}" viewBox="0 0 2880 80" preserveAspectRatio="none"><path d="${wavePath(amp, base)}" fill="${color}"/></svg>`).join("")}</div>`;
+}
+
 // ------------------------------------------------------------------ home
 
 function renderHome() {
+  const title = esc(t("heroTitle")).replace("El Niño costero", '<span class="warm-text">El Niño costero</span>');
   app.innerHTML = `
     <section class="hero glass">
-      <h1>${esc(t("heroTitle"))}</h1>
-      <p>${esc(t("heroText"))}</p>
-      <div class="btn-row">
-        <a class="btn btn-primary" href="#/new">${esc(t("makePlan"))}</a>
-        <a class="btn" href="#/plan/${esc(state.meta.example_code)}">${esc(t("openExample"))}</a>
+      <div class="hero-grid">
+        <div>
+          ${enfenChip()}
+          <h1>${title}</h1>
+          <p>${esc(t("heroText"))}</p>
+          <div class="btn-row">
+            <a class="btn btn-primary" href="#/new">${esc(t("makePlan"))}</a>
+            <a class="btn" href="#/plan/${esc(state.meta.example_code)}">${esc(t("openExample"))}</a>
+          </div>
+        </div>
+        <figure class="map-figure">${mapSvg()}<figcaption>${esc(t("mapCaption"))}</figcaption></figure>
       </div>
+      ${wavesSvg()}
     </section>
     <div class="facts-strip">
       ${[1, 2, 3].map((i) => `<div class="glass"><b>${esc(t("fact" + i))}</b><span class="muted small">${esc(t("fact" + i + "b"))}</span></div>`).join("")}
@@ -623,37 +719,214 @@ function startReplay(code, data) {
 
 // ------------------------------------------------------------------ plan view
 
-function inline(text) {
+// Citations stay as raw IDs in the saved plan, verify_draft and the trace; only the display turns
+// them into numbered footnotes. fn = { order: [ids], details: {id: {...}} }.
+function footnote(id, fn) {
+  let n = fn.order.indexOf(id) + 1;
+  if (!n) { fn.order.push(id); n = fn.order.length; }
+  return `<button type="button" class="fn" data-id="${esc(id)}" aria-expanded="false" aria-label="${esc(t("source"))} ${n}">${n}</button>`;
+}
+
+function inline(text, fn) {
   let s = esc(text);
-  s = s.replace(/\\\*/g, "&#42;");                                           // escaped asterisk (footnote)
+  s = s.replace(/\\\*/g, "&#42;");                                           // escaped asterisk (footnote line)
   s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
   s = s.replace(/(^|\s)_([^_]+)_(?=\s|$|[.,;:])/g, "$1<em>$2</em>");
-  s = s.replace(/\[((?:HIST|CAT|ENFEN|BCRP)-[A-Z0-9-]+(?:,\s*(?:HIST|CAT|ENFEN|BCRP)-[A-Z0-9-]+)*)\]/g,
-                '<span class="cite" title="Source">[$1]</span>');
+  s = s.replace(/\s*\[((?:HIST|CAT|ENFEN|BCRP)-[A-Z0-9-]+(?:,\s*(?:HIST|CAT|ENFEN|BCRP)-[A-Z0-9-]+)*)\]/g,
+    (_, ids) => (fn ? ids.split(/,\s*/).map((id) => footnote(id, fn)).join("") : ""));
   return s;
 }
 
-function renderMarkdown(md) {
+// "What to do and when": group the bullets of section 2 into the four moments.
+const PHASE_TESTS = [/^(ahora|now|antes|before|today|hoy)/i, /(durante|during)/i, /(despu[eé]s|after)/i, /(alerta|alert|aviso|warning)/i];
+const PHASE_INDEX = [0, 2, 3, 1];
+const PHASE_NAMES = { es: ["Ahora", "Ante una alerta del ENFEN", "Durante la inundación", "Después"],
+                      en: ["Now", "On an ENFEN alert", "During flooding", "After"] };
+
+function phaseOf(label) {
+  for (let i = 0; i < PHASE_TESTS.length; i += 1) if (PHASE_TESTS[i].test(label.trim())) return PHASE_INDEX[i];
+  return -1;
+}
+
+function renderSteps(items, lang, fn) {
+  const phases = [0, 1, 2, 3].map(() => ({ label: null, parts: [] }));
+  let current = 0;
+  let labelled = 0;
+  items.forEach((raw) => {
+    const plain = raw.replace(/^\*\*(.+?)\*\*/, "$1");
+    const m = plain.match(/^([^:]{2,60}):\s*([\s\S]*)$/);
+    const phase = m ? phaseOf(m[1].replace(/\*/g, "")) : -1;
+    if (phase >= 0) {
+      current = phase; labelled += 1;
+      phases[phase].label = phases[phase].label || m[1].replace(/\*/g, "").trim();
+      phases[phase].parts.push(m[2]);
+    } else {
+      phases[current].parts.push(raw);
+    }
+  });
+  if (!labelled) return `<ul>${items.map((i) => `<li>${inline(i, fn)}</li>`).join("")}</ul>`;
+  return `<ol class="steps">${phases.map((p, i) => `<li>
+      <div class="step-head"><span class="num">${i + 1}</span>${esc(p.label || PHASE_NAMES[lang][i])}</div>
+      ${p.parts.length ? p.parts.map((x) => `<p>${inline(x, fn)}</p>`).join("") : '<p class="muted">—</p>'}
+    </li>`).join("")}</ol>`;
+}
+
+function renderMarkdown(md, fn, lang) {
   const out = [];
   let list = false;
+  let section = null;
+  let stepItems = null;
   const close = () => { if (list) { out.push("</ul>"); list = false; } };
-  const lines = md.replace(/\r/g, "").split("\n");
-  lines.forEach((raw) => {
+  const flushSteps = () => { if (stepItems) { out.push(renderSteps(stepItems, lang, fn)); stepItems = null; } };
+  md.replace(/\r/g, "").split("\n").forEach((raw) => {
     const line = raw.trimEnd();
+    if (/^#{1,6}\s/.test(line)) {
+      close(); flushSteps();
+      const heading = line.replace(/^#{1,6}\s+/, "");
+      section = (heading.match(/^(\d+)[.)]/) || [])[1] || null;
+      out.push(`<h3>${inline(heading, fn)}</h3>`);
+      if (section === "2") stepItems = [];
+      return;
+    }
     if (!line.trim()) { close(); return; }
-    if (/^#{1,6}\s/.test(line)) { close(); out.push(`<h3>${inline(line.replace(/^#{1,6}\s+/, ""))}</h3>`); return; }
-    if (/^>\s?/.test(line)) { close(); out.push(`<div class="notice warning-banner">${inline(line.replace(/^>\s?/, ""))}</div>`); return; }
-    if (/^\s*[-+]\s+/.test(line) || /^\s*\*\s+/.test(line)) {
+    const bullet = line.match(/^\s*[-+*]\s+(.*)$/);
+    if (stepItems && bullet) { stepItems.push(bullet[1]); return; }
+    if (stepItems) { flushSteps(); }
+    if (/^>\s?/.test(line)) { close(); out.push(`<div class="notice warning-banner">${inline(line.replace(/^>\s?/, ""), fn)}</div>`); return; }
+    if (bullet) {
       if (!list) { out.push("<ul>"); list = true; }
-      out.push(`<li>${inline(line.replace(/^\s*[-+*]\s+/, ""))}</li>`); return;
+      out.push(`<li>${inline(bullet[1], fn)}</li>`); return;
     }
     close();
-    if (/^\\\*/.test(line)) { out.push(`<p class="footnote">${inline(line)}</p>`); return; }
-    if (/^_.*_$/.test(line)) { out.push(`<div class="disclaimer">${inline(line)}</div>`); return; }
-    out.push(`<p>${inline(line)}</p>`);
+    if (/^\\\*/.test(line)) { out.push(`<p class="footnote">${inline(line, fn)}</p>`); return; }
+    if (/^_.*_$/.test(line)) { out.push(`<div class="disclaimer">${inline(line, fn)}</div>`); return; }
+    out.push(`<p>${inline(line, fn)}</p>`);
   });
-  close();
+  close(); flushSteps();
   return out.join("\n");
+}
+
+// ---- footnote popup (hover with a mouse, tap or click to pin)
+const fnPop = document.createElement("div");
+fnPop.className = "fn-pop";
+fnPop.hidden = true;
+fnPop.setAttribute("role", "tooltip");
+document.body.appendChild(fnPop);
+let fnPinned = null;
+
+function sourceTitle(d) { return typeof d.title === "object" ? (d.title[store.lang] || d.title.en) : d.title; }
+
+function showFootnote(btn) {
+  const id = btn.dataset.id;
+  const d = (state.view?.sourceDetails || {})[id];
+  fnPop.innerHTML = d ? `<div class="t">${esc(sourceTitle(d))}</div>
+      ${d.date ? `<div class="d">${esc(shortDate(d.date))}</div>` : ""}
+      <q>${esc(store.lang === "es" ? d.fact_es : d.fact_en)}</q>
+      ${d.url ? `<a href="${esc(d.url)}" target="_blank" rel="noopener noreferrer">${esc(t("viewSource"))} ↗</a>` : ""}`
+    : `<div class="t">${esc(id)}</div>`;
+  fnPop.hidden = false;
+  const r = btn.getBoundingClientRect();
+  const w = fnPop.offsetWidth, h = fnPop.offsetHeight;
+  const left = Math.min(Math.max(12, r.left - 24), window.innerWidth - w - 12);
+  const below = r.bottom + 8 + h < window.innerHeight;
+  fnPop.style.left = `${left}px`;
+  fnPop.style.top = `${below ? r.bottom + 8 : Math.max(12, r.top - h - 8)}px`;
+  document.querySelectorAll(".fn[aria-expanded='true']").forEach((b) => b.setAttribute("aria-expanded", "false"));
+  btn.setAttribute("aria-expanded", "true");
+}
+function hideFootnote() {
+  fnPop.hidden = true; fnPinned = null;
+  document.querySelectorAll(".fn[aria-expanded='true']").forEach((b) => b.setAttribute("aria-expanded", "false"));
+}
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest(".fn");
+  if (btn) { e.preventDefault(); if (fnPinned === btn) hideFootnote(); else { showFootnote(btn); fnPinned = btn; } return; }
+  if (!fnPop.contains(e.target)) hideFootnote();
+});
+document.addEventListener("pointerover", (e) => {
+  const btn = e.target.closest?.(".fn");
+  if (btn && e.pointerType === "mouse" && !fnPinned) showFootnote(btn);
+});
+document.addEventListener("pointerout", (e) => {
+  if (e.target.closest?.(".fn") && e.pointerType === "mouse" && !fnPinned) hideFootnote();
+});
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") hideFootnote(); });
+window.addEventListener("scroll", () => { if (!fnPop.hidden) hideFootnote(); }, { passive: true });
+
+// ---- gauge, badges, count-up
+const GAUGE_FRACTION = { low: 0.2, medium: 0.5, high: 0.85 };
+const ARC = Math.PI * 80;
+
+function gaugeSvg(level) {
+  const word = level ? t("risk" + level[0].toUpperCase() + level.slice(1)) : "—";
+  return `<div class="gauge" role="img" aria-label="${esc(t("risk"))}: ${esc(word)}">
+    <svg viewBox="0 0 200 112">
+      <defs><linearGradient id="gauge-g" x1="0" x2="1" y1="0" y2="0"><stop offset="0%" stop-color="#FFB347"/><stop offset="100%" stop-color="#F2785C"/></linearGradient></defs>
+      <path class="track" d="M20 100 A80 80 0 0 1 180 100" fill="none" stroke-width="14" stroke-linecap="round"/>
+      <path class="fill" d="M20 100 A80 80 0 0 1 180 100" fill="none" stroke="url(#gauge-g)" stroke-width="14" stroke-linecap="round"
+            stroke-dasharray="${ARC.toFixed(1)}" stroke-dashoffset="${ARC.toFixed(1)}"/>
+      <g class="needle" style="transform: rotate(-90deg)"><line x1="100" y1="100" x2="100" y2="34" stroke="#E8EEF5" stroke-width="3" stroke-linecap="round"/></g>
+      <circle cx="100" cy="100" r="7" fill="#E8EEF5"/>
+    </svg>
+    <div class="level ${level ? "risk-" + esc(level) : ""}">${esc(word)}<span>${esc(t("risk"))}</span></div>
+  </div>`;
+}
+
+function animateGauge(level) {
+  const frac = GAUGE_FRACTION[level];
+  if (frac === undefined) return;
+  const fill = app.querySelector(".gauge .fill");
+  const needle = app.querySelector(".gauge .needle");
+  // A short timer (not requestAnimationFrame, which pauses in hidden tabs) so the gauge always reaches its level.
+  later(() => {
+    if (fill) fill.style.strokeDashoffset = (ARC * (1 - frac)).toFixed(1);
+    if (needle) needle.style.transform = `rotate(${-90 + 180 * frac}deg)`;
+  }, 60);
+}
+
+function countUp(animate) {
+  app.querySelectorAll("[data-count]").forEach((el) => {
+    const value = Number(el.dataset.count);
+    if (!animate || REDUCED_MOTION.matches || document.hidden || !value) { el.textContent = money(value); return; }
+    later(() => { el.textContent = money(value); }, 1000);  // guarantee the final amount even if frames are paused
+    const start = performance.now();
+    const step = (now) => {
+      const p = Math.min(1, (now - start) / 900);
+      el.textContent = money(value * (1 - Math.pow(1 - p, 3)));
+      if (p < 1) requestAnimationFrame(step);
+      else el.textContent = money(value);
+    };
+    requestAnimationFrame(step);
+  });
+}
+
+const NUMBER_ISSUES = ["raw_number", "unknown_fact_key", "invalid_placeholder", "unit_next_to_placeholder"];
+
+function badgesFor(r) {
+  const issues = r.verification?.issues || [];
+  const has = (type) => issues.some((i) => i.type === type);
+  const outputs = r.worker_outputs || {};
+  const suspicious = [r.suspicious_content, outputs.analysis?.suspicious_content, outputs.draft?.suspicious_content,
+                      outputs.critique?.suspicious_content].flat().filter(Boolean);
+  const evacuation = issues.some((i) => i.type === "forbidden_content" && /evacuat/i.test(i.detail || ""));
+  const budgetOk = r.affordability ? r.affordability.within_cash : !has("spending_exceeds_cash");
+  return [
+    { ok: !NUMBER_ISSUES.some(has), text: t("badgeNumbers") },
+    { ok: !has("unknown_source_id"), text: t("badgeSources") },
+    { ok: budgetOk, text: t("badgeBudget") },
+    { ok: !evacuation, text: t("badgeEvacuation") },
+    { ok: !suspicious.length, text: suspicious.length ? STR[store.lang].badgeSuspiciousFound(suspicious.length) : t("badgeSuspiciousNone") },
+  ];
+}
+
+function sourcesListHtml(fn) {
+  if (!fn.order.length) return "";
+  return `<section class="sources glass" aria-labelledby="sources-title"><h4 id="sources-title">${esc(t("sourcesTitle"))}</h4><ol>
+    ${fn.order.map((id) => {
+      const d = fn.details[id];
+      if (!d) return `<li>${esc(id)}</li>`;
+      return `<li>${d.url ? `<a href="${esc(d.url)}" target="_blank" rel="noopener noreferrer">${esc(sourceTitle(d))}</a>` : esc(sourceTitle(d))}${d.date ? ` · ${esc(shortDate(d.date))}` : ""}</li>`;
+    }).join("")}</ol></section>`;
 }
 
 function usageRow(label, u) {
@@ -663,38 +936,46 @@ function usageRow(label, u) {
 
 function renderPlanView(code, data) {
   clearTimers();
+  hideFootnote();
   const r = data.result;
   const original = r.language || "es";
   const other = original === "es" ? "en" : "es";
-  const view = state.view?.code === code ? state.view : { code, showing: original };
+  const view = state.view?.code === code ? state.view : { code, showing: original, counted: false };
   state.view = view;
+  view.sourceDetails = r.source_details || {};
   view.rerender = () => renderPlanView(code, data);
   const showing = view.showing;
   const translation = showing === original ? null : r.translations?.[showing];
   const planText = translation ? translation.plan[store.currency] : r.plan[store.currency];
   const f = r.facts || {};
-  const level = r.risk_level;
-  const levelWord = level ? t("risk" + level[0].toUpperCase() + level.slice(1)) : null;
   const tr = r.translations || {};
   const toggleLabel = showing === "es" ? STR.en.viewIn : STR.es.viewIn;
+  const fn = { order: [], details: view.sourceDetails };
+  const body = renderMarkdown(planText, fn, showing);
 
   app.innerHTML = `
-    <div class="plan-head glass">
-      <div><span class="muted small">${esc(t("planCode"))}</span><div class="plan-code">${esc(code)}</div></div>
-      ${level ? `<span class="badge risk-${esc(level)}">${esc(t("risk"))}: ${esc(levelWord)}</span>` : ""}
+    <section class="plan-top glass">
+      <div>
+        <span class="muted small">${esc(t("planCode"))}</span><div class="plan-code">${esc(code)}</div>
+        <div style="margin-top:12px">${enfenChip()}</div>
+        <ul class="badges" aria-label="${esc(t("checksTitle"))}">${badgesFor(r).map((b) =>
+          `<li class="${b.ok ? "" : "warn"}"><span class="icon" aria-hidden="true">${b.ok ? "✓" : "⚠"}</span>${esc(b.text)}</li>`).join("")}</ul>
+      </div>
+      ${gaugeSvg(r.risk_level)}
       <div class="btn-row">
         <button class="btn" type="button" id="translate-btn" lang="${showing === "es" ? "en" : "es"}">${esc(toggleLabel)}</button>
         <button class="btn" type="button" id="replay-btn">${esc(t("replay"))}</button>
       </div>
-    </div>
+    </section>
     <div class="key-numbers">
-      <div class="glass accent"><span>${esc(t("stockAtRisk"))}</span><b>${esc(money(f.stock_at_risk))}</b></div>
-      <div class="glass accent"><span>${esc(t("fundGap"))}</span><b>${esc(money(f.cash_gap))}</b></div>
-      <div class="glass"><span>${esc(t("purchases"))}</span><b>${esc(money(f.total_cost))}</b></div>
+      <div class="glass accent"><span>${esc(t("stockAtRisk"))}</span><b data-count="${Number(f.stock_at_risk || 0)}">${esc(money(0))}</b></div>
+      <div class="glass accent"><span>${esc(t("fundGap"))}</span><b data-count="${Number(f.cash_gap || 0)}">${esc(money(0))}</b></div>
+      <div class="glass"><span>${esc(t("purchases"))}</span><b data-count="${Number(f.total_cost || 0)}">${esc(money(0))}</b></div>
     </div>
     ${store.lang === "en" && showing === "es" && r.summary_en ? `<section class="summary glass" lang="en"><h4>${esc(t("summaryTitle"))}</h4><p style="margin:0">${esc(r.summary_en)}</p></section>` : ""}
     ${translation && !translation.verification?.ok ? `<div class="notice glass-read" role="note">${esc(t("translationWarn"))}</div>` : ""}
-    <article class="plan-body glass-read" lang="${showing}">${renderMarkdown(planText)}</article>
+    <article class="plan-body glass-read" lang="${showing}">${body}</article>
+    ${sourcesListHtml(fn)}
     <section class="usage glass" style="margin-top:16px">
       <h4 style="font-size:13px;text-transform:uppercase;letter-spacing:.06em">${esc(t("usageTitle"))}</h4>
       <table><thead><tr><th>${esc(t("row"))}</th><th>${esc(t("calls"))}</th><th>${esc(t("input"))}</th><th>${esc(t("cached"))}</th><th>${esc(t("output"))}</th><th>USD</th></tr></thead>
@@ -702,6 +983,9 @@ function renderPlanView(code, data) {
       ${store.currency === "usd" ? `<p class="small" style="margin:8px 0 0">${esc(STR[store.lang].fxNote(state.meta.pen_per_usd, state.meta.fx_date))}</p>` : ""}
     </section>`;
 
+  countUp(!view.counted);
+  view.counted = true;
+  animateGauge(r.risk_level);
   document.getElementById("replay-btn").addEventListener("click", () => startReplay(code, data));
   document.getElementById("translate-btn").addEventListener("click", async (e) => {
     const target = showing === original ? other : original;
@@ -710,6 +994,9 @@ function renderPlanView(code, data) {
       try {
         const res = await api(`/api/plans/${code}/translate`, { method: "POST" });
         r.translations = { ...(r.translations || {}), [res.language]: res };
+        // New citations may appear in the translation; refresh the source details.
+        const fresh = await api(`/api/plans/${code}?after=999999`);
+        r.source_details = fresh.result?.source_details || r.source_details;
       } catch (err) { console.warn(err); e.target.disabled = false; e.target.textContent = toggleLabel; return; }
     }
     view.showing = target;

@@ -15,6 +15,7 @@ from backend import config
 from backend.api import plans
 from backend.api.routes import router
 from backend.tools import data_store, validate_profile
+from backend.tools.source_info import latest_enfen
 
 app = FastAPI(title="Pirca", description="El Niño costero preparation plans for small shops in Piura")
 app.include_router(router)
@@ -45,7 +46,7 @@ def meta() -> dict:
                  for d in data_store.districts().values()]
     actions = [{"id": a["id"], "name_es": a["name_es"], "name_en": a["name_en"]} for a in data_store.action_catalog()]
     fx = data_store.exchange_rate()
-    return {"districts": districts, "actions": actions, "example_code": EXAMPLE_CODE,
+    return {"districts": districts, "actions": actions, "example_code": EXAMPLE_CODE, "enfen": latest_enfen(),
             "pen_per_usd": fx["pen_per_usd"], "fx_date": fx["date"], "model": config.MODEL_NAME}
 
 

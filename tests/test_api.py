@@ -230,3 +230,22 @@ def test_finished_plan_includes_deterministic_risk_level(api):
     code = api.client.post("/api/plans", json={"profile": PROFILE}).json()["code"]
     finish(api, code)
     assert api.client.get(f"/api/plans/{code}").json()["result"]["risk_level"] == "high"
+
+
+def test_meta_enfen_status_comes_from_the_index_file():
+    import json as _json
+    from backend import config
+    index = _json.loads((config.DATA_DIR / "enfen" / "index.json").read_text(encoding="utf-8"))["communiques"]
+    latest = max(index, key=lambda c: c["date"])
+    e = TestClient(app).get("/api/meta").json()["enfen"]
+    assert e["id"] == latest["id"] and e["date"] == latest["date"] and e["status"] == latest["status"]
+
+
+def test_example_plan_has_details_for_every_cited_source():
+    from backend.tools.source_info import cited_ids
+    body = TestClient(app).get("/api/plans/PIU-CAST26").json()["result"]
+    ids = cited_ids(body["plan_template"])
+    assert ids and set(ids) == set(body["source_details"])
+    for d in body["source_details"].values():
+        assert d["title"] and d["url"].startswith("https://") and (d["fact_en"] or d["fact_es"])
+    assert "[HIST-" in body["plan_template"]  # the saved plan keeps the raw IDs
