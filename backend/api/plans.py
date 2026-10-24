@@ -8,6 +8,7 @@ import json
 import re
 import secrets
 import threading
+import time
 from collections import Counter, defaultdict
 from dataclasses import dataclass, field
 from datetime import date, datetime, timezone
@@ -76,7 +77,7 @@ def write_plan(path: Path, data: dict) -> None:
 def plan_record(code: str, form: dict, language: str, result: dict) -> dict:
     """The saved file: run_plan's result (same as output/sample_run.json) plus who/when/translations."""
     return {"code": code, "created_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-            "form": form, "language": language, **result, "translations": {}}
+            "form": form, "language": language, **result, "translations": result.get("translations", {})}
 
 
 def status_of(record: dict) -> str:
@@ -109,6 +110,7 @@ def _run_job(job: Job) -> None:
     except Exception as e:  # never leave a job stuck in "running"
         result = {"status": "error", "message": f"{type(e).__name__}: {e}", "events": list(job.events)}
     record = plan_record(job.code, job.form, job.language, result)
+    add_translation(record, on_event=on_event)  # every finished plan is saved in both languages
     with _code_locks[job.code]:
         write_plan(plan_path(job.code), record)
     with job.lock:
@@ -178,28 +180,59 @@ def translate_plan(code: str) -> dict:
         record = json.loads(path.read_text(encoding="utf-8"))
         if status_of(record) != "done" or not record.get("plan_template"):
             raise ValueError("Only finished plans can be translated.")
-        source = record["language"]
-        target = "en" if source == "es" else "es"
+        target = other_language(record)
         cached = record.setdefault("translations", {}).get(target)
         if cached:
             return {"code": code, "language": target, "cached": True, **cached}
-
-        response = make_client().responses.create(
-            model=config.MODEL_NAME, instructions=(config.PROMPTS_DIR / "translator.md").read_text(encoding="utf-8"),
-            input=[{"role": "user", "content": f"Translate from {source} to {target}:\n\n{record['plan_template']}"}],
-            max_output_tokens=config.MAX_OUTPUT_TOKENS, reasoning={"effort": config.REASONING_EFFORT},
-        )
-        template = (getattr(response, "output_text", "") or "").strip().removeprefix("```markdown").strip("`").strip()
-        usage = usage_from_response(response).as_dict()
-
-        facts = record.get("facts", {})
-        unverified = district_level(parse_profile(record["form"])) == "UNVERIFIED"
-        issues = _translation_issues(template, record, target, unverified)
-        plan ={cur: _with_footer(fill_placeholders(template, facts, currency=cur, language=target)["text"], target)
-                for cur in ("pen", "usd")}
-        translation = {"plan_template": template, "plan": plan, "usage": usage,
-                       "verification": {"ok": not issues, "issues": issues},
-                       "created_at": datetime.now(timezone.utc).isoformat(timespec="seconds")}
-        record["translations"][target] = translation
+        translation = translate_record(record)
         write_plan(path, record)
     return {"code": code, "language": target, "cached": False, **translation}
+
+
+def other_language(record: dict) -> str:
+    return "en" if record["language"] == "es" else "es"
+
+
+def translate_record(record: dict, client=None) -> dict:
+    """One model call: translate the final plan template, check it, fill it in both currencies,
+    and store it in record["translations"][target] with its own token usage."""
+    source, target = record["language"], other_language(record)
+    response = (client or make_client()).responses.create(
+        model=config.MODEL_NAME, instructions=(config.PROMPTS_DIR / "translator.md").read_text(encoding="utf-8"),
+        input=[{"role": "user", "content": f"Translate from {source} to {target}:\n\n{record['plan_template']}"}],
+        max_output_tokens=config.MAX_OUTPUT_TOKENS, reasoning={"effort": config.REASONING_EFFORT},
+    )
+    template = (getattr(response, "output_text", "") or "").strip().removeprefix("```markdown").strip("`").strip()
+    usage = usage_from_response(response).as_dict()
+    facts = record.get("facts", {})
+    unverified = district_level(parse_profile(record["form"])) == "UNVERIFIED"
+    issues = _translation_issues(template, record, target, unverified)
+    plan = {cur: _with_footer(fill_placeholders(template, facts, currency=cur, language=target)["text"], target)
+            for cur in ("pen", "usd")}
+    translation = {"plan_template": template, "plan": plan, "usage": usage,
+                   "verification": {"ok": not issues, "issues": issues},
+                   "created_at": datetime.now(timezone.utc).isoformat(timespec="seconds")}
+    record.setdefault("translations", {})[target] = translation
+    return translation
+
+
+def add_translation(record: dict, on_event=None, client=None) -> None:
+    """After a finished run: translate into the other language so every plan has both.
+    A failure is recorded in the plan instead of losing the run."""
+    if status_of(record) != "done" or not record.get("plan_template") or record.get("translations"):
+        return
+    events = record.setdefault("events", [])
+    last = events[-1] if events else {"seq": 0, "elapsed_s": 0, "totals": {}}
+    started = time.monotonic()
+    try:
+        tr = translate_record(record, client=client)
+        detail = {"language": other_language(record), "usage": tr["usage"], "ok": tr["verification"]["ok"]}
+    except Exception as e:  # keep the plan even if the translation fails
+        record["translation_error"] = f"{type(e).__name__}: {e}"
+        detail = {"language": other_language(record), "error": record["translation_error"]}
+    event = {"seq": last.get("seq", len(events)) + 1, "type": "translation", "agent": "pirca",
+             "elapsed_s": round(last.get("elapsed_s", 0) + time.monotonic() - started, 2), **detail,
+             "totals": last.get("totals", {})}
+    events.append(event)
+    if on_event:
+        on_event(event)

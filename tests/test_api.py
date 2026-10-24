@@ -117,7 +117,8 @@ def test_create_plan_returns_code_then_runs_in_background(api):
 def test_events_after_returns_only_new_events(api):
     code = api.client.post("/api/plans", json={"profile": PROFILE}).json()["code"]
     finish(api, code)
-    assert [e["seq"] for e in api.client.get(f"/api/plans/{code}?after=1").json()["events"]] == [2]
+    events = api.client.get(f"/api/plans/{code}?after=1").json()["events"]
+    assert [e["seq"] for e in events] == [2, 3] and events[-1]["type"] == "translation"
 
 
 def test_invalid_profile_is_rejected_without_starting_a_run(api):
@@ -162,11 +163,22 @@ def test_example_plans_open_without_running_agents(api):
 
 # ---------------------------------------------------------------- translate
 
+def test_finished_plan_has_both_languages(api):
+    """Every finished run is translated automatically into the other language, with one model call."""
+    code = api.client.post("/api/plans", json={"profile": PROFILE, "language": "es"}).json()["code"]
+    finish(api, code)
+    saved = json.loads((api.dir / f"{code}.json").read_text(encoding="utf-8"))
+    assert saved["language"] == "es" and set(saved["translations"]) == {"en"}
+    assert saved["plan_template"] and saved["translations"]["en"]["plan_template"]
+    assert {"pen", "usd"} <= set(saved["plan"]) and {"pen", "usd"} <= set(saved["translations"]["en"]["plan"])
+    assert api.calls.model == 1
+
+
 def test_translation_uses_one_call_then_is_free(api):
     code = api.client.post("/api/plans", json={"profile": PROFILE, "language": "es"}).json()["code"]
     finish(api, code)
-    first = api.client.post(f"/api/plans/{code}/translate").json()
-    assert first["language"] == "en" and not first["cached"] and api.calls.model == 1
+    first = api.client.post(f"/api/plans/{code}/translate").json()  # already made at the end of the run
+    assert first["language"] == "en" and first["cached"] and api.calls.model == 1
     assert first["usage"]["model_calls"] == 1 and first["usage"]["output_tokens"] == 600
     assert first["verification"]["ok"], first["verification"]["issues"]
     assert "## 1. Your risk" in first["plan"]["pen"] and "S/ 10,000" in first["plan"]["pen"]
@@ -249,3 +261,12 @@ def test_example_plan_has_details_for_every_cited_source():
     for d in body["source_details"].values():
         assert d["title"] and d["url"].startswith("https://") and (d["fact_en"] or d["fact_es"])
     assert "[HIST-" in body["plan_template"]  # the saved plan keeps the raw IDs
+
+
+def test_every_example_plan_has_both_languages():
+    from backend import config
+    for path in sorted((config.PLANS_DIR / "examples").glob("PIU-*.json")):
+        record = json.loads(path.read_text(encoding="utf-8"))
+        other = "en" if record["language"] == "es" else "es"
+        assert other in record.get("translations", {}), path.name
+        assert record["translations"][other]["plan"]["pen"], path.name

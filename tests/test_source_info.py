@@ -26,3 +26,16 @@ def test_latest_enfen_is_the_newest_communique():
 def test_catalog_quotes_are_verbatim_without_notes():
     d = describe_sources(["CAT-14"])["CAT-14"]
     assert "pandemic context" not in d["quote"]
+
+
+def test_detail_says_which_language_each_text_is_in():
+    d = describe_sources(["CAT-05", "HIST-2017-30", "ENFEN-2026-18"])
+    assert d["CAT-05"]["lang_es"] == "en"        # Ready.gov quote stays in English
+    assert d["HIST-2017-30"]["lang_es"] == "es" and d["HIST-2017-30"]["lang_en"] == "en"
+    assert d["ENFEN-2026-18"]["lang_en"] == "es"  # ENFEN text is only in Spanish
+
+
+def test_english_summaries_are_never_marked_spanish():
+    # Spanish place names with accents must not make Pirca's own English summary look Spanish.
+    d = describe_sources(["HIST-2017-02"])["HIST-2017-02"]
+    assert "Sánchez" in d["fact_en"] and d["lang_en"] == "en"

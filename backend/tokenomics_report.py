@@ -76,6 +76,12 @@ def main() -> None:
     totals = {c: sum(u[c] for u in U) for c in cols}
     avg_cost = mean(u["cost_usd"] for u in U)
     min_cost, max_cost = min(u["cost_usd"] for u in U), max(u["cost_usd"] for u in U)
+    # Every finished plan is now translated automatically, so a plan = one agent run + one translation.
+    tr = [(c["code"], lang, t["usage"]) for c in runs for lang, t in c["translations"].items()]
+    avg_tr = mean(u["cost_usd"] for _, _, u in tr)
+    tr_cost = {c["code"]: sum(t["usage"]["cost_usd"] for t in c["translations"].values()) for c in runs}
+    plan_costs = [r["usage"]["cost_usd"] + tr_cost[r["code"]] for r in runs]
+    avg_plan, min_plan, max_plan = mean(plan_costs), min(plan_costs), max(plan_costs)
 
     L = []
     a = L.append
@@ -93,18 +99,21 @@ def main() -> None:
     # 1 ---------------------------------------------------------------- per run
     a("## 1. Cost per run")
     a("")
-    a("| Run | Shop | Lang | Result | Model calls | Input | Cached input | Cache write | Output | Cost (USD) |")
-    a("|---|---|---|---|---:|---:|---:|---:|---:|---:|")
+    a("| Run | Shop | Lang | Result | Model calls | Input | Cached input | Cache write | Output | Run cost | Translation | Plan cost |")
+    a("|---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|")
     for r in runs:
         u = r["usage"]
         result = "verified" if r["verified"] else "warning shown"
         label = f"{r['code']}†" if r["code"] in GATEWAY_REPLAYS else r["code"]
         a(f"| {label} | {r['shop']} | {r['lang']} | {result} | {u['model_calls']} | {n(u['input_tokens'])} | "
-          f"{n(u['cached_input_tokens'])} | {n(u['cache_write_tokens'])} | {n(u['output_tokens'])} | {usd(u['cost_usd'])} |")
+          f"{n(u['cached_input_tokens'])} | {n(u['cache_write_tokens'])} | {n(u['output_tokens'])} | {usd(u['cost_usd'])} | "
+          f"{usd(tr_cost[r['code']])} | {usd(u['cost_usd'] + tr_cost[r['code']])} |")
+    tr_vals = list(tr_cost.values())
     for label, fn in (("**Average**", mean), ("Min", min), ("Max", max)):
         vals = {c: fn([u[c] for u in U]) for c in cols}
         a(f"| {label} | | | | {vals['model_calls']:.1f} | {n(vals['input_tokens'])} | {n(vals['cached_input_tokens'])} | "
-          f"{n(vals['cache_write_tokens'])} | {n(vals['output_tokens'])} | {usd(vals['cost_usd'])} |")
+          f"{n(vals['cache_write_tokens'])} | {n(vals['output_tokens'])} | {usd(vals['cost_usd'])} | {usd(fn(tr_vals))} | "
+          f"{usd(fn(plan_costs))} |")
     a("")
     for code, original in GATEWAY_REPLAYS.items():
         a(f"† {code} sent exactly the same requests as an earlier browser run ({original}: same shop, language and day), "
@@ -115,9 +124,14 @@ def main() -> None:
     a("PIU-CAST26 was run earlier the same day (Prompt 18), before the Critic's code check was enforced in code; "
       "prompts and model were the same. The other five runs used the current code.")
     a("")
-    a(f"A full plan costs **{usd(avg_cost)} on average** ({pen(avg_cost, 3)}), between {usd(min_cost)} and "
+    a(f"An agent run costs **{usd(avg_cost)} on average** ({pen(avg_cost, 3)}), between {usd(min_cost)} and "
       f"{usd(max_cost)} across the {len(runs)} runs. {sum(1 for r in runs if r['revision'])} of {len(runs)} runs used the "
       "one allowed Planner revision after the Critic asked for changes.")
+    a("")
+    a(f"Every finished plan is now also translated automatically into the other language (one model call, tokens recorded "
+      f"separately). Each run's translation is measured above; the average is {usd(avg_tr)}. "
+      f"**A complete bilingual plan therefore costs {usd(avg_plan)} on average** ({pen(avg_plan, 3)}), between "
+      f"{usd(min_plan)} and {usd(max_plan)}.")
     a("")
 
     # 2 ---------------------------------------------------------------- by agent
@@ -176,8 +190,6 @@ def main() -> None:
     a("")
 
     # 4 ---------------------------------------------------------------- measures
-    tr = [(c["code"], lang, t["usage"]) for c in runs for lang, t in c["translations"].items()]
-    avg_tr = mean(u["cost_usd"] for _, _, u in tr) if tr else None
     a("## 4. Cost-cutting measures and their evidence")
     a("")
     a(f"1. **Caching of static prompts.** Each agent's system prompt is static (shared rules + its own file) and every "
@@ -193,9 +205,10 @@ def main() -> None:
       "and replaying the trace are free.")
     if tr:
         rows = "; ".join(f"{code} → {lang}: {usd(u['cost_usd'])} ({u['model_calls']} call)" for code, lang, u in tr)
-        a(f"4. **Translation instead of rerunning.** Measured translations: {rows}. Average {usd(avg_tr)}, which is "
-          f"**{avg_tr / avg_cost:.1%} of an average full run** ({usd(avg_cost)}) — about {avg_cost / avg_tr:.0f}× cheaper. "
-          "A second request returns the saved translation for 0 tokens.")
+        a(f"4. **Translation instead of rerunning.** Each plan's second language comes from one translation call, "
+          f"not a second agent run. Measured translations: {rows}. Average {usd(avg_tr)}, which is "
+          f"**{avg_tr / avg_cost:.1%} of an average agent run** ({usd(avg_cost)}) — about {avg_cost / avg_tr:.0f}× cheaper "
+          "than running the agents again in the other language. Switching language afterwards costs 0 tokens.")
     a(f"5. **The 300-word plan limit.** Before the limit (commit `{BASELINE_COMMIT}`), the final plan had "
       f"{BASELINE_PROSE_WORDS} prose words and the Manager's final call produced {n(BASELINE_FINAL_MANAGER_OUTPUT)} output "
       f"tokens. With the limit, plans averaged {mean(r['words'] for r in runs):.0f} words "
@@ -206,20 +219,21 @@ def main() -> None:
     a("")
 
     # 5 ---------------------------------------------------------------- scale
-    per_shop_month = RUNS_PER_SHOP_PER_MONTH * avg_cost
+    per_shop_month = RUNS_PER_SHOP_PER_MONTH * avg_plan
     a("## 5. Cost at scale")
     a("")
     a(f"**Assumption:** each shop gets **{RUNS_PER_SHOP_PER_MONTH} full agent runs per month** (1 new plan + 1 update), "
-      "priced at the measured average run cost. Translations, reopening saved plans and hosting are not included.")
+      "each priced at the measured average bilingual plan cost (agent run + automatic translation). Reopening saved plans "
+      "is free; hosting is not included.")
     a("")
     a("| Shops | Per month (USD) | Per month (S/) | Per year (USD) | Per year (S/) | Range per year (USD) |")
     a("|---:|---:|---:|---:|---:|---|")
     a(f"| 1 | {usd(per_shop_month)} | {pen(per_shop_month, 3)} | {usd(per_shop_month * 12)} | {pen(per_shop_month * 12)} | "
-      f"{usd(RUNS_PER_SHOP_PER_MONTH * min_cost * 12)}–{usd(RUNS_PER_SHOP_PER_MONTH * max_cost * 12)} |")
+      f"{usd(RUNS_PER_SHOP_PER_MONTH * min_plan * 12)}–{usd(RUNS_PER_SHOP_PER_MONTH * max_plan * 12)} |")
     for shops in SHOP_COUNTS:
         m = per_shop_month * shops
         a(f"| {shops:,} | {usd(m, 2)} | {pen(m)} | {usd(m * 12, 2)} | {pen(m * 12)} | "
-          f"{usd(RUNS_PER_SHOP_PER_MONTH * min_cost * 12 * shops, 2)}–{usd(RUNS_PER_SHOP_PER_MONTH * max_cost * 12 * shops, 2)} |")
+          f"{usd(RUNS_PER_SHOP_PER_MONTH * min_plan * 12 * shops, 2)}–{usd(RUNS_PER_SHOP_PER_MONTH * max_plan * 12 * shops, 2)} |")
     a("")
 
     # 6 ---------------------------------------------------------------- organization
@@ -227,7 +241,7 @@ def main() -> None:
     a("## 6. Organization view")
     a("")
     a(f"A municipality or chamber of commerce offering Pirca to **10,000 shops** would pay about **{usd(year_10k, 0)} "
-      f"({pen(year_10k, 0)}) per year in model costs**, under the assumption above (2 runs per shop per month, "
+      f"({pen(year_10k, 0)}) per year in model costs**, under the assumption above (2 bilingual plans per shop per month, "
       "model tokens only — hosting, support and outreach would be extra).")
     a("")
     a("Comparison with a consultant-written plan: **no sourced figure was found.** Searches on 2026-10-24 for consultant "
@@ -238,7 +252,7 @@ def main() -> None:
     a("## Assumptions in this report")
     a("")
     a(f"- {RUNS_PER_SHOP_PER_MONTH} full runs per shop per month (1 plan + 1 update), each costing the measured average.")
-    a("- Model token costs only: hosting, storage, staff, outreach and translations are excluded from the scale figures.")
+    a("- Each plan includes its automatic translation; model token costs only (hosting, storage, staff and outreach excluded).")
     a(f"- Prices fixed at the Lecture 11 gpt-6-luna rates; exchange rate fixed at S/ {fx['pen_per_usd']} per US$.")
     a(f"- {len(runs)} runs is a small sample: real costs vary with how often the Critic asks for a revision and how "
       "many tools each agent calls.")

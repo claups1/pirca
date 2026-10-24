@@ -54,8 +54,32 @@ def _fx() -> dict:
             "url": fx["human_readable_url"], "status": "verified"}
 
 
+SPANISH_HINTS = re.compile(r"\b(de|la|el|los|las|que|en|del|por|para|con|una|se|su)\b|[ñáéíóú]", re.IGNORECASE)
+ENGLISH_HINTS = re.compile(r"\b(the|and|of|to|with|is|are|in|for|your|from|by|at)\b", re.IGNORECASE)
+
+
+def text_language(text: str) -> str:
+    """'es' or 'en', from simple word hints; used to tell the owner when a quote is in the other language."""
+    es, en = len(SPANISH_HINTS.findall(text or "")), len(ENGLISH_HINTS.findall(text or ""))
+    return "es" if es >= en else "en"
+
+
+def _with_languages(d: dict) -> dict:
+    """fact_en is Pirca's own English summary for history and catalog rows; only verbatim quotes are guessed."""
+    if d["kind"] in ("history", "action"):
+        d["lang_en"] = "en"
+        d["lang_es"] = text_language(d["fact_es"])
+    elif d["kind"] == "enfen":
+        d["lang_en"] = d["lang_es"] = "es"  # ENFEN publishes in Spanish only
+    else:
+        d["lang_en"], d["lang_es"] = "en", "es"
+    return d
+
+
 def describe_sources(ids) -> dict[str, dict]:
-    """Details for each known ID; unknown IDs are skipped (verify_draft reports them)."""
+    """Details for each known ID; unknown IDs are skipped (verify_draft reports them).
+    fact_en / fact_es are the texts to show in each interface language; lang_en / lang_es say
+    which language each text is really in (a quote stays in its original language)."""
     hist = {r["id"]: r for r in data_store.historical_impacts()}
     cat = {r["id"]: r for r in data_store.action_catalog()}
     enfen = {c["id"]: c for c in enfen_index()}
@@ -69,7 +93,7 @@ def describe_sources(ids) -> dict[str, dict]:
             out[i] = _enfen(enfen[i])
         elif i == FX_SOURCE_ID:
             out[i] = _fx()
-    return out
+    return {k: _with_languages(v) for k, v in out.items()}
 
 
 def cited_ids(*texts: str) -> list[str]:

@@ -90,11 +90,18 @@ def main() -> int:
         print(f"  {'TOTAL':<12} calls {u['model_calls']:>2}  in {u['input_tokens']:>8,}  cached {u['cached_input_tokens']:>7,}"
               f"  cache write {u['cache_write_tokens']:>7,}  out {u['output_tokens']:>7,}  ${u['cost_usd']:.4f}")
 
+    # Every finished plan is also translated into the other language (one model call, tokens recorded apart).
+    from backend.api import plans
+    result["form"] = profile
+    plans.add_translation(result)
+    for lang, tr in result.get("translations", {}).items():
+        print(f"  {'TRANSLATION':<12} -> {lang}: calls {tr['usage']['model_calls']}, out {tr['usage']['output_tokens']:,}, "
+              f"${tr['usage']['cost_usd']:.4f}, check ok={tr['verification']['ok']}")
+
     out = config.OUTPUT_DIR / "sample_run.json"
     out.write_text(json.dumps(result, ensure_ascii=False, indent=2, default=str), encoding="utf-8")
     print(f"\nFull result and trace saved to {out.relative_to(config.PROJECT_ROOT)}")
     if args.example_code:
-        from backend.api import plans
         if not plans.is_valid_code(args.example_code):
             raise SystemExit(f"Invalid code {args.example_code}: use PIU- plus 6 of {plans.CODE_ALPHABET}")
         example = config.PLANS_DIR / "examples" / f"{args.example_code}.json"

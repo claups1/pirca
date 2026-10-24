@@ -15,10 +15,12 @@ const STR = {
     fact1: "Official sources", fact1b: "ENFEN, INDECI, BCRP and Piura's flood records, with every number cited.",
     fact2: "Four AI agents", fact2b: "An analyst, a planner and a critic check each other before you see the plan.",
     fact3: "Within your means", fact3b: "Pirca never recommends spending money you don't have.",
+    mapAria: "Live map of the four agents, the code checks and the plan", revisionLabel: "1 revision", gateTitle: "Code checks",
+    check_draft: "Draft", check_plan: "Final plan", check_budget: "Budget", planNode: "Plan", team: "Team",
     howTitle: "How it works", how: ["Answer 5 short sections", "Four agents check the facts", "Get your plan"],
     communique: "Communiqué", mapTitle: "Map of the eastern Pacific and Peru's coast with Piura marked",
     mapCaption: "El Niño costero: unusually warm sea water off Peru brings heavy rain to Piura.",
-    source: "Source", viewSource: "View source", sourcesTitle: "Sources", checksTitle: "Safety checks",
+    source: "Source", viewSource: "View source", sourceInEnglish: "(source in English)", sourceInSpanish: "(source in Spanish)", sourcesTitle: "Sources", checksTitle: "Safety checks",
     badgeNumbers: "Every number from code", badgeSources: "Sources checked", badgeBudget: "Within your budget",
     badgeEvacuation: "No evacuation orders", badgeSuspiciousNone: "Suspicious text: none found",
     badgeSuspiciousFound: (n) => `Suspicious text found and ignored: ${n}`,
@@ -65,10 +67,12 @@ const STR = {
     fact1: "Fuentes oficiales", fact1b: "ENFEN, INDECI, BCRP y los registros de inundaciones de Piura, con cada número citado.",
     fact2: "Cuatro agentes de IA", fact2b: "Un analista, un planificador y un revisor se controlan entre sí antes de que veas el plan.",
     fact3: "Según tu dinero", fact3b: "Pirca nunca te recomienda gastar dinero que no tienes.",
+    mapAria: "Mapa en vivo de los cuatro agentes, los controles en código y el plan", revisionLabel: "1 revisión", gateTitle: "Controles en código",
+    check_draft: "Borrador", check_plan: "Plan final", check_budget: "Presupuesto", planNode: "Plan", team: "Equipo",
     howTitle: "Cómo funciona", how: ["Responde 5 secciones cortas", "Cuatro agentes revisan los datos", "Recibe tu plan"],
     communique: "Comunicado", mapTitle: "Mapa del Pacífico oriental y la costa del Perú con Piura marcada",
     mapCaption: "El Niño costero: el mar frente al Perú se calienta más de lo normal y trae lluvias fuertes a Piura.",
-    source: "Fuente", viewSource: "Ver fuente", sourcesTitle: "Fuentes", checksTitle: "Controles de seguridad",
+    source: "Fuente", viewSource: "Ver fuente", sourceInEnglish: "(fuente en inglés)", sourceInSpanish: "(fuente en español)", sourcesTitle: "Fuentes", checksTitle: "Controles de seguridad",
     badgeNumbers: "Cada número viene del código", badgeSources: "Fuentes revisadas", badgeBudget: "Dentro de tu presupuesto",
     badgeEvacuation: "Sin órdenes de evacuación", badgeSuspiciousNone: "Texto sospechoso: no se encontró",
     badgeSuspiciousFound: (n) => `Texto sospechoso detectado e ignorado: ${n}`,
@@ -176,7 +180,7 @@ const store = {
   get draft() { try { return JSON.parse(localStorage.getItem("pirca.draft")); } catch { return null; } },
   set draft(v) { localStorage.setItem("pirca.draft", JSON.stringify(v)); },
 };
-const state = { meta: null, timers: [], view: null };
+const state = { meta: null, timers: [], view: null, trace: null };
 const app = document.getElementById("app");
 
 function t(key) { return STR[store.lang][key] ?? STR.en[key] ?? key; }
@@ -226,7 +230,8 @@ document.addEventListener("click", (e) => { if (!menu.hidden && !menu.contains(e
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") toggleMenu(false); });
 document.querySelectorAll("[data-lang]").forEach((b) => b.addEventListener("click", () => {
   saveDraftFromForm();
-  store.lang = b.dataset.lang; applyChrome(); route();
+  store.lang = b.dataset.lang; applyChrome();
+  if (state.view?.rerender) state.view.rerender(); else route();  // plans switch language locally
 }));
 document.querySelectorAll("[data-currency]").forEach((b) => b.addEventListener("click", () => {
   store.currency = b.dataset.currency; applyChrome();
@@ -590,9 +595,205 @@ function errorText(e) {
 // ------------------------------------------------------------------ trace (live and replay)
 
 const AGENTS = ["manager", "risk_analyst", "planner", "critic"];
+const WORKERS = ["risk_analyst", "planner", "critic"];
+
+// ---- live agent map: Manager on top, the three workers below, then Code checks -> Plan.
+const MAP_LAYOUTS = {
+  wide: {
+    view: "0 0 680 320", toolChars: 24,
+    nodes: { manager: { x: 200, y: 62, w: 180, h: 84 }, gate: { x: 440, y: 62, w: 150, h: 84 }, plan: { x: 610, y: 62, w: 110, h: 84 },
+             risk_analyst: { x: 95, y: 215, w: 172, h: 84 }, planner: { x: 300, y: 215, w: 172, h: 84 }, critic: { x: 505, y: 215, w: 172, h: 84 } },
+    toGate: "M290 62 H365", toPlan: "M515 62 H555",
+    revision: "M505 257 C505 308, 300 308, 300 262", revLabel: [402, 314], team: [665, 122], teamAnchor: "end",
+  },
+  narrow: {
+    view: "0 0 360 540", toolChars: 15,
+    nodes: { manager: { x: 180, y: 52, w: 190, h: 84 }, gate: { x: 180, y: 380, w: 220, h: 84 }, plan: { x: 180, y: 480, w: 150, h: 64 },
+             risk_analyst: { x: 62, y: 200, w: 114, h: 92 }, planner: { x: 180, y: 200, w: 114, h: 92 }, critic: { x: 298, y: 200, w: 114, h: 92 } },
+    toGate: "M85 52 H12 V380 H70", toPlan: "M180 422 V448",
+    revision: "M298 246 C298 300, 180 300, 180 251", revLabel: [239, 304], team: [180, 528], teamAnchor: "middle",
+  },
+};
+
+const MAP_NARROW = window.matchMedia("(max-width: 720px)");
+function mapLayout() { return MAP_NARROW.matches ? MAP_LAYOUTS.narrow : MAP_LAYOUTS.wide; }
+
+// The layout is chosen when the map is drawn; if the window crosses the phone width
+// (rotating a phone, resizing), redraw it and re-apply the events seen so far, without pulses.
+window.addEventListener("resize", () => { if (state.trace) rebuildMap(state.trace); });
+function rebuildMap(ts) {
+  const old = document.getElementById("agent-map");
+  if (!old || old.dataset.layout === (MAP_NARROW.matches ? "narrow" : "wide")) return;
+  old.outerHTML = agentMapHtml();
+  fitMapText();
+  const fresh = newTraceState(false);
+  ts.seen.forEach((e) => { trackEvent(fresh, e); mapApply(fresh, e); });
+  Object.assign(ts, fresh, { animate: ts.animate, seen: ts.seen });
+}
+
+function linkPath(L, id) {
+  const m = L.nodes.manager, a = L.nodes[id];
+  return `M${m.x} ${m.y + m.h / 2} L${a.x} ${a.y - a.h / 2}`;
+}
+
+function agentMapHtml() {
+  const L = mapLayout();
+  const names = STR[store.lang].agents;
+  const box = (n) => `<rect x="${n.x - n.w / 2}" y="${n.y - n.h / 2}" width="${n.w}" height="${n.h}" rx="10"/>`;
+  const agentNode = (id) => {
+    const n = L.nodes[id], top = n.y - n.h / 2, left = n.x - n.w / 2 + 14, bw = n.w - 28;
+    return `<g class="map-node" id="node-${id}">${box(n)}
+      <text class="node-name" x="${n.x}" y="${top + 21}" text-anchor="middle">${esc(names[id][0])}</text>
+      <text class="node-status" id="status-${id}" x="${n.x}" y="${top + 39}" text-anchor="middle">${esc(t("idle"))}</text>
+      <rect class="bar-track" x="${left}" y="${top + 50}" width="${bw}" height="5" rx="2.5"/>
+      <rect class="bar-fill" id="bar-${id}" x="${left}" y="${top + 50}" width="0" height="5" rx="2.5" fill="url(#bar-g)" data-max="${bw}"/>
+      <text class="node-tokens" id="tok-${id}" x="${n.x}" y="${top + 72}" text-anchor="middle">0 tok · $0.0000</text></g>`;
+  };
+  const g = L.nodes.gate, gt = g.y - g.h / 2, p = L.nodes.plan, pt = p.y - p.h / 2;
+  const checks = ["draft", "plan", "budget"];
+  return `<div class="agent-map glass" id="agent-map" data-layout="${L === MAP_LAYOUTS.narrow ? "narrow" : "wide"}">
+    <div class="rain" aria-hidden="true">${Array.from({ length: 14 }, (_, i) =>
+      `<span style="left:${((i * 7.3) + 3) % 100}%;animation-delay:${((i * 0.37) % 2.4).toFixed(2)}s;animation-duration:${(1.6 + (i % 5) * 0.25).toFixed(2)}s"></span>`).join("")}</div>
+    <svg viewBox="${L.view}" role="img" aria-label="${esc(t("mapAria"))}">
+      <defs>
+        <linearGradient id="bar-g" x1="0" x2="1"><stop offset="0%" stop-color="#F2785C"/><stop offset="100%" stop-color="#FFB347"/></linearGradient>
+        <marker id="rev-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0 0 L10 5 L0 10 z" class="rev-head"/></marker>
+      </defs>
+      ${WORKERS.map((id) => `<path class="map-link" id="link-${id}" d="${linkPath(L, id)}"/>`).join("")}
+      <path class="map-link" id="link-gate" d="${L.toGate}"/><path class="map-link" id="link-plan" d="${L.toPlan}"/>
+      <path class="map-rev" id="rev-path" d="${L.revision}" marker-end="url(#rev-arrow)"/>
+      <text class="rev-label" id="rev-label" x="${L.revLabel[0]}" y="${L.revLabel[1]}" text-anchor="middle">${esc(t("revisionLabel"))}</text>
+      ${AGENTS.map(agentNode).join("")}
+      <g class="map-node gate" id="node-gate">${box(g)}
+        <text class="node-name" x="${g.x}" y="${gt + 20}" text-anchor="middle">${esc(t("gateTitle"))}</text>
+        ${checks.map((c, i) => `<text class="check" id="check-${c}" x="${g.x}" y="${gt + 40 + i * 15}" text-anchor="middle">${esc(t("check_" + c))} —</text>`).join("")}</g>
+      <g class="map-node plan" id="node-plan">${box(p)}
+        <text class="node-name" x="${p.x}" y="${pt + 26}" text-anchor="middle">${esc(t("planNode"))}</text>
+        <text class="node-status" id="status-plan" x="${p.x}" y="${pt + 46}" text-anchor="middle">—</text></g>
+      <text class="team-total" id="team-total" x="${L.team[0]}" y="${L.team[1]}" text-anchor="${L.teamAnchor}">${esc(t("team"))}: 0 tok · $0.0000</text>
+    </svg></div>`;
+}
+
+function fitMapText() {
+  document.querySelectorAll("#agent-map .node-name, #agent-map .node-status").forEach((el) => {
+    const node = el.closest(".map-node")?.querySelector("rect");
+    const max = node ? Number(node.getAttribute("width")) - 14 : 0;
+    try { if (max && el.getComputedTextLength() > max) { el.setAttribute("textLength", max); el.setAttribute("lengthAdjust", "spacingAndGlyphs"); } } catch { /* not rendered yet */ }
+  });
+}
+
+function pulse(pathId, reverse, ts) {
+  if (!ts.animate || REDUCED_MOTION.matches || document.hidden) return;
+  const path = document.getElementById(pathId);
+  const svg = path?.ownerSVGElement;
+  if (!path || !svg) return;
+  const len = path.getTotalLength();
+  const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+  dot.setAttribute("r", "5"); dot.setAttribute("class", "pulse");
+  svg.appendChild(dot);
+  const start = performance.now();
+  const step = (now) => {
+    const p = Math.min(1, (now - start) / 650);
+    const pt = path.getPointAtLength(len * (reverse ? 1 - p : p));
+    dot.setAttribute("cx", pt.x); dot.setAttribute("cy", pt.y);
+    dot.setAttribute("opacity", String(p < 0.85 ? 1 : (1 - p) / 0.15));
+    if (p < 1) requestAnimationFrame(step); else dot.remove();
+  };
+  requestAnimationFrame(step);
+  setTimeout(() => dot.remove(), 1500);  // never leave a dot behind if frames pause
+}
+
+function setCheck(name, ok) {
+  const el = document.getElementById(`check-${name}`);
+  if (!el) return;
+  el.textContent = `${t("check_" + name)} ${ok ? "✓" : "✗"}`;
+  el.setAttribute("class", `check ${ok ? "check-ok" : "check-bad"}`);
+}
+
+const SPENDING_ISSUES = ["spending_exceeds_cash", "zero_stock_up_mentioned", "affordability_unknown"];
+
+function mapApply(ts, e) {
+  const map = document.getElementById("agent-map");
+  if (!map) return;
+  const node = (id) => document.getElementById(`node-${id}`);
+  const status = (id, text) => { const el = document.getElementById(`status-${id}`); if (el) el.textContent = text; };
+  if (e.type === "run_started") map.classList.add("raining");
+  if (e.type === "agent_started" && WORKERS.includes(e.agent)) {
+    document.getElementById(`link-${e.agent}`)?.classList.add("active");
+    pulse(`link-${e.agent}`, false, ts);
+    if (e.agent === "planner" && e.run > 1) {  // the Critic asked for a revision
+      document.getElementById("rev-path")?.classList.add("lit");
+      document.getElementById("rev-label")?.classList.add("lit");
+      pulse("rev-path", false, ts);
+    }
+  }
+  if (e.type === "agent_finished" && WORKERS.includes(e.agent)) {
+    pulse(`link-${e.agent}`, true, ts);
+    later(() => document.getElementById(`link-${e.agent}`)?.classList.remove("active"), 700);
+  }
+  if (e.type === "tool_called" && AGENTS.includes(e.agent) && !e.tool.startsWith("run_")) {
+    const L = mapLayout();
+    status(e.agent, e.tool.length > L.toolChars ? `${e.tool.slice(0, L.toolChars - 1)}…` : e.tool);
+    ts.toolShown[e.agent] = true;
+  }
+  if (e.type === "model_call" && ts.usage[e.agent]) {
+    const u = ts.usage[e.agent];
+    u.tokens += (e.call.input_tokens || 0) + (e.call.output_tokens || 0);
+    u.cost += e.call.cost_usd || 0;
+    const scale = Math.max(0.008, ...AGENTS.map((a) => ts.usage[a].cost));
+    AGENTS.forEach((a) => {
+      const bar = document.getElementById(`bar-${a}`);
+      if (bar) bar.setAttribute("width", (Number(bar.dataset.max) * Math.min(1, ts.usage[a].cost / scale)).toFixed(1));
+      const tok = document.getElementById(`tok-${a}`);
+      if (tok) tok.textContent = `${num(ts.usage[a].tokens)} tok · $${ts.usage[a].cost.toFixed(4)}`;
+    });
+  }
+  if (e.type === "tool_result" && e.tool === "verify_draft" && "ok" in (e.result || {})) {
+    setCheck(e.agent === "critic" ? "draft" : "plan", e.result.ok);
+    pulseGate();
+  }
+  if (e.type === "code_check") { setCheck("draft", e.ok); pulseGate(); }
+  if (e.type === "final_check") {
+    setCheck("plan", e.ok);
+    setCheck("budget", !(e.issues || []).some((i) => SPENDING_ISSUES.includes(i)));
+    pulse("link-gate", false, ts); pulseGate();
+  }
+  if (e.type === "run_finished") {
+    map.classList.remove("raining");
+    const cls = e.status === "completed" ? "plan-ok" : e.status === "completed_with_warning" ? "plan-warn" : "plan-stop";
+    node("plan")?.classList.add(cls);
+    status("plan", e.status === "completed" ? `✓ ${t("done")}` : e.status === "completed_with_warning" ? `⚠ ${t("done")}` : "⛔");
+    if (e.status?.startsWith("completed")) pulse("link-plan", false, ts);
+  }
+  if (e.type === "translation" && !e.error) status("plan", "✓ ES + EN");
+  if (e.type === "limit_hit" && e.action === "stopped") { map.classList.remove("raining"); node("plan")?.classList.add("plan-stop"); status("plan", "⛔"); }
+  // node states
+  const current = ts.stack[ts.stack.length - 1];
+  AGENTS.forEach((id) => {
+    const el = node(id);
+    if (!el) return;
+    const working = id === current;
+    const waiting = !working && ts.stack.includes(id);
+    el.classList.toggle("working", working);
+    el.classList.toggle("done", !working && !waiting && ts.done.has(id));
+    if (!working) status(id, waiting ? t("waiting") : ts.done.has(id) ? t("done") : t("idle"));
+    else if (!ts.toolShown[id]) status(id, t("working"));
+  });
+  if (e.totals) {
+    const team = document.getElementById("team-total");
+    if (team) team.textContent = `${t("team")}: ${num(e.totals.total_tokens)} tok · $${Number(e.totals.cost_usd || 0).toFixed(4)}`;
+  }
+}
+
+function pulseGate() {
+  const gate = document.getElementById("node-gate");
+  if (!gate) return;
+  gate.classList.add("flash");
+  setTimeout(() => gate.classList.remove("flash"), 900);
+}
 
 function traceHtml(code, mode) {
-  const a = STR[store.lang].agents;
   return `
     ${mode === "stopped" ? "" : `<div class="trace-head">
       <div><h1 style="font-size:24px">${esc(mode === "replay" ? t("replayTitle") : t("traceTitle"))}</h1>
@@ -600,12 +801,7 @@ function traceHtml(code, mode) {
       <div class="btn-row" id="trace-controls"></div>
     </div>`}
     ${mode === "live" ? `<p class="muted">${esc(t("traceText"))}</p>` : ""}
-    <div class="agents">${AGENTS.map((id) => `
-      <div class="agent glass" id="agent-${id}">
-        <h3>${esc(a[id][0])}</h3><div class="role">${esc(a[id][1])}</div>
-        <div class="state" aria-live="polite">${esc(t("idle"))}</div>
-        <div class="small muted" data-tools></div>
-      </div>`).join("")}</div>
+    ${agentMapHtml()}
     <div class="counter glass">
       <div><span>${esc(t("inTok"))}</span><b id="c-in">0</b></div>
       <div><span>${esc(t("cachedTok"))}</span><b id="c-cached">0</b></div>
@@ -615,7 +811,10 @@ function traceHtml(code, mode) {
     <ol class="timeline glass" id="timeline" aria-label="Trace"></ol>`;
 }
 
-function newTraceState() { return { stack: [], tools: Object.fromEntries(AGENTS.map((a) => [a, 0])), done: new Set() }; }
+function newTraceState(animate = true) {
+  return { stack: [], done: new Set(), animate, toolShown: {}, seen: [],
+           usage: Object.fromEntries(AGENTS.map((a) => [a, { tokens: 0, cost: 0 }])) };
+}
 
 function describe(e) {
   const r = e.result || {};
@@ -637,31 +836,29 @@ function describe(e) {
     case "agent_finished": return [`■ ${t("finished")}`, "ok"];
     case "limit_hit": return [`⛔ limit ${e.limit} (${e.action}): ${e.detail}`, "limit"];
     case "final_check": return [`verify_draft on final plan: ${e.ok ? "ok" : (e.issues || []).join(", ")}`, e.ok ? "ok" : "limit"];
+    case "code_check": return [`code check of the draft: ${e.ok ? "ok" : (e.issues || []).join(", ")}`, e.ok ? "ok" : "limit"];
+    case "translation": return [e.error ? `translation failed: ${e.error}` : `translation → ${e.language}: ${num(e.usage?.output_tokens)} out · $${Number(e.usage?.cost_usd || 0).toFixed(4)}`, e.error ? "limit" : "ok"];
     case "run_finished": return [`${t("runFinished")}: ${e.status}`, e.status?.startsWith("completed") ? "ok" : "limit"];
     default: return [e.type, ""];
   }
 }
 
-function applyEvent(ts, e) {
-  if (e.type === "agent_started") ts.stack.push(e.agent);
+function trackEvent(ts, e) {
+  if (e.type === "agent_started") { ts.stack.push(e.agent); ts.toolShown[e.agent] = false; }
   if (e.type === "agent_finished") { ts.stack = ts.stack.filter((a, i) => !(a === e.agent && i === ts.stack.lastIndexOf(e.agent))); ts.done.add(e.agent); }
-  if (e.type === "tool_called" && ts.tools[e.agent] !== undefined) ts.tools[e.agent] += 1;
   if (e.type === "run_finished") ts.stack = [];
-  const current = ts.stack[ts.stack.length - 1];
-  AGENTS.forEach((id) => {
-    const card = document.getElementById(`agent-${id}`);
-    if (!card) return;
-    const working = id === current;
-    const waiting = !working && ts.stack.includes(id);
-    card.classList.toggle("working", working);
-    card.classList.toggle("done", !working && !waiting && ts.done.has(id));
-    card.querySelector(".state").textContent = working ? t("working") : waiting ? t("waiting") : ts.done.has(id) ? t("done") : t("idle");
-    card.querySelector("[data-tools]").textContent = `${ts.tools[id]} ${ts.tools[id] === 1 ? t("toolCall") : t("toolCalls")}`;
-  });
+}
+
+function applyEvent(ts, e) {
+  trackEvent(ts, e);
+  ts.seen.push(e);
+  mapApply(ts, e);
   const tot = e.totals || {};
   const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-  set("c-in", num(tot.input_tokens)); set("c-cached", num(tot.cached_input_tokens)); set("c-out", num(tot.output_tokens));
-  set("c-cost", `$${Number(tot.cost_usd || 0).toFixed(4)}`);
+  if (e.totals) {
+    set("c-in", num(tot.input_tokens)); set("c-cached", num(tot.cached_input_tokens)); set("c-out", num(tot.output_tokens));
+    set("c-cost", `$${Number(tot.cost_usd || 0).toFixed(4)}`);
+  }
   const list = document.getElementById("timeline");
   if (!list) return;
   const [text, cls] = describe(e);
@@ -674,11 +871,13 @@ function applyEvent(ts, e) {
 
 function startLive(code, initial) {
   app.innerHTML = traceHtml(code, "live");
+  fitMapText();
   document.getElementById("trace-controls").innerHTML = `<span class="spinner" aria-hidden="true"></span>`;
-  const ts = newTraceState();
+  const ts = state.trace = newTraceState(false);  // events that already happened are drawn without pulses
   let last = 0;
   const take = (events) => events.forEach((e) => { applyEvent(ts, e); last = Math.max(last, e.seq); });
   take(initial.events || []);
+  ts.animate = true;
   const poll = async () => {
     try {
       const s = await api(`/api/plans/${code}?after=${last}`);
@@ -693,13 +892,14 @@ function startLive(code, initial) {
 function startReplay(code, data) {
   clearTimers();
   app.innerHTML = traceHtml(code, "replay");
+  fitMapText();
   const events = data.events || [];
   let speed = 1;
   const controls = document.getElementById("trace-controls");
   controls.innerHTML = `<div class="segmented" role="group" aria-label="${esc(t("speed"))}" style="min-width:120px">
       <button type="button" data-speed="1" aria-pressed="true">1×</button><button type="button" data-speed="4" aria-pressed="false">4×</button></div>
     <button class="btn" type="button" id="skip-btn">${esc(t("skip"))}</button>`;
-  const ts = newTraceState();
+  const ts = state.trace = newTraceState();
   let i = 0;
   const step = () => {
     if (i >= events.length) return;
@@ -748,6 +948,14 @@ function phaseOf(label) {
   return -1;
 }
 
+// "consulta sus canales…" -> "Consulta sus canales…."; citations in brackets don't count as text.
+function asSentence(text) {
+  let s = text.trim().replace(/^([\s*_"“(¿¡]*)(\p{Ll})/u, (m, lead, ch) => lead + ch.toUpperCase());
+  const prose = s.replace(/\s*\[[^\]]*\]/g, "").trim();
+  if (prose && !/[.!?…:]["”)]*$/.test(prose)) s += ".";
+  return s;
+}
+
 function renderSteps(items, lang, fn) {
   const phases = [0, 1, 2, 3].map(() => ({ label: null, parts: [] }));
   let current = 0;
@@ -767,7 +975,7 @@ function renderSteps(items, lang, fn) {
   if (!labelled) return `<ul>${items.map((i) => `<li>${inline(i, fn)}</li>`).join("")}</ul>`;
   return `<ol class="steps">${phases.map((p, i) => `<li>
       <div class="step-head"><span class="num">${i + 1}</span>${esc(p.label || PHASE_NAMES[lang][i])}</div>
-      ${p.parts.length ? p.parts.map((x) => `<p>${inline(x, fn)}</p>`).join("") : '<p class="muted">—</p>'}
+      ${p.parts.length ? p.parts.map((x) => `<p>${inline(asSentence(x), fn)}</p>`).join("") : '<p class="muted">—</p>'}
     </li>`).join("")}</ol>`;
 }
 
@@ -814,6 +1022,11 @@ fnPop.setAttribute("role", "tooltip");
 document.body.appendChild(fnPop);
 let fnPinned = null;
 
+function languageNote(textLang) {
+  if (!textLang || textLang === store.lang) return "";
+  return `<div class="d">${esc(t(textLang === "en" ? "sourceInEnglish" : "sourceInSpanish"))}</div>`;
+}
+
 function sourceTitle(d) { return typeof d.title === "object" ? (d.title[store.lang] || d.title.en) : d.title; }
 
 function showFootnote(btn) {
@@ -821,7 +1034,7 @@ function showFootnote(btn) {
   const d = (state.view?.sourceDetails || {})[id];
   fnPop.innerHTML = d ? `<div class="t">${esc(sourceTitle(d))}</div>
       ${d.date ? `<div class="d">${esc(shortDate(d.date))}</div>` : ""}
-      <q>${esc(store.lang === "es" ? d.fact_es : d.fact_en)}</q>
+      <q>${esc(store.lang === "es" ? d.fact_es : d.fact_en)}</q>${languageNote(store.lang === "es" ? d.lang_es : d.lang_en)}
       ${d.url ? `<a href="${esc(d.url)}" target="_blank" rel="noopener noreferrer">${esc(t("viewSource"))} ↗</a>` : ""}`
     : `<div class="t">${esc(id)}</div>`;
   fnPop.hidden = false;
@@ -940,16 +1153,19 @@ function renderPlanView(code, data) {
   const r = data.result;
   const original = r.language || "es";
   const other = original === "es" ? "en" : "es";
-  const view = state.view?.code === code ? state.view : { code, showing: original, counted: false };
+  const view = state.view?.code === code ? state.view : { code, counted: false };
   state.view = view;
   view.sourceDetails = r.source_details || {};
   view.rerender = () => renderPlanView(code, data);
-  const showing = view.showing;
+  // Every plan is saved in both languages; show the one that matches the interface.
+  const available = (lang) => lang === original || Boolean(r.translations?.[lang]);
+  const showing = available(store.lang) ? store.lang : original;
+  const missing = showing !== store.lang;  // only older plans: the translation was never made
   const translation = showing === original ? null : r.translations?.[showing];
   const planText = translation ? translation.plan[store.currency] : r.plan[store.currency];
   const f = r.facts || {};
   const tr = r.translations || {};
-  const toggleLabel = showing === "es" ? STR.en.viewIn : STR.es.viewIn;
+  const toggleLabel = STR[store.lang].viewIn;
   const fn = { order: [], details: view.sourceDetails };
   const body = renderMarkdown(planText, fn, showing);
 
@@ -963,7 +1179,7 @@ function renderPlanView(code, data) {
       </div>
       ${gaugeSvg(r.risk_level)}
       <div class="btn-row">
-        <button class="btn" type="button" id="translate-btn" lang="${showing === "es" ? "en" : "es"}">${esc(toggleLabel)}</button>
+        ${missing ? `<button class="btn" type="button" id="translate-btn">${esc(toggleLabel)}</button>` : ""}
         <button class="btn" type="button" id="replay-btn">${esc(t("replay"))}</button>
       </div>
     </section>
@@ -987,19 +1203,16 @@ function renderPlanView(code, data) {
   view.counted = true;
   animateGauge(r.risk_level);
   document.getElementById("replay-btn").addEventListener("click", () => startReplay(code, data));
-  document.getElementById("translate-btn").addEventListener("click", async (e) => {
-    const target = showing === original ? other : original;
-    if (target !== original && !r.translations?.[target]) {
-      e.target.disabled = true; e.target.textContent = STR[target === "en" ? "en" : "es"].viewing;
-      try {
-        const res = await api(`/api/plans/${code}/translate`, { method: "POST" });
-        r.translations = { ...(r.translations || {}), [res.language]: res };
-        // New citations may appear in the translation; refresh the source details.
-        const fresh = await api(`/api/plans/${code}?after=999999`);
-        r.source_details = fresh.result?.source_details || r.source_details;
-      } catch (err) { console.warn(err); e.target.disabled = false; e.target.textContent = toggleLabel; return; }
-    }
-    view.showing = target;
+  // Fallback only: a plan saved before automatic translation can still be translated once.
+  document.getElementById("translate-btn")?.addEventListener("click", async (e) => {
+    e.target.disabled = true; e.target.textContent = t("viewing");
+    try {
+      const res = await api(`/api/plans/${code}/translate`, { method: "POST" });
+      r.translations = { ...(r.translations || {}), [res.language]: res };
+      // New citations may appear in the translation; refresh the source details.
+      const fresh = await api(`/api/plans/${code}?after=999999`);
+      r.source_details = fresh.result?.source_details || r.source_details;
+    } catch (err) { console.warn(err); e.target.disabled = false; e.target.textContent = toggleLabel; return; }
     renderPlanView(code, data);
   });
 }
@@ -1011,7 +1224,8 @@ function renderStopped(code, data) {
     <div id="trace-slot"></div>`;
   const slot = document.getElementById("trace-slot");
   slot.innerHTML = traceHtml(code, "stopped");
-  const ts = newTraceState();
+  fitMapText();
+  const ts = state.trace = newTraceState(false);
   (data.events || []).forEach((e) => applyEvent(ts, e));
 }
 

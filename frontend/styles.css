@@ -178,14 +178,6 @@ main { max-width: var(--max-width); margin: 0 auto; padding: var(--s3) var(--s2)
 .form-actions { display: flex; flex-wrap: wrap; gap: var(--s1); align-items: center; justify-content: space-between; }
 
 /* ---------- Trace ---------- */
-.agents { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s2); margin-bottom: var(--s2); }
-.agent { padding: var(--s2); position: relative; transition: border-color 0.3s; }
-.agent h3 { font-size: 15px; margin-bottom: 4px; }
-.agent .role { font-size: 13px; color: var(--text-muted); margin-bottom: var(--s1); min-height: 39px; }
-.agent .state { font-size: 13px; font-weight: var(--fw-semibold); color: var(--text-muted); }
-.agent.working { border-color: var(--coral); box-shadow: var(--shadow), inset 0 0 0 1px var(--coral); }
-.agent.working .state { color: var(--coral); }
-.agent.done .state { color: var(--teal); }
 .counter { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s2); padding: var(--s2) var(--s3); margin-bottom: var(--s2); }
 .counter div span { display: block; font-size: 13px; color: var(--text-muted); }
 .counter div b { font-size: 18px; font-variant-numeric: tabular-nums; }
@@ -258,8 +250,6 @@ dialog ol, dialog ul { padding-left: var(--s3); }
   .how li + li::before { content: none; }  /* stacked steps: the numbers show the order */
   .supplier-row { grid-template-columns: 1fr 1fr; }
   .supplier-row .field:first-child { grid-column: 1 / -1; }
-  .agents { grid-template-columns: repeat(2, 1fr); gap: var(--s1); }
-  .agent .role { min-height: 0; }
   .counter { grid-template-columns: repeat(2, 1fr); padding: var(--s2); }
   .key-numbers { gap: var(--s1); }
   .key-numbers div { padding: 12px var(--s1); }
@@ -359,4 +349,45 @@ dialog ol, dialog ul { padding-left: var(--s3); }
   .steps li + li::before { left: -17px; top: -9px; width: 2px; height: 10px; }
   .steps li::after { content: ""; position: absolute; left: -21px; top: 22px; width: 10px; height: 10px; border-radius: 50%; background: var(--coral); }
   .waves { height: 40px; }
+}
+
+/* ================= Live agent map (trace and replay) ================= */
+.agent-map { position: relative; overflow: hidden; padding: var(--s2); margin-bottom: var(--s2); }
+.agent-map svg { position: relative; z-index: 1; width: 100%; height: auto; display: block; max-height: 520px; }
+.map-node rect { fill: rgba(11, 23, 38, 0.88); stroke: rgba(255, 255, 255, 0.18); stroke-width: 1.2; transition: stroke 0.3s, stroke-width 0.3s; }
+.map-node.working rect { stroke: var(--coral); stroke-width: 2.4; }
+.map-node.done rect { stroke: rgba(46, 196, 182, 0.6); }
+.map-node.plan-ok rect { stroke: var(--teal); stroke-width: 2.2; }
+.map-node.plan-warn rect { stroke: var(--amber); stroke-width: 2.2; }
+.map-node.plan-stop rect { stroke: var(--coral); stroke-width: 2.2; }
+.map-node.flash rect { stroke: var(--sunset); }
+.map-node .node-name { fill: var(--text); font: 600 13px var(--font); }
+.map-node .node-status { fill: var(--text-muted); font: 11px var(--mono); }
+.map-node.working .node-status { fill: var(--sunset); }
+.map-node .node-tokens { fill: var(--text-muted); font: 10px var(--font); }
+.map-node .check { fill: var(--text-muted); font: 11px var(--font); }
+.map-node .check-ok { fill: var(--teal); }
+.map-node .check-bad { fill: var(--coral); }
+.bar-track { fill: rgba(255, 255, 255, 0.1); }
+.map-link { fill: none; stroke: rgba(232, 238, 245, 0.22); stroke-width: 1.5; transition: stroke 0.4s; }
+.map-link.active { stroke: rgba(242, 120, 92, 0.75); }
+.map-rev { fill: none; stroke: rgba(232, 238, 245, 0.12); stroke-width: 1.5; stroke-dasharray: 5 5; transition: stroke 0.4s; }
+.map-rev.lit { stroke: var(--coral); stroke-dasharray: none; stroke-width: 2; }
+.rev-head { fill: rgba(232, 238, 245, 0.2); }
+.map-rev.lit + .rev-label, .rev-label.lit { fill: var(--sunset); }
+.rev-label { fill: transparent; font: 600 11px var(--font); }
+#rev-arrow .rev-head { fill: var(--coral); }
+.team-total { fill: var(--text-muted); font: 11px var(--font); }
+.pulse { fill: var(--sunset); }
+.rain { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.rain span { position: absolute; top: -40px; width: 1px; height: 36px; opacity: 0;
+  background: linear-gradient(rgba(232, 238, 245, 0), rgba(232, 238, 245, 0.16)); }
+.agent-map.raining .rain span { animation-name: rain-fall; animation-timing-function: linear; animation-iteration-count: infinite; }
+@keyframes rain-fall { 0% { transform: translateY(0); opacity: 0; } 15% { opacity: 1; } 100% { transform: translateY(560px); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .rain { display: none; }
+  .map-node rect, .map-link, .map-rev { transition: none !important; }
+}
+@media (max-width: 720px) {
+  .agent-map { padding: var(--s1); }
 }

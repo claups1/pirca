@@ -6,23 +6,25 @@ Costs cover model tokens only. **Assumption:** hosting, storage, staff and outre
 
 ## 1. Cost per run
 
-| Run | Shop | Lang | Result | Model calls | Input | Cached input | Cache write | Output | Cost (USD) |
-|---|---|---|---|---:|---:|---:|---:|---:|---:|
-| PIU-CAST26 | bodega · Castilla | es | verified | 23 | 200,515 | 139,846 | 60,600 | 14,352 | $0.0162 |
-| PIU-CASTEN† | bodega · Castilla | en | verified | 24 | 221,968 | 163,504 | 58,392 | 15,016 | $0.0164 |
-| PIU-FARMES | botica · Piura | es | verified | 32 | 260,538 | 206,961 | 53,481 | 17,697 | $0.0176 |
-| PIU-FARMEN | botica · Piura | en | verified | 31 | 243,893 | 189,209 | 54,591 | 18,682 | $0.0181 |
-| PIU-FERRES | ferretería · Sullana | es | warning shown | 28 | 247,777 | 191,582 | 56,111 | 16,979 | $0.0174 |
-| PIU-FERREN | ferretería · Sullana | en | verified | 23 | 204,950 | 149,889 | 54,992 | 15,306 | $0.0160 |
-| **Average** | | | | 26.8 | 229,940 | 173,498 | 56,361 | 16,339 | $0.0170 |
-| Min | | | | 23.0 | 200,515 | 139,846 | 53,481 | 14,352 | $0.0160 |
-| Max | | | | 32.0 | 260,538 | 206,961 | 60,600 | 18,682 | $0.0181 |
+| Run | Shop | Lang | Result | Model calls | Input | Cached input | Cache write | Output | Run cost | Translation | Plan cost |
+|---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| PIU-CAST26 | bodega · Castilla | es | verified | 23 | 200,515 | 139,846 | 60,600 | 14,352 | $0.0162 | $0.0006 | $0.0168 |
+| PIU-CASTEN† | bodega · Castilla | en | verified | 24 | 221,968 | 163,504 | 58,392 | 15,016 | $0.0164 | $0.0007 | $0.0171 |
+| PIU-FARMES | botica · Piura | es | verified | 32 | 260,538 | 206,961 | 53,481 | 17,697 | $0.0176 | $0.0006 | $0.0182 |
+| PIU-FARMEN | botica · Piura | en | verified | 31 | 243,893 | 189,209 | 54,591 | 18,682 | $0.0181 | $0.0006 | $0.0186 |
+| PIU-FERRES | ferretería · Sullana | es | warning shown | 28 | 247,777 | 191,582 | 56,111 | 16,979 | $0.0174 | $0.0006 | $0.0180 |
+| PIU-FERREN | ferretería · Sullana | en | verified | 23 | 204,950 | 149,889 | 54,992 | 15,306 | $0.0160 | $0.0007 | $0.0167 |
+| **Average** | | | | 26.8 | 229,940 | 173,498 | 56,361 | 16,339 | $0.0170 | $0.0006 | $0.0176 |
+| Min | | | | 23.0 | 200,515 | 139,846 | 53,481 | 14,352 | $0.0160 | $0.0006 | $0.0167 |
+| Max | | | | 32.0 | 260,538 | 206,961 | 60,600 | 18,682 | $0.0181 | $0.0007 | $0.0186 |
 
 † PIU-CASTEN sent exactly the same requests as an earlier browser run (PIU-SGEMMT: same shop, language and day), so the Portkey gateway replayed the saved responses (24 calls in 8.6 s instead of 60–160 s). Its numbers are the measurement of PIU-SGEMMT's original run and are counted once. Our counter prices replayed calls at full price; whether the gateway bills them was not verified.
 
 PIU-CAST26 was run earlier the same day (Prompt 18), before the Critic's code check was enforced in code; prompts and model were the same. The other five runs used the current code.
 
-A full plan costs **$0.0170 on average** (S/ 0.058), between $0.0160 and $0.0181 across the 6 runs. 6 of 6 runs used the one allowed Planner revision after the Critic asked for changes.
+An agent run costs **$0.0170 on average** (S/ 0.058), between $0.0160 and $0.0181 across the 6 runs. 6 of 6 runs used the one allowed Planner revision after the Critic asked for changes.
+
+Every finished plan is now also translated automatically into the other language (one model call, tokens recorded separately). Each run's translation is measured above; the average is $0.0006. **A complete bilingual plan therefore costs $0.0176 on average** (S/ 0.061), between $0.0167 and $0.0186.
 
 ## 2. Cost by agent
 
@@ -58,29 +60,29 @@ Charging every cached token at the full input price would have cost $0.1954 inst
 1. **Caching of static prompts.** Each agent's system prompt is static (shared rules + its own file) and every call sends a `prompt_cache_key` per agent; run data goes in the user message. Evidence: 75% of input tokens were cached reads, saving $0.0937 (48%) on these runs (section 3).
 2. **Numbers computed in code, not by the model.** On average each run made 26.5 deterministic tool calls that produced 121 facts (amounts, days, weeks, percentages) at zero model tokens; the model only writes `{fact_key}` placeholders, and `verify_draft` rejects typed numbers. The model never spends output tokens doing arithmetic.
 3. **Saved plans reopen for 0 tokens.** `GET /api/plans/{code}` reads `plans/{code}.json`; no model is called (offline test `test_example_plans_open_without_running_agents` asserts zero runs). Reopening, switching currency and replaying the trace are free.
-4. **Translation instead of rerunning.** Measured translations: PIU-CAST26 → en: $0.0006 (1 call); PIU-FARMES → en: $0.0006 (1 call). Average $0.0006, which is **3.5% of an average full run** ($0.0170) — about 29× cheaper. A second request returns the saved translation for 0 tokens.
+4. **Translation instead of rerunning.** Each plan's second language comes from one translation call, not a second agent run. Measured translations: PIU-CAST26 → en: $0.0006 (1 call); PIU-CASTEN → es: $0.0007 (1 call); PIU-FARMES → en: $0.0006 (1 call); PIU-FARMEN → es: $0.0006 (1 call); PIU-FERRES → en: $0.0006 (1 call); PIU-FERREN → es: $0.0007 (1 call). Average $0.0006, which is **3.6% of an average agent run** ($0.0170) — about 27× cheaper than running the agents again in the other language. Switching language afterwards costs 0 tokens.
 5. **The 300-word plan limit.** Before the limit (commit `8bba882`), the final plan had 524 prose words and the Manager's final call produced 1,440 output tokens. With the limit, plans averaged 313 words (max 331) and the final call averaged 1,037 output tokens. Other prompt changes landed at the same time, so this is a before/after observation, not a controlled experiment. One run (PIU-FERRES, 331 words) still went over the limit after its fix attempt and is shown with a warning.
 
 ## 5. Cost at scale
 
-**Assumption:** each shop gets **2 full agent runs per month** (1 new plan + 1 update), priced at the measured average run cost. Translations, reopening saved plans and hosting are not included.
+**Assumption:** each shop gets **2 full agent runs per month** (1 new plan + 1 update), each priced at the measured average bilingual plan cost (agent run + automatic translation). Reopening saved plans is free; hosting is not included.
 
 | Shops | Per month (USD) | Per month (S/) | Per year (USD) | Per year (S/) | Range per year (USD) |
 |---:|---:|---:|---:|---:|---|
-| 1 | $0.0339 | S/ 0.117 | $0.4070 | S/ 1.40 | $0.3848–$0.4336 |
-| 100 | $3.39 | S/ 11.69 | $40.70 | S/ 140.29 | $38.48–$43.36 |
-| 10,000 | $339.15 | S/ 1,169.05 | $4,069.80 | S/ 14,028.60 | $3,847.92–$4,335.84 |
+| 1 | $0.0352 | S/ 0.121 | $0.4218 | S/ 1.45 | $0.4015–$0.4469 |
+| 100 | $3.52 | S/ 12.12 | $42.18 | S/ 145.40 | $40.15–$44.69 |
+| 10,000 | $351.51 | S/ 1,211.67 | $4,218.16 | S/ 14,540.00 | $4,015.20–$4,469.04 |
 
 ## 6. Organization view
 
-A municipality or chamber of commerce offering Pirca to **10,000 shops** would pay about **$4,070 (S/ 14,029) per year in model costs**, under the assumption above (2 runs per shop per month, model tokens only — hosting, support and outreach would be extra).
+A municipality or chamber of commerce offering Pirca to **10,000 shops** would pay about **$4,218 (S/ 14,540) per year in model costs**, under the assumption above (2 bilingual plans per shop per month, model tokens only — hosting, support and outreach would be extra).
 
 Comparison with a consultant-written plan: **no sourced figure was found.** Searches on 2026-10-24 for consultant prices for a small-business continuity or contingency plan in Peru (in soles) and internationally returned only academic theses, legal guidance (Ley N° 28551, RM N° 188-2015-PCM) and one 2009 UK figure that bundles equipment, so no comparison is made.
 
 ## Assumptions in this report
 
 - 2 full runs per shop per month (1 plan + 1 update), each costing the measured average.
-- Model token costs only: hosting, storage, staff, outreach and translations are excluded from the scale figures.
+- Each plan includes its automatic translation; model token costs only (hosting, storage, staff and outreach excluded).
 - Prices fixed at the Lecture 11 gpt-6-luna rates; exchange rate fixed at S/ 3.447 per US$.
 - 6 runs is a small sample: real costs vary with how often the Critic asks for a revision and how many tools each agent calls.
 

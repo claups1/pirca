@@ -327,3 +327,39 @@ Check in the browser on the start screen and on PIU-CAST26 at desktop and phone 
 ## Prompt 30 — Commit the El Niño theme
 
 `commit`
+
+## Prompt 31 — Both languages for every plan, timeline fixes, live agent map
+
+```
+First, three fixes in Pirca's plan view:
+
+1. Both languages for every plan:
+- At the end of every run, automatically translate the final plan into the other language with the translate step and save it in the same plan file (record its tokens separately, as now).
+- The plan view shows the plan in the current interface language; switching the language toggle switches the plan instantly with no server call. Remove the "View in English / Ver en español" button, or keep it only as a fallback if a translation is missing.
+- Backfill the 4 example plans that don't have the other language yet (PIU-CASTEN, PIU-FARMEN, PIU-FERREN, PIU-FERRES) by translating them once and saving.
+- Keep the English summary block only as a fallback when no English translation exists.
+- Update output/tokenomics.md: add the measured translation cost to the cost per plan and recompute the 100- and 10,000-shop numbers.
+- Add an offline test that a finished plan has both languages.
+
+2. In the "What to do and when" timeline, each step's text must start with a capital letter and read as a complete sentence (today steps 2 and 3 start mid-sentence, e.g. "consulta sus canales…").
+
+3. In footnote popups, when the source quote is in a different language than the interface, add a small note: "(fuente en inglés)" / "(source in Spanish)".
+
+Then replace the four agent cards in the trace panel with a live agent map, keeping the timeline log below it. Same professional style and colors: subtle, lightweight motion, the coral-to-sunset accent, no sounds or characters, and all motion off when prefers-reduced-motion is set.
+
+1. SVG diagram: Manager at the top, Risk Analyst, Planner and Critic below it, connected by lines, plus a "Code checks" gate before a final "Plan" node.
+2. When the Manager hands work to an agent, a coral pulse travels down that line; when the agent returns, a pulse travels back up. The working agent's node gets a coral outline and shows its current tool call (e.g. "optimize_budget").
+3. When the Critic asks for a revision, a curved arrow from Critic back to Planner lights up, labeled "1 revision".
+4. When verify_draft or the affordability check runs, the Code checks gate shows ✓ or ✗ for each check.
+5. Under each agent node, a small cost bar and its token count that fill as the run goes, plus the team total.
+6. Optional, only if it stays subtle: faint rain streaks in the background while the agents are working.
+7. It must work the same in Replay trace (driven by the saved events). The phone layout must keep working; one quick screenshot is enough to check it.
+
+Check it in the browser: open PIU-CAST26 and switch the language toggle (the whole plan, footnotes included, must change language), then use Replay trace and confirm the agent map animates with no console errors. Save screenshots of the plan in both languages, the agent map mid-run, and the revision arrow lit to output/screenshots/.
+```
+
+## Prompt 32 — Commit
+
+```
+Commit the working tree changes with a sensible message.
+```

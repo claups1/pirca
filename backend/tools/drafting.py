@@ -124,7 +124,7 @@ UNIT_BEFORE = re.compile(r"(S/\.?|US\$|\$|USD)\s*\{[A-Za-z]", re.IGNORECASE)
 
 INTERNAL_TERMS = re.compile(
     r"\boptimi[sz]\w*|\bplanificador\w*|\bplanners?\b|\bel critico\b|\bla critica\b|\bcritics?\b|\bagentes?\b"
-    r"|\bagents?\b|\bpuntaje\b|\bscores?\b|\bexposure\b|\bilustrativ\w*|\billustrative\b|\bfact_key\b")
+    r"|\bagents?\b|\bpuntaje\b|\bscores?\b|\bilustrativ\w*|\billustrative\b|\bfact_key\b")  # "score" covers "exposure score"
 INTERNAL_PLACEHOLDERS = {"exposure_score", "district_points", "near_water_points", "flooded_before_points",
                          "floor_level_points", "higher_storage_points", "expected_benefit", "issue_count"}
 TU_PLUS_IMPERATIVE = re.compile(
