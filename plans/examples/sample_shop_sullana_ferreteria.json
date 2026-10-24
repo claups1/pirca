@@ -1,0 +1,24 @@
+{
+  "business_type": "ferretería",
+  "district": "Sullana",
+  "near_water": "unknown",
+  "flooded_before": "no",
+  "floor_level": "ground",
+  "higher_storage": "mezzanine",
+  "tenure": "rented",
+  "stock_value": 60000,
+  "share_stock_below_1m": 0.4,
+  "perishables": false,
+  "cash_on_hand": 8000,
+  "monthly_fixed_costs": 5000,
+  "weekly_sales": 12000,
+  "workers": 4,
+  "suppliers": [
+    {"product": "cemento", "city": "Chiclayo"},
+    {"product": "fierro y alambre", "city": "Chiclayo"},
+    {"product": "pinturas", "city": "Piura"}
+  ],
+  "days_of_stock": 10,
+  "prep_budget": 2000,
+  "already_have": ["CAT-01"]
+}

@@ -248,3 +248,24 @@ Also add a "Safety checks" section to the help panel that lists these five defen
 ## Prompt 23 — Commit safety tests and interface fixes
 
 `Commit the working tree changes with a sensible message.`
+
+## Prompt 24 — Sample shops and tokenomics
+
+```
+Create 3 realistic sample shop profiles for Pirca: a bodega in Castilla on the ground floor near a drain, a pharmacy (botica) in central Piura with a second floor, and a hardware store (ferretería) in Sullana with suppliers in Chiclayo. Keep PIU-CAST26 as the first example.
+
+Run each profile for real, once in Spanish and once in English, and save them in plans/examples/ with readable codes. Also run the translate endpoint once on one plan. Then write output/tokenomics.md using only measured numbers:
+
+1. A table per run: model calls, input, cached input, cache write, output tokens, and cost in USD, plus the average and range across all runs.
+2. Cost by agent (Manager, Risk Analyst, Planner, Critic): which one costs the most and why.
+3. Caching savings: what the same runs would have cost if every cached token had been charged at the full input price, and the percentage saved.
+4. Cost-cutting measures we used, each with evidence: caching of static prompts, numbers computed in code instead of by the model, saved plans reopening for 0 tokens, translation instead of rerunning (cost of translate vs a full run), and the 300-word plan limit.
+5. Scale: cost per shop per month (assume 1 plan plus 1 update per month, and state that assumption), at 100 shops and at 10,000 shops, also shown in soles at the fixed BCRP rate.
+6. An organization view: what it would cost a municipality or chamber of commerce per year to offer Pirca to 10,000 shops, and one sentence comparing that to the cost of a single consultant-written plan (only if you find a sourced figure; otherwise say no source was found).
+
+Label every assumption clearly. Add the new example codes to the README later.
+```
+
+## Prompt 25 — Commit examples and tokenomics
+
+`Commit the working tree changes with a sensible message.`

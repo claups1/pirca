@@ -1,0 +1,24 @@
+{
+  "business_type": "botica",
+  "district": "Piura",
+  "near_water": "no",
+  "flooded_before": "yes",
+  "floor_level": "ground",
+  "higher_storage": "second_floor",
+  "tenure": "owned",
+  "stock_value": 45000,
+  "share_stock_below_1m": 0.3,
+  "perishables": true,
+  "cash_on_hand": 12000,
+  "monthly_fixed_costs": 6500,
+  "weekly_sales": 9000,
+  "workers": 3,
+  "suppliers": [
+    {"product": "medicamentos", "city": "Lima"},
+    {"product": "insulina y vacunas (cadena de frío)", "city": "Piura", "perishable": true},
+    {"product": "productos de higiene", "city": "Piura"}
+  ],
+  "days_of_stock": 21,
+  "prep_budget": 1500,
+  "already_have": ["CAT-10", "CAT-13"]
+}

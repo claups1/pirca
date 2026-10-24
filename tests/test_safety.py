@@ -24,11 +24,17 @@ PROFILE = json.loads((config.PLANS_DIR / "examples" / "sample_shop_castilla.json
 
 
 def record(name: str, checks: str, passed: bool, evidence: dict) -> None:
+    """Save the evidence; keep the old file (and its run_at) when nothing but the time would change."""
     SAFETY_DIR.mkdir(parents=True, exist_ok=True)
+    path = SAFETY_DIR / f"{name}.json"
     data = {"test": name, "checks": checks, "result": "PASS" if passed else "FAIL",
             "run_at": datetime.now(timezone.utc).isoformat(timespec="seconds"), "evidence": evidence}
-    (SAFETY_DIR / f"{name}.json").write_text(json.dumps(data, ensure_ascii=False, indent=2, default=str),
-                                             encoding="utf-8")
+    new = json.loads(json.dumps(data, default=str))
+    if path.exists():
+        old = json.loads(path.read_text(encoding="utf-8"))
+        if {k: v for k, v in old.items() if k != "run_at"} == {k: v for k, v in new.items() if k != "run_at"}:
+            return
+    path.write_text(json.dumps(data, ensure_ascii=False, indent=2, default=str), encoding="utf-8")
 
 
 def issue_types(result: dict) -> list[str]:
