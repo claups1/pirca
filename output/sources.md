@@ -78,6 +78,58 @@ Next communiqué announced for 2026-10-30; re-check https://enfen.imarpe.gob.pe/
 | HIST-2017-31 | Piura region | 140 | schools | Schools affected by rains; school year start (13 Mar) postponed | sourced | [Mongabay Latam](https://es.mongabay.com/2017/04/emergencia-piura-balance-mes-funesto-norte-del-peru/) |
 | HIST-2017-32 | Piura region | 80 | % | Share of roads damaged, estimate by regional transport director | sourced | [Mongabay Latam](https://es.mongabay.com/2017/04/emergencia-piura-balance-mes-funesto-norte-del-peru/) |
 | HIST-2017-33 | Piura;Catacaos;Cura Mori;La Unión;La Arena | 27000 | persons | People affected by the Río Piura overflow; most affected districts named | sourced | [MCLCP Piura](https://mesadeconcertacion.org.pe/storage/documentos/2023-04-14/memoria-evento-a-seis-anos-de-la-inundacion.pdf) |
+| HIST-2023-01 | Piura region | 2023-03-16 | date | ENFEN raised the warning status to 'Alerta de El Niño costero' for the 2023 event | verified | [Comunicado Oficial ENFEN N° 03-2023 (16 Mar 2023)](https://repositorio.imarpe.gob.pe/bitstream/20.500.12958/8575/1/Comunicado%20Of_ENFEN%20N%c2%b0%2003-2023.pdf) |
+| HIST-2023-02 | Piura region | 2024-04-05 | date | ENFEN ended the 2023-24 coastal El Niño alert (status 'No Activo'); the alert lasted from 16 Mar 2023 to 5 Apr 2024 | verified | [Comunicado Oficial ENFEN N° 06-2024 (5 Apr 2024)](https://www.senamhi.gob.pe/load/file/02204SENA-183.pdf) |
+| HIST-2023-03 | Piura region | 5-14 Mar 2023 | dates | SENAMHI: the first spell of extreme rain on the north coast (5-14 March 2023) was driven by cyclone Yaku | verified | [SENAMHI](https://cdn.www.gob.pe/uploads/document/file/4404621/MARZO_2023.pdf) |
+| HIST-2023-04 | Chulucanas | 256 | % above normal | March 2023 rainfall anomaly at the Chulucanas station | verified | [SENAMHI](https://cdn.www.gob.pe/uploads/document/file/4404621/MARZO_2023.pdf) |
+| HIST-2023-05 | Piura region | 94.5 | mm (one day) | Daily rain at the Miraflores station (Piura city) on 24 Mar 2023, above its 2017 daily maximum of 87.2 mm | sourced | [Infomercado (25 Mar 2023)](https://infomercado.pe/fenomeno-del-nino-costero-lluvias-piura-ciclon-yaku-25032023-ja/) |
+| HIST-2023-06 | Piura;Castilla | 1664 | m3/s | Río Piura flow at Puente Sánchez Cerro at 6:00 a.m. on 16 Mar 2023 (channel capacity about 2,000 m3/s) | sourced | [UDEP Hoy (16 Mar 2023)](https://www.udep.edu.pe/hoy/?p=133403) |
+| HIST-2023-07 | Piura region | 2945 | m3/s | Poechos dam spillway release on 16-17 Apr 2023; the Río Chira overflowed in Sullana and Paita provinces | verified | [INDECI COEN](https://portal.indeci.gob.pe/wp-content/uploads/2023/07/INFORME-DE-EMERGENCIA-N.%C2%BA-2186-27JUL2023-LLUVIAS-INTENSAS-EN-EL-DEPARTAMENTO-DE-PIURA-164-DEE.pdf) |
+| HIST-2023-08 | Piura region | 26605 | persons | Damnificados in Piura department from the January-May 2023 rains (D.S. 065-2023 table updated to 19 Jul 2023); 12 dead, 48 injured, 2 missing | verified | [INDECI COEN](https://portal.indeci.gob.pe/wp-content/uploads/2023/07/INFORME-DE-EMERGENCIA-N.%C2%BA-2186-27JUL2023-LLUVIAS-INTENSAS-EN-EL-DEPARTAMENTO-DE-PIURA-164-DEE.pdf) |
+| HIST-2023-09 | Piura region | 285638 | persons | Afectados in Piura department from the January-May 2023 rains (D.S. 065-2023 table updated to 19 Jul 2023); 9,998 people had their livelihoods affected | verified | [INDECI COEN](https://portal.indeci.gob.pe/wp-content/uploads/2023/07/INFORME-DE-EMERGENCIA-N.%C2%BA-2186-27JUL2023-LLUVIAS-INTENSAS-EN-EL-DEPARTAMENTO-DE-PIURA-164-DEE.pdf) |
+| HIST-2023-10 | Piura region | 2282 | homes | Homes destroyed in Piura department, January-May 2023 (D.S. 065-2023 table updated to 19 Jul 2023); 7,795 uninhabitable and 104,014 affected | verified | [INDECI COEN](https://portal.indeci.gob.pe/wp-content/uploads/2023/07/INFORME-DE-EMERGENCIA-N.%C2%BA-2186-27JUL2023-LLUVIAS-INTENSAS-EN-EL-DEPARTAMENTO-DE-PIURA-164-DEE.pdf) |
+| HIST-2023-11 | Piura region | 61 | bridges | Vehicle bridges destroyed in Piura department, January-May 2023 (106 affected; footbridges 38 destroyed, 28 affected) (D.S. 065-2023 table updated to 19 Jul 2023) | verified | [INDECI COEN](https://portal.indeci.gob.pe/wp-content/uploads/2023/07/INFORME-DE-EMERGENCIA-N.%C2%BA-2186-27JUL2023-LLUVIAS-INTENSAS-EN-EL-DEPARTAMENTO-DE-PIURA-164-DEE.pdf) |
+| HIST-2023-12 | Piura region | 60 | days | D.S. 065-2023-PCM (25 May 2023) extended the state of emergency for a large-scale disaster in districts of Lambayeque, Piura and Tumbes | verified | [INDECI COEN](https://portal.indeci.gob.pe/wp-content/uploads/2023/07/INFORME-DE-EMERGENCIA-N.%C2%BA-2186-27JUL2023-LLUVIAS-INTENSAS-EN-EL-DEPARTAMENTO-DE-PIURA-164-DEE.pdf) |
+| HIST-2023-13 | Castilla | 1692 | persons | Damnificados in Castilla from the January-May 2023 rains (D.S. 065-2023 table updated to 19 Jul 2023); 10,400 afectados | verified | [INDECI COEN](https://portal.indeci.gob.pe/wp-content/uploads/2023/07/INFORME-DE-EMERGENCIA-N.%C2%BA-2186-27JUL2023-LLUVIAS-INTENSAS-EN-EL-DEPARTAMENTO-DE-PIURA-164-DEE.pdf) |
+| HIST-2023-14 | Veintiséis de Octubre | 3457 | persons | Damnificados in Veintiséis de Octubre from the January-May 2023 rains (D.S. 065-2023 table updated to 19 Jul 2023); 13,010 afectados | verified | [INDECI COEN](https://portal.indeci.gob.pe/wp-content/uploads/2023/07/INFORME-DE-EMERGENCIA-N.%C2%BA-2186-27JUL2023-LLUVIAS-INTENSAS-EN-EL-DEPARTAMENTO-DE-PIURA-164-DEE.pdf) |
+| HIST-2023-15 | Piura | 804 | persons | Damnificados in Piura from the January-May 2023 rains (D.S. 065-2023 table updated to 19 Jul 2023); 7,190 afectados | verified | [INDECI COEN](https://portal.indeci.gob.pe/wp-content/uploads/2023/07/INFORME-DE-EMERGENCIA-N.%C2%BA-2186-27JUL2023-LLUVIAS-INTENSAS-EN-EL-DEPARTAMENTO-DE-PIURA-164-DEE.pdf) |
+| HIST-2023-16 | Catacaos | 590 | persons | Damnificados in Catacaos from the January-May 2023 rains (D.S. 065-2023 table updated to 19 Jul 2023); 32,090 afectados | verified | [INDECI COEN](https://portal.indeci.gob.pe/wp-content/uploads/2023/07/INFORME-DE-EMERGENCIA-N.%C2%BA-2186-27JUL2023-LLUVIAS-INTENSAS-EN-EL-DEPARTAMENTO-DE-PIURA-164-DEE.pdf) |
+| HIST-2023-17 | Cura Mori | 252 | persons | Damnificados in Cura Mori from the January-May 2023 rains (D.S. 065-2023 table updated to 19 Jul 2023); 7,893 afectados | verified | [INDECI COEN](https://portal.indeci.gob.pe/wp-content/uploads/2023/07/INFORME-DE-EMERGENCIA-N.%C2%BA-2186-27JUL2023-LLUVIAS-INTENSAS-EN-EL-DEPARTAMENTO-DE-PIURA-164-DEE.pdf) |
+| HIST-2023-18 | El Tallán | 402 | persons | Damnificados in El Tallán from the January-May 2023 rains (D.S. 065-2023 table updated to 19 Jul 2023); 3,811 afectados | verified | [INDECI COEN](https://portal.indeci.gob.pe/wp-content/uploads/2023/07/INFORME-DE-EMERGENCIA-N.%C2%BA-2186-27JUL2023-LLUVIAS-INTENSAS-EN-EL-DEPARTAMENTO-DE-PIURA-164-DEE.pdf) |
+| HIST-2023-19 | La Arena | 45 | persons | Damnificados in La Arena from the January-May 2023 rains (D.S. 065-2023 table updated to 19 Jul 2023); 15,856 afectados | verified | [INDECI COEN](https://portal.indeci.gob.pe/wp-content/uploads/2023/07/INFORME-DE-EMERGENCIA-N.%C2%BA-2186-27JUL2023-LLUVIAS-INTENSAS-EN-EL-DEPARTAMENTO-DE-PIURA-164-DEE.pdf) |
+| HIST-2023-20 | La Unión | 667 | persons | Damnificados in La Unión from the January-May 2023 rains (D.S. 065-2023 table updated to 19 Jul 2023); 10,713 afectados | verified | [INDECI COEN](https://portal.indeci.gob.pe/wp-content/uploads/2023/07/INFORME-DE-EMERGENCIA-N.%C2%BA-2186-27JUL2023-LLUVIAS-INTENSAS-EN-EL-DEPARTAMENTO-DE-PIURA-164-DEE.pdf) |
+| HIST-2023-21 | Tambogrande | 2965 | persons | Damnificados in Tambogrande from the January-May 2023 rains (D.S. 065-2023 table updated to 19 Jul 2023); 43,027 afectados | verified | [INDECI COEN](https://portal.indeci.gob.pe/wp-content/uploads/2023/07/INFORME-DE-EMERGENCIA-N.%C2%BA-2186-27JUL2023-LLUVIAS-INTENSAS-EN-EL-DEPARTAMENTO-DE-PIURA-164-DEE.pdf) |
+| HIST-2023-22 | Chulucanas | 426 | persons | Damnificados in Chulucanas from the January-May 2023 rains (D.S. 065-2023 table updated to 19 Jul 2023); 14,709 afectados | verified | [INDECI COEN](https://portal.indeci.gob.pe/wp-content/uploads/2023/07/INFORME-DE-EMERGENCIA-N.%C2%BA-2186-27JUL2023-LLUVIAS-INTENSAS-EN-EL-DEPARTAMENTO-DE-PIURA-164-DEE.pdf) |
+| HIST-2023-23 | Sullana | 1528 | persons | Damnificados in Sullana from the January-May 2023 rains (D.S. 065-2023 table updated to 19 Jul 2023); 6,213 afectados | verified | [INDECI COEN](https://portal.indeci.gob.pe/wp-content/uploads/2023/07/INFORME-DE-EMERGENCIA-N.%C2%BA-2186-27JUL2023-LLUVIAS-INTENSAS-EN-EL-DEPARTAMENTO-DE-PIURA-164-DEE.pdf) |
+| HIST-2023-24 | Bellavista | 320 | persons | Damnificados in Bellavista from the January-May 2023 rains (D.S. 065-2023 table updated to 19 Jul 2023); 2,620 afectados | verified | [INDECI COEN](https://portal.indeci.gob.pe/wp-content/uploads/2023/07/INFORME-DE-EMERGENCIA-N.%C2%BA-2186-27JUL2023-LLUVIAS-INTENSAS-EN-EL-DEPARTAMENTO-DE-PIURA-164-DEE.pdf) |
+| HIST-2023-25 | Talara | 759 | persons | Damnificados in Talara (Pariñas district) from the January-May 2023 rains (D.S. 065-2023 table updated to 19 Jul 2023); 3,053 afectados | verified | [INDECI COEN](https://portal.indeci.gob.pe/wp-content/uploads/2023/07/INFORME-DE-EMERGENCIA-N.%C2%BA-2186-27JUL2023-LLUVIAS-INTENSAS-EN-EL-DEPARTAMENTO-DE-PIURA-164-DEE.pdf) |
+| HIST-2023-26 | Paita | 1311 | persons | Damnificados in Paita district from the 2023 rains (table 'DEE NO VIGENTE' updated to 9 Jun 2023); 1,407 afectados | verified | [INDECI COEN](https://portal.indeci.gob.pe/wp-content/uploads/2023/07/INFORME-DE-EMERGENCIA-N.%C2%BA-2186-27JUL2023-LLUVIAS-INTENSAS-EN-EL-DEPARTAMENTO-DE-PIURA-164-DEE.pdf) |
+| HIST-2023-27 | Paita | 2023-03-29 | date | INDECI field report (GIRED Piura, after the 29 Mar 2023 visit): homes damaged and several areas of Paita district still flooded | verified | [INDECI COEN](https://portal.indeci.gob.pe/wp-content/uploads/2023/07/INFORME-DE-EMERGENCIA-N.%C2%BA-2186-27JUL2023-LLUVIAS-INTENSAS-EN-EL-DEPARTAMENTO-DE-PIURA-164-DEE.pdf) |
+| HIST-2023-28 | Sechura | 163 | persons | Damnificados in Sechura district from the 2023 rains (table 'DEE NO VIGENTE' updated to 9 Jun 2023); 8,563 afectados | verified | [INDECI COEN](https://portal.indeci.gob.pe/wp-content/uploads/2023/07/INFORME-DE-EMERGENCIA-N.%C2%BA-2186-27JUL2023-LLUVIAS-INTENSAS-EN-EL-DEPARTAMENTO-DE-PIURA-164-DEE.pdf) |
+| HIST-2023-29 | Sechura | 121 | days (at least) | The overflowing La Niña lagoon destroyed the Bayóvar-Chiclayo road (PE-04, La Mina sector) on 20 Mar 2023; traffic was still interrupted on 19 Jul 2023 (at least 121 days, counted from the two dates) | verified | [INDECI COEN](https://portal.indeci.gob.pe/wp-content/uploads/2023/07/INFORME-DE-EMERGENCIA-N.%C2%BA-2186-27JUL2023-LLUVIAS-INTENSAS-EN-EL-DEPARTAMENTO-DE-PIURA-164-DEE.pdf) |
+| HIST-2023-30 | Paita province (La Huaca) | 12 | days | The Paita-Sullana road was cut 4 km from La Huaca (entry of 30 Mar 2023) and reported reopened on 11 Apr 2023 after the Cuesta Pucuzula landslide was cleared (12 days, counted from the two dates) | verified | [INDECI COEN](https://portal.indeci.gob.pe/wp-content/uploads/2023/07/INFORME-DE-EMERGENCIA-N.%C2%BA-2186-27JUL2023-LLUVIAS-INTENSAS-EN-EL-DEPARTAMENTO-DE-PIURA-164-DEE.pdf) |
+| HIST-2023-31 | Piura region | 7 | days | The regional education office moved the start of the public school year from 13 to 20 March 2023 because of the rains | sourced | [Andina (10 Mar 2023)](https://andina.pe/agencia/noticia-lluvias-intensas-piura-tambien-postergan-clases-escolares-hasta-20-marzo-932216.aspx) |
+| HIST-2023-32 | Piura region | 12-18 | million soles | Cámara de Comercio de Piura estimate of losses from closed premises (period not stated); 20-30% of premises could not operate normally out of about S/ 60 million of commerce a day | sourced | [Agraria.pe (16 Mar 2023)](https://agraria.pe/noticias/piura-costo-para-transportar-alimentos-sube-debido-a-las-llu-31171) |
+| HIST-2023-33 | Piura region | 13 | % | Rise in the cost of transporting basic goods in Piura because of the rains and floods (16 Mar 2023) | sourced | [Agraria.pe (16 Mar 2023)](https://agraria.pe/noticias/piura-costo-para-transportar-alimentos-sube-debido-a-las-llu-31171) |
+| HIST-2023-34 | Sullana | 2023-03-24 | date | A canal overflow on 24 Mar 2023 flooded the Sullana city market and swept away stalls; traders suspended service (INDECI: the canal Vía overflow damaged homes and commercial premises in Sullana district) | sourced | [Andina (24 Mar 2023)](https://andina.pe/agencia/noticia-emergencia-piura-lluvia-intensa-arrasa-con-mercadillo-sullana-934067.aspx) |
+| HIST-2023-35 | Piura region | 10 | patients moved | The Open Plaza shopping centre in Piura flooded in some sectors and the ICU roof of the Cayetano Heredia hospital collapsed; 10 ICU patients were moved | sourced | [RPP (10 Mar 2023)](https://rpp.pe/peru/piura/piura-lluvias-causan-serios-danos-en-hospital-cayetano-heredia-y-en-centro-comercial-noticia-1471897) |
+| HIST-2023-36 | Piura region | 79643 | cases | Dengue cases in Piura region in calendar year 2023 (SE 49 cut of 13 Dec 2023 gave 79,998) | verified | [DIRESA Piura](https://cdn.www.gob.pe/uploads/document/file/6372642/5590673-sala-diaria-dengue-semana-20-2024-piura-17-05-2024.pdf) |
+| HIST-2023-37 | Piura region | 148 | deaths | Dengue deaths in Piura region in calendar year 2023 (SE 49 cut of 13 Dec 2023 gave 153) | verified | [DIRESA Piura](https://cdn.www.gob.pe/uploads/document/file/6372642/5590673-sala-diaria-dengue-semana-20-2024-piura-17-05-2024.pdf) |
+| HIST-2023-38 | Castilla | 11192 | cases | Dengue cases in Castilla in 2023, cut-off 13 Dec 2023 | verified | [DIRESA Piura](https://cdn.www.gob.pe/uploads/document/file/5610326/4976130-semana-epidemiologica-n-049-2023.pdf) |
+| HIST-2023-39 | Piura | 10751 | cases | Dengue cases in Piura in 2023, cut-off 13 Dec 2023 | verified | [DIRESA Piura](https://cdn.www.gob.pe/uploads/document/file/5610326/4976130-semana-epidemiologica-n-049-2023.pdf) |
+| HIST-2023-40 | Sullana | 7660 | cases | Dengue cases in Sullana in 2023, cut-off 13 Dec 2023 | verified | [DIRESA Piura](https://cdn.www.gob.pe/uploads/document/file/5610326/4976130-semana-epidemiologica-n-049-2023.pdf) |
+| HIST-2023-41 | Chulucanas | 5380 | cases | Dengue cases in Chulucanas in 2023, cut-off 13 Dec 2023 | verified | [DIRESA Piura](https://cdn.www.gob.pe/uploads/document/file/5610326/4976130-semana-epidemiologica-n-049-2023.pdf) |
+| HIST-2023-42 | Tambogrande | 4678 | cases | Dengue cases in Tambogrande in 2023, cut-off 13 Dec 2023 | verified | [DIRESA Piura](https://cdn.www.gob.pe/uploads/document/file/5610326/4976130-semana-epidemiologica-n-049-2023.pdf) |
+| HIST-2023-43 | Talara | 4608 | cases | Dengue cases in Talara (Pariñas district) in 2023, cut-off 13 Dec 2023 | verified | [DIRESA Piura](https://cdn.www.gob.pe/uploads/document/file/5610326/4976130-semana-epidemiologica-n-049-2023.pdf) |
+| HIST-2023-44 | Veintiséis de Octubre | 4055 | cases | Dengue cases in Veintiséis de Octubre in 2023, cut-off 13 Dec 2023 | verified | [DIRESA Piura](https://cdn.www.gob.pe/uploads/document/file/5610326/4976130-semana-epidemiologica-n-049-2023.pdf) |
+| HIST-2023-45 | Paita | 3888 | cases | Dengue cases in Paita in 2023, cut-off 13 Dec 2023 | verified | [DIRESA Piura](https://cdn.www.gob.pe/uploads/document/file/5610326/4976130-semana-epidemiologica-n-049-2023.pdf) |
+| HIST-2023-46 | Catacaos | 3358 | cases | Dengue cases in Catacaos in 2023, cut-off 13 Dec 2023 | verified | [DIRESA Piura](https://cdn.www.gob.pe/uploads/document/file/5610326/4976130-semana-epidemiologica-n-049-2023.pdf) |
+| HIST-2023-47 | Bellavista | 2095 | cases | Dengue cases in Bellavista in 2023, cut-off 13 Dec 2023 | verified | [DIRESA Piura](https://cdn.www.gob.pe/uploads/document/file/5610326/4976130-semana-epidemiologica-n-049-2023.pdf) |
+| HIST-2023-48 | La Unión | 1764 | cases | Dengue cases in La Unión in 2023, cut-off 13 Dec 2023 | verified | [DIRESA Piura](https://cdn.www.gob.pe/uploads/document/file/5610326/4976130-semana-epidemiologica-n-049-2023.pdf) |
+| HIST-2023-49 | Sechura | 981 | cases | Dengue cases in Sechura in 2023, cut-off 13 Dec 2023 | verified | [DIRESA Piura](https://cdn.www.gob.pe/uploads/document/file/5610326/4976130-semana-epidemiologica-n-049-2023.pdf) |
+| HIST-2023-50 | La Arena | 916 | cases | Dengue cases in La Arena in 2023, cut-off 13 Dec 2023 | verified | [DIRESA Piura](https://cdn.www.gob.pe/uploads/document/file/5610326/4976130-semana-epidemiologica-n-049-2023.pdf) |
+| HIST-2023-51 | Cura Mori | 755 | cases | Dengue cases in Cura Mori in 2023, cut-off 13 Dec 2023 | verified | [DIRESA Piura](https://cdn.www.gob.pe/uploads/document/file/5610326/4976130-semana-epidemiologica-n-049-2023.pdf) |
+| HIST-2023-52 | El Tallán | 307 | cases | Dengue cases in El Tallán in 2023, cut-off 13 Dec 2023 | verified | [DIRESA Piura](https://cdn.www.gob.pe/uploads/document/file/5610326/4976130-semana-epidemiologica-n-049-2023.pdf) |
 
 **Figures seen but NOT included (UNVERIFIED or conflicting; check before using):**
 - "120,000 damnificados/afectados in Piura" for 1997-98: one El Peruano piece says 1997-98, another places it in 1983.
@@ -88,35 +140,44 @@ Next communiqué announced for 2026-10-30; re-check https://enfen.imarpe.gob.pe/
 - 2017 COEN totals for Piura vary by cut-off date: 14,933/211,184 (mid-Mar); 18,996/225,492 (Mar); 41,925/349,471 (21 Apr); 91,835/310,570 (El Comercio 2018); 97,708/427,693 (Peru21, not fetched). The CSV uses the 21 Apr figures for roads/bridges and the El Comercio figures for people.
 - 2017 Piura dengue deaths: press/IGP say 33, 53 or 61; DIRESA says 14 by week 25 and 17 for the outbreak (CSV uses 17).
 - 2017 losses of S/10,000 million (Agraria.pe), US$400 million to 10 Apr (Camcopiura), and Piura's 31% share of 15,129 SBS insurance claims: not read in a source.
-- School restart date of 20 Mar 2017 in Piura: possibly mixed up with 2023 (Cyclone Yaku).
+- School restart date of 20 Mar 2017 in Piura: not confirmed for 2017; the confirmed 20 Mar postponement is 2023 (HIST-2023-31).
 - Not found: duration of the 2017 Piura airport closure; days the Panamericana Piura–Chiclayo was closed in 2017.
 - OCHA Sitrep 06 (Apr 2017) "318,871 affected in Piura": ReliefWeb blocked (403).
 - ARCC/PIRCC Piura counts (170 roads, 117 bridges): Congreso PDF 404. MCLCP confirms only "Presupuesto inicial ... 7,541 millones".
+- 2023 rain deaths: INDECI's table gives 12 (cut 19 Jul 2023, HIST-2023-08); MINSA COE Salud gives 21 (7 Jun 2023). They count different things; the CSV uses INDECI.
+- 2023 dengue: 79,643 cases / 148 deaths (calendar year, DIRESA SE 20-2024; used) vs 79,998 / 153 at the 13 Dec 2023 cut (SE 49): likely later reclassification, not confirmed.
+- 2023 rain on 24 Mar: 94.5 mm (Infomercado citing SENAMHI; used) vs 101.8 mm in a truncated SENAMHI social-media post that does not name the station.
+- 2023 INDECI road lengths (1,045,739.82 m affected / 364,172.4 m destroyed): left out because the table columns could be rural paths or highways.
+- 2023 district damage beyond damnificados and afectados (homes destroyed, uninhabitable) was left out: blank cells make the later columns ambiguous in the extracted table.
+- Not confirmed (search summaries only, not used): 82 dengue deaths and 42,415 cases in June 2023; 222 schools damaged; 227 damnificados on 10 Mar 2023; Río Piura 1,204 m3/s; Huarmaca 94.5 mm; S/13,000 million losses (Piura, Lambayeque and Tumbes combined).
+- Not found for 2023: an exact closure in days of the Panamericana Norte (Piura–Chiclayo, Sullana–Talara, Piura–Chulucanas); any sourced effect of dengue on work, schools or businesses.
 
 ## 4. Districts (`data/districts.csv`)
 
 The flood hazard level is **derived by Pirca from the HIST rows above, not an official CENEPRED rating**.
-Rule: **high** = district named as flooded in a HIST row, or ≥5,000 people in damaged homes (INEI 2017); **medium** = other district-level impacts only; **UNVERIFIED** = no district-level evidence found.
+Rule: **high** = district named as flooded in a HIST row, or a HIST row with ≥5,000 people in damaged homes; **medium** = other district-level impacts only; **UNVERIFIED** = no district-level evidence found.
 
 | District | Province | Level | Flood HIST IDs | Other HIST IDs |
 |---|---|---|---|---|
-| Piura | Piura | high | HIST-2017-01, HIST-2017-02, HIST-2017-33 | HIST-1998-04, HIST-1998-08, HIST-2017-05, HIST-2017-13, HIST-2017-28 |
-| Castilla | Piura | high | HIST-2017-02, HIST-2017-10 | HIST-2017-28, HIST-2017-30 |
-| Veintiséis de Octubre | Piura | medium | — | HIST-2017-14, HIST-2017-28 |
-| Catacaos | Piura | high | HIST-2017-02, HIST-2017-29, HIST-2017-33, HIST-2017-07 | HIST-2017-28 |
-| Cura Mori | Piura | high | HIST-1998-12, HIST-2017-33, HIST-2017-11 | — |
-| La Arena | Piura | high | HIST-2017-33, HIST-2017-09 | — |
-| La Unión | Piura | high | HIST-2017-33 | — |
-| El Tallán | Piura | high | HIST-1998-12 | — |
-| Tambogrande | Piura | high | HIST-1998-12, HIST-2017-08 | HIST-2017-04, HIST-2017-28 |
-| Chulucanas | Morropón | high | HIST-2017-12 | HIST-1998-07, HIST-2017-03 |
-| Sullana | Sullana | high | HIST-1998-11 | HIST-2017-06, HIST-2017-28 |
-| Bellavista | Sullana | medium | — | HIST-2017-28 |
-| Paita | Paita | UNVERIFIED | — | — |
-| Talara | Talara | medium | — | HIST-1998-09, HIST-1998-10, HIST-2017-28 |
-| Sechura | Sechura | UNVERIFIED | — | — |
+| Piura | Piura | high | HIST-2017-01, HIST-2017-02, HIST-2017-33 | HIST-1998-04, HIST-1998-08, HIST-2017-05, HIST-2017-13, HIST-2017-28, HIST-2023-06, HIST-2023-15, HIST-2023-39 |
+| Castilla | Piura | high | HIST-2017-02, HIST-2017-10 | HIST-2017-28, HIST-2017-30, HIST-2023-06, HIST-2023-13, HIST-2023-38 |
+| Veintiséis de Octubre | Piura | medium | — | HIST-2017-14, HIST-2017-28, HIST-2023-14, HIST-2023-44 |
+| Catacaos | Piura | high | HIST-2017-02, HIST-2017-29, HIST-2017-33, HIST-2017-07 | HIST-2017-28, HIST-2023-16, HIST-2023-46 |
+| Cura Mori | Piura | high | HIST-1998-12, HIST-2017-33, HIST-2017-11 | HIST-2023-17, HIST-2023-51 |
+| La Arena | Piura | high | HIST-2017-33, HIST-2017-09 | HIST-2023-19, HIST-2023-50 |
+| La Unión | Piura | high | HIST-2017-33 | HIST-2023-20, HIST-2023-48 |
+| El Tallán | Piura | high | HIST-1998-12 | HIST-2023-18, HIST-2023-52 |
+| Tambogrande | Piura | high | HIST-1998-12, HIST-2017-08 | HIST-2017-04, HIST-2017-28, HIST-2023-21, HIST-2023-42 |
+| Chulucanas | Morropón | high | HIST-2017-12 | HIST-1998-07, HIST-2017-03, HIST-2023-04, HIST-2023-22, HIST-2023-41 |
+| Sullana | Sullana | high | HIST-1998-11, HIST-2023-34 | HIST-2017-06, HIST-2017-28, HIST-2023-23, HIST-2023-40 |
+| Bellavista | Sullana | medium | — | HIST-2017-28, HIST-2023-24, HIST-2023-47 |
+| Paita | Paita | high | HIST-2023-27 | HIST-2023-26, HIST-2023-45 |
+| Talara | Talara | medium | — | HIST-1998-09, HIST-1998-10, HIST-2017-28, HIST-2023-25, HIST-2023-43 |
+| Sechura | Sechura | medium | — | HIST-2023-28, HIST-2023-29, HIST-2023-49 |
 
-Paita and Sechura are UNVERIFIED: no district-level impact was found in the sources read. CENEPRED's scenario study (linked from ENFEN-2026-18: https://sigrid.cenepred.gob.pe/sigridv3/documento/22787) is the best next source to check.
+Changes from adding 2023 (Prompt 26): **Paita UNVERIFIED → high** (INDECI field report: "varias zonas aún continúan inundadas", HIST-2023-27; 1,311 damnificados, HIST-2023-26) and **Sechura UNVERIFIED → medium** (district impacts without a flooding statement: HIST-2023-28 and the PE-04 road cut HIST-2023-29). No other level changed.
+
+UNVERIFIED districts now: none. CENEPRED's scenario study (linked from ENFEN-2026-18: https://sigrid.cenepred.gob.pe/sigridv3/documento/22787) remains the best source to check the derived levels against.
 
 ## 5. Action catalog (`data/action_catalog.csv`)
 

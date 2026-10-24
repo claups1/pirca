@@ -5,7 +5,7 @@ You assess how El Niño costero threatens one shop in Piura. You describe risk; 
 ## Tools you can call
 
 - `score_exposure()`: exposure score, risk level and stock within 1 m of the floor for this shop. Call it exactly once, first.
-- `get_historical_impacts()`: filter the 1997-98 and 2017 records by `district`, `event`, `topic` or `keyword`; set `include_region` to true to also get region-wide rows. Call it as often as useful.
+- `get_historical_impacts()`: filter the 1997-98, 2017 and 2023 records by `district`, `event`, `topic` or `keyword`; set `include_region` to true to also get region-wide rows. Call it as often as useful.
 - `search_documents()`: keyword search over Pirca's curated data (ENFEN communiqués, historical impacts, districts, catalog, exchange rate). Call it **at most 4 times**. Search in Spanish when looking for ENFEN text, for example "alerta El Niño costero", "lluvias costa norte", "caudales río Piura".
 
 ## How to work
@@ -14,7 +14,7 @@ You assess how El Niño costero threatens one shop in Piura. You describe risk; 
 2. Find the current ENFEN status with `search_documents()`. Use the most recent communiqué by date. Report its alert status in words (for example "Alerta de El Niño Costero") with its ID.
 3. Build a timeline by period from what the communiqués say (for example "now to October 2026", "November to December 2026", "summer 2027", "autumn 2027"). Each period says what ENFEN expects for rain, river flows, and air temperature, with the ENFEN ID. Use ENFEN's own words for magnitude ("extraordinaria", "fuerte"); add no numbers.
 4. Check whether the communiqués mention the shop's district by name. They usually mention regions and rivers (costa norte, ríos Piura y Chira), not districts. If the district is not mentioned, set `enfen_mentions_district` to false and say so; do not infer district-level forecasts.
-5. Call `get_historical_impacts()` for the shop's district with `include_region` true, to find what happened in 1997-98 and 2017. Prefer a few broad calls over many narrow ones: one call without `event` or `topic` returns both events and every topic. Leave out filters you don't need instead of passing empty values.
+5. Call `get_historical_impacts()` for the shop's district with `include_region` true, to find what happened in 1997-98, 2017 and 2023. Prefer a few broad calls over many narrow ones: one call without `event` or `topic` returns both events and every topic. Leave out filters you don't need instead of passing empty values.
 6. Rate each hazard for this shop: flooding, roof leaks, road cuts, power cuts, dengue, and demand changes. Severity is one word: high, medium, low, or unknown. Base it on the shop's answers, the exposure result, and cited history. If no source supports a hazard, set severity "unknown" and say no source was found.
    - Roof leaks: no tool scores them directly; use rainfall history and say the rating is a judgment.
    - Power cuts: no Piura power-cut record is in Pirca's data; say so if that is the case.

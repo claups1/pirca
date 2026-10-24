@@ -11,8 +11,9 @@ from backend.tools.profile import ShopProfile, Supplier, district_hist_ids, dist
 WEEKS_PER_MONTH = 52 / 12
 
 # Supplier routes with a documented cut or damage in Piura's history.
-SOUTH = ("high", ["HIST-1998-07", "HIST-2017-21"],
-         "Panamericana Piura–Lambayeque was cut at Mórrope for weeks in 1998; 15 bridges were destroyed in 2017")
+SOUTH = ("high", ["HIST-1998-07", "HIST-2017-21", "HIST-2023-29"],
+         "Panamericana Piura–Lambayeque was cut at Mórrope for weeks in 1998; 15 bridges were destroyed in 2017; "
+         "the coastal Bayóvar–Chiclayo road (PE-04) was cut for at least 121 days in 2023")
 ROUTES = {
     "tumbes": ("high", ["HIST-1998-06"], "Panamericana Tumbes–Piura was cut for three months in 1998"),
     "chiclayo": SOUTH, "lambayeque": SOUTH, "trujillo": SOUTH, "lima": SOUTH,
@@ -20,6 +21,7 @@ ROUTES = {
     "chulucanas": ("high", ["HIST-1998-07"], "The Motupe–Chulucanas–Piura detour was cut by a bridge collapse in 1998"),
     "morropon": ("high", ["HIST-1998-08"], "The Piura–Morropón road was damaged and bridges collapsed in 1998"),
     "sullana": ("medium", ["HIST-1998-08"], "The Piura–La Arena–Sullana road was damaged in 1998"),
+    "paita": ("high", ["HIST-2023-30"], "The Paita–Sullana road was cut near La Huaca for 12 days in 2023"),
 }
 LEVEL_TO_ROUTE_RISK = {"high": "high", "medium": "medium", "UNVERIFIED": "unknown"}
 
@@ -261,7 +263,7 @@ def _run_scenario(p: ShopProfile, scenario: str, today: date) -> dict:
         base = compute_supplier_buffer(p)
         cut = compute_supplier_buffer(p, force_risk="high")
         facts = _compare(base["facts"], cut["facts"])
-        return _envelope("run_scenario", facts, base["sources"] + ["HIST-2017-21"], ("target_stock_days",),
+        return _envelope("run_scenario", facts, base["sources"] + ["HIST-2017-21", "HIST-2023-11"], ("target_stock_days",),
                          scenario=scenario, suppliers=cut["suppliers"])
 
     if scenario == "power_cut_week":
@@ -280,5 +282,5 @@ def _run_scenario(p: ShopProfile, scenario: str, today: date) -> dict:
     facts = {"workers": p.workers, "sick_weeks": weeks, "capacity_lost_pct": round(share * 100, 1),
              "sales_at_risk": _money(p.weekly_sales * share * weeks)}
     notes = ["With one worker the shop closes while they are sick."] if p.workers == 1 else []
-    return _envelope("run_scenario", facts, ["CAT-09", "HIST-2017-25"], ("dengue_sick_weeks",),
+    return _envelope("run_scenario", facts, ["CAT-09", "HIST-2017-25", "HIST-2023-36", "HIST-2023-37"], ("dengue_sick_weeks",),
                      scenario=scenario, notes=notes)

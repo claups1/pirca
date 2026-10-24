@@ -298,9 +298,9 @@ def test_manager_is_told_the_real_district_level():
     assert '"hazard_level": "high"' in first and '"unverified": false' in first
 
 
-def test_manager_is_told_when_district_is_unverified():
+def test_manager_is_told_when_district_is_unverified(unverified_district):
     client = FakeClient(happy_scripts())
-    run_plan({**PROFILE, "district": "Paita"}, language="es", today=TODAY, client=client)
+    run_plan({**PROFILE, "district": unverified_district}, language="es", today=TODAY, client=client)
     first = next(kw["input"][0]["content"] for agent, kw in client.responses.requests if agent == "manager")
     assert '"hazard_level": "UNVERIFIED"' in first and '"unverified": true' in first
 

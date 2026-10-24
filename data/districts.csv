@@ -1,16 +1,16 @@
 district,province,flood_hazard_level,basis,flood_hist_ids,other_hist_ids
-Piura,Piura,high,Named as flooded in the historical record,HIST-2017-01;HIST-2017-02;HIST-2017-33,HIST-1998-04;HIST-1998-08;HIST-2017-05;HIST-2017-13;HIST-2017-28
-Castilla,Piura,high,"Named as flooded in the historical record and ≥5,000 people in damaged homes (INEI 2017)",HIST-2017-02;HIST-2017-10,HIST-2017-28;HIST-2017-30
-Veintiséis de Octubre,Piura,medium,"District-level impacts recorded (housing <5,000, roads, water, rainfall or dengue) but not named as flooded",,HIST-2017-14;HIST-2017-28
-Catacaos,Piura,high,"Named as flooded in the historical record and ≥5,000 people in damaged homes (INEI 2017)",HIST-2017-02;HIST-2017-29;HIST-2017-33;HIST-2017-07,HIST-2017-28
-Cura Mori,Piura,high,"Named as flooded in the historical record and ≥5,000 people in damaged homes (INEI 2017)",HIST-1998-12;HIST-2017-33;HIST-2017-11,
-La Arena,Piura,high,"Named as flooded in the historical record and ≥5,000 people in damaged homes (INEI 2017)",HIST-2017-33;HIST-2017-09,
-La Unión,Piura,high,Named as flooded in the historical record,HIST-2017-33,
-El Tallán,Piura,high,Named as flooded in the historical record,HIST-1998-12,
-Tambogrande,Piura,high,"Named as flooded in the historical record and ≥5,000 people in damaged homes (INEI 2017)",HIST-1998-12;HIST-2017-08,HIST-2017-04;HIST-2017-28
-Chulucanas,Morropón,high,"≥5,000 people in damaged homes (INEI 2017)",HIST-2017-12,HIST-1998-07;HIST-2017-03
-Sullana,Sullana,high,Named as flooded in the historical record,HIST-1998-11,HIST-2017-06;HIST-2017-28
-Bellavista,Sullana,medium,"District-level impacts recorded (housing <5,000, roads, water, rainfall or dengue) but not named as flooded",,HIST-2017-28
-Paita,Paita,UNVERIFIED,No district-level impact found in sourced data; needs checking (e.g. CENEPRED scenario maps),,
-Talara,Talara,medium,"District-level impacts recorded (housing <5,000, roads, water, rainfall or dengue) but not named as flooded",,HIST-1998-09;HIST-1998-10;HIST-2017-28
-Sechura,Sechura,UNVERIFIED,No district-level impact found in sourced data; needs checking (e.g. CENEPRED scenario maps),,
+Piura,Piura,high,Named as flooded in the historical record,HIST-2017-01;HIST-2017-02;HIST-2017-33,HIST-1998-04;HIST-1998-08;HIST-2017-05;HIST-2017-13;HIST-2017-28;HIST-2023-06;HIST-2023-15;HIST-2023-39
+Castilla,Piura,high,"Named as flooded in the historical record and ≥5,000 people in damaged homes (INEI 2017)",HIST-2017-02;HIST-2017-10,HIST-2017-28;HIST-2017-30;HIST-2023-06;HIST-2023-13;HIST-2023-38
+Veintiséis de Octubre,Piura,medium,"District-level impacts recorded (housing <5,000, roads, water, rainfall or dengue) but not named as flooded",,HIST-2017-14;HIST-2017-28;HIST-2023-14;HIST-2023-44
+Catacaos,Piura,high,"Named as flooded in the historical record and ≥5,000 people in damaged homes (INEI 2017)",HIST-2017-02;HIST-2017-29;HIST-2017-33;HIST-2017-07,HIST-2017-28;HIST-2023-16;HIST-2023-46
+Cura Mori,Piura,high,"Named as flooded in the historical record and ≥5,000 people in damaged homes (INEI 2017)",HIST-1998-12;HIST-2017-33;HIST-2017-11,HIST-2023-17;HIST-2023-51
+La Arena,Piura,high,"Named as flooded in the historical record and ≥5,000 people in damaged homes (INEI 2017)",HIST-2017-33;HIST-2017-09,HIST-2023-19;HIST-2023-50
+La Unión,Piura,high,Named as flooded in the historical record,HIST-2017-33,HIST-2023-20;HIST-2023-48
+El Tallán,Piura,high,Named as flooded in the historical record,HIST-1998-12,HIST-2023-18;HIST-2023-52
+Tambogrande,Piura,high,"Named as flooded in the historical record and ≥5,000 people in damaged homes (INEI 2017)",HIST-1998-12;HIST-2017-08,HIST-2017-04;HIST-2017-28;HIST-2023-21;HIST-2023-42
+Chulucanas,Morropón,high,"≥5,000 people in damaged homes (INEI 2017)",HIST-2017-12,HIST-1998-07;HIST-2017-03;HIST-2023-04;HIST-2023-22;HIST-2023-41
+Sullana,Sullana,high,Named as flooded in the historical record,HIST-1998-11;HIST-2023-34,HIST-2017-06;HIST-2017-28;HIST-2023-23;HIST-2023-40
+Bellavista,Sullana,medium,"District-level impacts recorded (housing <5,000, roads, water, rainfall or dengue) but not named as flooded",,HIST-2017-28;HIST-2023-24;HIST-2023-47
+Paita,Paita,high,Named as flooded in the historical record,HIST-2023-27,HIST-2023-26;HIST-2023-45
+Talara,Talara,medium,"District-level impacts recorded (housing <5,000, roads, water, rainfall or dengue) but not named as flooded",,HIST-1998-09;HIST-1998-10;HIST-2017-28;HIST-2023-25;HIST-2023-43
+Sechura,Sechura,medium,"District-level impacts recorded (housing <5,000, roads, water, rainfall or dengue) but not named as flooded",,HIST-2023-28;HIST-2023-29;HIST-2023-49

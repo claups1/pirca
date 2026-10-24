@@ -79,8 +79,8 @@ def test_codes_have_no_look_alike_characters():
 
 # ---------------------------------------------------------------- validate
 
-def test_validate_returns_warnings_for_unverified_district(api):
-    r = api.client.post("/api/validate", json={**PROFILE, "district": "Paita"})
+def test_validate_returns_warnings_for_unverified_district(api, unverified_district):
+    r = api.client.post("/api/validate", json={**PROFILE, "district": unverified_district})
     assert r.status_code == 200 and r.json()["valid"]
     assert any("UNVERIFIED" in w for w in r.json()["warnings"])
 
@@ -221,7 +221,7 @@ def test_translation_is_not_held_to_the_length_limit(api, monkeypatch):
 def test_meta_gives_the_form_what_it_needs(api):
     m = api.client.get("/api/meta").json()
     names = {d["name"]: d["hazard_level"] for d in m["districts"]}
-    assert names["Castilla"] == "high" and names["Paita"] == "UNVERIFIED"
+    assert names["Castilla"] == "high" and names["Paita"] == "high" and names["Sechura"] == "medium"
     assert len(m["actions"]) == 15 and all(a["name_es"] and a["name_en"] for a in m["actions"])
     assert m["example_code"] == "PIU-CAST26" and m["pen_per_usd"] > 0
 

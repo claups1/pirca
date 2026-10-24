@@ -46,8 +46,8 @@ WORKER_TOOLS = {
         lambda ctx, a: score_exposure(ctx.profile)),
     "get_historical_impacts": ToolSpec(
         function_schema("get_historical_impacts",
-                        "Historical impacts in Piura from 1997-98 and 2017, filtered by any of the arguments.",
-                        {"district": {"type": "string"}, "event": {"type": "string", "description": "1997-98 or 2017"},
+                        "Historical impacts in Piura from 1997-98, 2017 and 2023, filtered by any of the arguments.",
+                        {"district": {"type": "string"}, "event": {"type": "string", "description": "1997-98, 2017 or 2023"},
                          "topic": {"type": "string", "description": "flooding, roads_bridges, business_losses, "
                                    "economic_losses, closure_duration, dengue, people_affected, housing, rainfall, "
                                    "river_flow, other"},

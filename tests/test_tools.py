@@ -82,9 +82,8 @@ def test_validate_rejects_unknown_district():
     assert not r["valid"] and "not in Pirca's data" in r["errors"][0]
 
 
-@pytest.mark.parametrize("district", ["Paita", "Sechura"])
-def test_unverified_district_produces_warning(district):
-    r = validate_profile(make_profile(district=district))
+def test_unverified_district_produces_warning(unverified_district):
+    r = validate_profile(make_profile(district=unverified_district))
     assert r["valid"]
     assert any("UNVERIFIED" in w for w in r["warnings"])
 

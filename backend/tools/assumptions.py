@@ -25,12 +25,14 @@ ASSUMPTIONS = {
         basis="score >= 60 high, >= 30 medium, else low", sources=[]),
     "weeks_closed": dict(
         value={"high": 4, "medium": 2, "UNVERIFIED": 2}, status="illustrative estimate",
-        basis="Anchored on 'several weeks' road cuts and water outages in 1998; a shop that flooded before uses the high value",
-        sources=["HIST-1998-07", "HIST-1998-10"]),
+        basis="Anchored on 'several weeks' road cuts and water outages in 1998; in 2023 the Paita-Sullana road was cut "
+              "for 12 days and the school year started a week late. A shop that flooded before (2017 or 2023) uses the high value",
+        sources=["HIST-1998-07", "HIST-1998-10", "HIST-2023-30", "HIST-2023-31"]),
     "long_closure_weeks": dict(
         value=13, status="sourced",
-        basis="Panamericana Tumbes–Piura was cut for three months in 1998 (3 months ≈ 13 weeks)",
-        sources=["HIST-1998-06"]),
+        basis="Panamericana Tumbes–Piura was cut for three months in 1998 (3 months ≈ 13 weeks). In 2023 a coastal road "
+              "in Sechura stayed cut for at least 121 days; the scenario keeps the 1998 main-road anchor",
+        sources=["HIST-1998-06", "HIST-2023-29"]),
     "target_stock_days": dict(
         value={"high": 21, "medium": 14, "unknown": 14, "low": 7}, status="illustrative estimate",
         basis="Days of stock to hold per supplier road-cut risk", sources=[]),
@@ -40,7 +42,9 @@ ASSUMPTIONS = {
         sources=["ENFEN-2026-16", "ENFEN-2026-18"]),
     "dengue_sick_weeks": dict(
         value=1, status="illustrative estimate",
-        basis="One sick worker is out for about a week; duration not in Pirca's data", sources=["HIST-2017-25"]),
+        basis="One sick worker is out for about a week; duration not in Pirca's data. Piura had 41,078 dengue cases by "
+              "mid-2017 and 79,643 cases with 148 deaths in 2023",
+        sources=["HIST-2017-25", "HIST-2023-36", "HIST-2023-37"]),
     "power_cut_days": dict(
         value=7, status="illustrative estimate", basis="Scenario definition: one week without power", sources=[]),
     "action_benefit_model": dict(

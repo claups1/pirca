@@ -10,7 +10,7 @@ const STR = {
     myPlans: "My plans", openByCode: "Open a plan by code", planCode: "Plan code", open: "Open",
     badCode: "Codes look like PIU- followed by 6 letters or numbers.",
     heroTitle: "Prepare your shop for El Niño costero",
-    heroText: "Pirca reads the latest official ENFEN alerts and Piura's 1998 and 2017 flood history, then builds a step-by-step preparation plan for your shop that fits the money you have.",
+    heroText: "Pirca reads the latest official ENFEN alerts and Piura's 1998, 2017 and 2023 flood history, then builds a step-by-step preparation plan for your shop that fits the money you have.",
     makePlan: "Make my plan", openExample: "Open example (PIU-CAST26)",
     fact1: "Official sources", fact1b: "ENFEN, INDECI, BCRP and Piura's flood records, with every number cited.",
     fact2: "Four AI agents", fact2b: "An analyst, a planner and a critic check each other before you see the plan.",
@@ -54,7 +54,7 @@ const STR = {
     myPlans: "Mis planes", openByCode: "Abrir un plan con su código", planCode: "Código del plan", open: "Abrir",
     badCode: "Los códigos son PIU- seguido de 6 letras o números.",
     heroTitle: "Prepara tu negocio para El Niño costero",
-    heroText: "Pirca lee las alertas oficiales más recientes del ENFEN y lo que pasó en Piura en 1998 y 2017, y arma un plan de preparación paso a paso para tu negocio, según el dinero que tienes.",
+    heroText: "Pirca lee las alertas oficiales más recientes del ENFEN y lo que pasó en Piura en 1998, 2017 y 2023, y arma un plan de preparación paso a paso para tu negocio, según el dinero que tienes.",
     makePlan: "Hacer mi plan", openExample: "Ver ejemplo (PIU-CAST26)",
     fact1: "Fuentes oficiales", fact1b: "ENFEN, INDECI, BCRP y los registros de inundaciones de Piura, con cada número citado.",
     fact2: "Cuatro agentes de IA", fact2b: "Un analista, un planificador y un revisor se controlan entre sí antes de que veas el plan.",
@@ -238,7 +238,7 @@ function helpHtml() {
   if (store.lang === "es") {
     return `<h2 id="help-title">Cómo funciona Pirca</h2>
       <ol><li>Respondes cinco grupos de preguntas sobre tu negocio.</li>
-      <li>Cuatro agentes de IA usan herramientas con datos reales: alertas del ENFEN, la historia de inundaciones de Piura (1998 y 2017) y un catálogo de acciones con precios.</li>
+      <li>Cuatro agentes de IA usan herramientas con datos reales: alertas del ENFEN, la historia de inundaciones de Piura (1998, 2017 y 2023) y un catálogo de acciones con precios.</li>
       <li>Todos los números los calcula el código, no la IA. Un revisor automático comprueba el plan antes de mostrártelo.</li>
       <li>Recibes un plan con un código (PIU-…) que puedes abrir cuando quieras.</li></ol>
       <h3>Los cuatro agentes</h3>
@@ -257,7 +257,7 @@ function helpHtml() {
   }
   return `<h2 id="help-title">How Pirca works</h2>
     <ol><li>You answer five short groups of questions about your shop.</li>
-    <li>Four AI agents use tools with real data: ENFEN alerts, Piura's flood history (1998 and 2017), and a priced catalog of preparation actions.</li>
+    <li>Four AI agents use tools with real data: ENFEN alerts, Piura's flood history (1998, 2017 and 2023), and a priced catalog of preparation actions.</li>
     <li>Code computes every number, not the AI. An automatic checker reviews the plan before you see it.</li>
     <li>You get a plan with a code (PIU-…) you can open any time.</li></ol>
     <h3>The four agents</h3>

@@ -269,3 +269,28 @@ Label every assumption clearly. Add the new example codes to the README later.
 ## Prompt 25 — Commit examples and tokenomics
 
 `Commit the working tree changes with a sensible message.`
+
+## Prompt 26 — Add 2023 to the historical data
+
+```
+Pirca's historical data covers 1997-98 and 2017 but not 2023, even though the form asks "flooded in 2017 or 2023". Add 2023 with the same rules as before: every fact from a real, citable source, nothing invented, and anything you can't source left out or marked "UNVERIFIED". Keep downloaded raw files in data/raw/ (not committed).
+
+Add rows to data/historical_impacts.csv with IDs HIST-2023-NN, covering Piura region only:
+1. Cyclone Yaku and the heavy rains of March 2023: flooded districts, people and homes affected, roads and bridges cut, damage to markets and businesses (INDECI emergency reports, SENAMHI, government or reliable news sources).
+2. The 2023 El Niño costero: when ENFEN declared and ended the alert, and any reported impacts in Piura.
+3. The 2023 dengue outbreak in Piura: cases and deaths (MINSA / CDC Perú), and any reported effects on work or businesses.
+4. Any reported business closures or closure durations in 2023.
+
+Then:
+- Update data/districts.csv: add the HIST-2023 IDs that support each district's flood hazard level. Only change a hazard level if the 2023 evidence clearly supports it, and list every change you made.
+- Make sure the tools use the 2023 rows: get_historical_impacts, the "flooded in 2017 or 2023" answer in score_exposure, the closure-weeks basis in compute_cash_buffer, the worker_sick_dengue scenario, and road-cut risk in compute_supplier_buffer. Tell me exactly which calculations changed and by how much for the three sample shops.
+- Update output/sources.md with every new number and its source.
+- Update the start screen text that says "1998 and 2017" to include 2023 (both languages).
+- Run the offline tests and add tests for the 2023 rows.
+
+If the example plans' numbers would change, rerun all six examples (same codes) and regenerate output/tokenomics.md from the new runs. Otherwise leave them and tell me so.
+```
+
+## Prompt 27 — Commit 2023 data
+
+`Commit the working tree changes with a sensible message.`
