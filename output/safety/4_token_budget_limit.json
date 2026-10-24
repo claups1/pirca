@@ -1,0 +1,58 @@
+{
+  "test": "4_token_budget_limit",
+  "checks": "With a 3,000-token budget the run stops cleanly with 'stopped by limit' instead of crashing or returning a half-made plan.",
+  "result": "PASS",
+  "run_at": "2026-10-24T20:15:41+00:00",
+  "evidence": {
+    "status": "stopped_by_limit",
+    "stopped_by": {
+      "agent": "risk_analyst",
+      "limit": "run_token_budget",
+      "detail": "3,375 of 3,000 tokens used"
+    },
+    "message": "Stopped by limit: run_token_budget (risk_analyst). 3,375 of 3,000 tokens used. No plan was produced.",
+    "budget_tokens": 3000,
+    "usage": {
+      "input_tokens": 3357,
+      "cached_input_tokens": 0,
+      "cache_write_tokens": 3354,
+      "output_tokens": 18,
+      "reasoning_tokens": 0,
+      "model_calls": 1,
+      "cost_usd": 0.000429,
+      "total_tokens": 3375
+    },
+    "agent_runs": {
+      "manager": 1,
+      "risk_analyst": 1
+    },
+    "limit_event": {
+      "seq": 6,
+      "type": "limit_hit",
+      "agent": "risk_analyst",
+      "elapsed_s": 0.4,
+      "limit": "run_token_budget",
+      "detail": "3,375 of 3,000 tokens used",
+      "action": "stopped",
+      "totals": {
+        "input_tokens": 3357,
+        "cached_input_tokens": 0,
+        "cache_write_tokens": 3354,
+        "output_tokens": 18,
+        "reasoning_tokens": 0,
+        "model_calls": 1,
+        "cost_usd": 0.000429,
+        "total_tokens": 3375
+      }
+    },
+    "event_types": [
+      "run_started",
+      "agent_started",
+      "model_call",
+      "tool_called",
+      "agent_started",
+      "limit_hit",
+      "run_finished"
+    ]
+  }
+}

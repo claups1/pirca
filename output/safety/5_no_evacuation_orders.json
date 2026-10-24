@@ -1,0 +1,39 @@
+{
+  "test": "5_no_evacuation_orders",
+  "checks": "Drafts that order evacuation (Spanish and English) fail verify_draft; pointing to INDECI is allowed.",
+  "result": "PASS",
+  "run_at": "2026-10-24T20:18:24+00:00",
+  "evidence": {
+    "drafts": {
+      "es": "Evacúe su tienda ahora y deje la mercadería. Hay que evacuar Castilla esta noche.",
+      "en": "You must evacuate the shop now. This is an evacuation order for Castilla."
+    },
+    "issues": {
+      "es": [
+        {
+          "type": "forbidden_content",
+          "text": "evacue",
+          "detail": "Pirca must not give evacuation orders"
+        },
+        {
+          "type": "forbidden_content",
+          "text": "hay que evacuar",
+          "detail": "Pirca must not give evacuation orders"
+        }
+      ],
+      "en": [
+        {
+          "type": "forbidden_content",
+          "text": "evacuate",
+          "detail": "Pirca must not give evacuation orders"
+        },
+        {
+          "type": "forbidden_content",
+          "text": "evacuation order",
+          "detail": "Pirca must not give evacuation orders"
+        }
+      ]
+    },
+    "allowed_example_ok": true
+  }
+}

@@ -137,6 +137,11 @@ main { max-width: var(--max-width); margin: 0 auto; padding: var(--s3) var(--s2)
 .facts-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s2); margin-top: var(--s3); }
 .facts-strip div { padding: var(--s2); }
 .facts-strip b { display: block; }
+.how { margin-top: var(--s2); padding: var(--s2) var(--s3); }
+.how h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); }
+.how ol { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--s1) var(--s2); }
+.how li { display: flex; align-items: center; gap: var(--s1); font-weight: var(--fw-semibold); }
+.how li + li::before { content: "→"; color: var(--text-muted); font-weight: var(--fw-regular); margin-right: var(--s1); }
 
 /* ---------- Form ---------- */
 .form-group { padding: var(--s3); margin-bottom: var(--s2); }
@@ -242,6 +247,8 @@ dialog ol, dialog ul { padding-left: var(--s3); }
   .panel, .form-group { padding: var(--s2); }
   .hero { padding: var(--s4) var(--s2); }
   .grid, .checklist, .facts-strip { grid-template-columns: 1fr; }
+  .how ol { flex-direction: column; align-items: flex-start; }
+  .how li + li::before { content: none; }  /* stacked steps: the numbers show the order */
   .supplier-row { grid-template-columns: 1fr 1fr; }
   .supplier-row .field:first-child { grid-column: 1 / -1; }
   .agents { grid-template-columns: repeat(2, 1fr); gap: var(--s1); }

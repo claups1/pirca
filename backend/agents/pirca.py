@@ -33,7 +33,7 @@ from backend.tools import (
     validate_profile,
     verify_draft,
 )
-from backend.tools.drafting import recommended_spending
+from backend.tools.drafting import draft_text, recommended_spending
 from backend.tools.profile import district_level, parse_profile
 
 # ---------------------------------------------------------------- worker tools
@@ -178,6 +178,17 @@ def _run_critic(ctx: RunContext, args: dict) -> dict:
     if "draft" not in ctx.state:
         return {"error": "Run run_planner first."}
     critique = AgentSession(ctx, "critic", toolset("critic", CRITIC_TOOLS)).send(critic_message(ctx))
+    # verify_draft is computed by code and cannot be overruled: if the Planner's draft fails it,
+    # the verdict is "revise" whatever the Critic model said.
+    check = verify_draft(draft_text(ctx.state["draft"]), ctx.facts)
+    ctx.emit("code_check", "critic", ok=check["ok"], issues=[i["type"] for i in check["issues"]])
+    if not check["ok"]:
+        if critique.get("verdict") != "revise":
+            critique["verdict_forced_by_code"] = True
+        critique["verdict"] = "revise"
+        known = {(i.get("type"), i.get("text")) for i in critique.get("failed_checks", []) if isinstance(i, dict)}
+        critique["failed_checks"] = list(critique.get("failed_checks", [])) + [
+            i for i in check["issues"] if (i["type"], i["text"]) not in known]
     ctx.state["critique"] = critique
     return {"critique": critique, "available_facts": dict(ctx.facts)}
 

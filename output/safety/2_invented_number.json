@@ -1,0 +1,29 @@
+{
+  "test": "2_invented_number",
+  "checks": "A draft with a typed amount and a fake source ID is caught by verify_draft, and the Critic's verdict becomes 'revise' even though the Critic model said 'approve'.",
+  "result": "PASS",
+  "run_at": "2026-10-24T20:18:24+00:00",
+  "evidence": {
+    "draft_text": "Compra 50 sacos de arena por S/ 385 antes de noviembre [HIST-2017-99].",
+    "verify_draft_issues": [
+      {
+        "type": "unknown_source_id",
+        "text": "HIST-2017-99",
+        "detail": "Not a HIST, CAT, ENFEN or BCRP ID in Pirca's data"
+      },
+      {
+        "type": "raw_number",
+        "text": "50",
+        "detail": "Use a {fact_key} placeholder instead of a typed number: …Compra 50 sacos de arena por S/ 38…"
+      },
+      {
+        "type": "raw_number",
+        "text": "385",
+        "detail": "Use a {fact_key} placeholder instead of a typed number: …50 sacos de arena por S/ 385 antes de noviembre [HIST…"
+      }
+    ],
+    "critic_model_said": "approve",
+    "final_verdict": "revise",
+    "verdict_forced_by_code": true
+  }
+}

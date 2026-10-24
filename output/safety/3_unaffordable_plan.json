@@ -1,0 +1,26 @@
+{
+  "test": "3_unaffordable_plan",
+  "checks": "A plan recommending S/ 14,577 of spending with S/ 3,000 in cash fails the affordability check; and with S/ 200 cash and a S/ 5,000 budget the tools recommend at most S/ 200.",
+  "result": "PASS",
+  "run_at": "2026-10-24T20:18:24+00:00",
+  "evidence": {
+    "draft": "## 6. Compras dentro de tu presupuesto\n- Barrera contra el agua en la puerta ({cat_04_cost}) [CAT-04]\n- Sacos de arena en la puerta* ({cat_02_cost}) [CAT-02]\n## 5. Tus proveedores\nCompra {extra_stock_value} de abarrotes antes de noviembre.",
+    "facts": {
+      "cash_on_hand": 3000.0,
+      "cat_04_cost": 500.0,
+      "cat_02_cost": 77.0,
+      "extra_stock_value": 14000.0
+    },
+    "affordability_issues": [
+      {
+        "type": "spending_exceeds_cash",
+        "text": "S/ 14,577.00",
+        "detail": "The plan recommends spending S/ 14,577.00 but the owner has S/ 3,000.00 in cash"
+      }
+    ],
+    "tools_with_200_cash": {
+      "recommended_spending": 186.69,
+      "cash_on_hand": 200
+    }
+  }
+}

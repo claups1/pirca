@@ -15,6 +15,7 @@ const STR = {
     fact1: "Official sources", fact1b: "ENFEN, INDECI, BCRP and Piura's flood records, with every number cited.",
     fact2: "Four AI agents", fact2b: "An analyst, a planner and a critic check each other before you see the plan.",
     fact3: "Within your means", fact3b: "Pirca never recommends spending money you don't have.",
+    howTitle: "How it works", how: ["Answer 5 short questions", "Four agents check the facts", "Get your plan"],
     formTitle: "Tell us about your shop", formIntro: "Five short groups. Amounts are in soles. Your answers stay with your plan code.",
     useSample: "Fill with a sample shop", addSupplier: "+ Add supplier", remove: "Remove",
     checkAnswers: "Check my answers", checking: "Checking…", fixAnswers: "Fix my answers", confirmRun: "Confirm and make my plan",
@@ -58,6 +59,7 @@ const STR = {
     fact1: "Fuentes oficiales", fact1b: "ENFEN, INDECI, BCRP y los registros de inundaciones de Piura, con cada número citado.",
     fact2: "Cuatro agentes de IA", fact2b: "Un analista, un planificador y un revisor se controlan entre sí antes de que veas el plan.",
     fact3: "Según tu dinero", fact3b: "Pirca nunca te recomienda gastar dinero que no tienes.",
+    howTitle: "Cómo funciona", how: ["Responde 5 preguntas cortas", "Cuatro agentes revisan los datos", "Recibe tu plan"],
     formTitle: "Cuéntanos sobre tu negocio", formIntro: "Cinco grupos cortos. Los montos van en soles. Tus respuestas quedan con el código de tu plan.",
     useSample: "Llenar con un negocio de ejemplo", addSupplier: "+ Agregar proveedor", remove: "Quitar",
     checkAnswers: "Revisar mis respuestas", checking: "Revisando…", fixAnswers: "Corregir mis respuestas", confirmRun: "Confirmar y hacer mi plan",
@@ -69,7 +71,7 @@ const STR = {
     working: "trabajando…", waiting: "esperando", idle: "sin empezar", done: "listo",
     inTok: "Tokens de entrada", cachedTok: "En caché", outTok: "Tokens de salida", cost: "Costo (USD)",
     speed: "Velocidad", skip: "Ver el plan", backToPlan: "Volver al plan",
-    viewIn: "Ver en español", viewing: "Traduciendo…", replay: "Repetir registro",
+    viewIn: "Ver en español", viewing: "Traduciendo…", replay: "Ver cómo se hizo",
     risk: "Riesgo", riskHigh: "Alto", riskMedium: "Medio", riskLow: "Bajo",
     stockAtRisk: "Mercadería en riesgo", fundGap: "Falta para tu fondo", purchases: "Compras",
     summaryTitle: "Resumen en inglés", usageTitle: "Tokens y costo",
@@ -243,6 +245,14 @@ function helpHtml() {
       <ul>${Object.values(a).map(([n, d]) => `<li><b>${esc(n)}:</b> ${esc(d)}</li>`).join("")}</ul>
       <h3>Importante</h3>
       <p><b>Pirca no es un pronóstico oficial ni una agencia del Estado.</b> No da órdenes de evacuación. Sigue siempre los avisos del ENFEN, SENAMHI, INDECI y tu municipalidad.</p>
+      <h3>Controles de seguridad</h3>
+      <ul>
+        <li><b>Documentos con trampas:</b> si un texto intenta darle órdenes a la IA, se ignora y se reporta.</li>
+        <li><b>Números inventados:</b> el código revisa que cada número venga de un cálculo y cada fuente exista; si no, el plan se corrige.</li>
+        <li><b>Solo lo que puedes pagar:</b> el plan nunca te recomienda gastar más dinero del que tienes.</li>
+        <li><b>Límites de uso:</b> si la IA usa demasiado, el proceso se detiene de forma segura y te avisa.</li>
+        <li><b>Sin órdenes de evacuación:</b> Pirca nunca te ordena evacuar; eso lo deciden INDECI y tu municipalidad.</li>
+      </ul>
       <p class="muted small">Los costos y beneficios marcados con * son estimados, no medidos.</p>`;
   }
   return `<h2 id="help-title">How Pirca works</h2>
@@ -254,6 +264,14 @@ function helpHtml() {
     <ul>${Object.values(a).map(([n, d]) => `<li><b>${esc(n)}:</b> ${esc(d)}</li>`).join("")}</ul>
     <h3>Important</h3>
     <p><b>Pirca is not an official forecast or a government agency.</b> It never gives evacuation orders. Always follow ENFEN, SENAMHI, INDECI and your municipality.</p>
+    <h3>Safety checks</h3>
+    <ul>
+      <li><b>Booby-trapped documents:</b> if any text tries to give the AI orders, it is ignored and reported.</li>
+      <li><b>No invented numbers:</b> code checks that every number comes from a calculation and every source exists; if not, the plan is sent back.</li>
+      <li><b>Only what you can afford:</b> the plan never recommends spending more money than you have.</li>
+      <li><b>Usage limits:</b> if the AI uses too much, the run stops safely and tells you.</li>
+      <li><b>No evacuation orders:</b> Pirca never orders you to evacuate; that is for INDECI and your municipality.</li>
+    </ul>
     <p class="muted small">Costs and benefits marked with * are estimates, not measurements.</p>`;
 }
 
@@ -292,7 +310,11 @@ function renderHome() {
     </section>
     <div class="facts-strip">
       ${[1, 2, 3].map((i) => `<div class="glass"><b>${esc(t("fact" + i))}</b><span class="muted small">${esc(t("fact" + i + "b"))}</span></div>`).join("")}
-    </div>`;
+    </div>
+    <section class="how glass" aria-labelledby="how-title">
+      <h2 id="how-title">${esc(t("howTitle"))}</h2>
+      <ol>${t("how").map((step, i) => `<li><span class="step">${i + 1}</span>${esc(step)}</li>`).join("")}</ol>
+    </section>`;
 }
 
 // ------------------------------------------------------------------ form
@@ -670,7 +692,7 @@ function renderPlanView(code, data) {
       <div class="glass accent"><span>${esc(t("fundGap"))}</span><b>${esc(money(f.cash_gap))}</b></div>
       <div class="glass"><span>${esc(t("purchases"))}</span><b>${esc(money(f.total_cost))}</b></div>
     </div>
-    ${original === "es" && showing === "es" && r.summary_en ? `<section class="summary glass" lang="en"><h4>${esc(t("summaryTitle"))}</h4><p style="margin:0">${esc(r.summary_en)}</p></section>` : ""}
+    ${store.lang === "en" && showing === "es" && r.summary_en ? `<section class="summary glass" lang="en"><h4>${esc(t("summaryTitle"))}</h4><p style="margin:0">${esc(r.summary_en)}</p></section>` : ""}
     ${translation && !translation.verification?.ok ? `<div class="notice glass-read" role="note">${esc(t("translationWarn"))}</div>` : ""}
     <article class="plan-body glass-read" lang="${showing}">${renderMarkdown(planText)}</article>
     <section class="usage glass" style="margin-top:16px">

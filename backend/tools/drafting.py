@@ -103,6 +103,7 @@ ALLOWED_NUMBER_SPANS = [
     re.compile(rf"\b(?:{MONTHS})\s+(?:de\s+)?\d{{1,2}}\b(?!\d)"),       # March 12
     re.compile(r"\b(?:19|20)\d{2}\b"),                                  # years
     re.compile(r"(?m)^\s*(?:#{1,6}\s*)?\d+[.)]\s"),                      # list markers and "## 1." headings
+    re.compile(r"\b1\s?(?:m|metro|meter|metre)\b"),                      # the fixed 1 m stock height of the intake form
 ]
 RAW_NUMBER = re.compile(r"\d+(?:[.,]\d+)*")
 
@@ -167,6 +168,33 @@ def _bracket_around(text: str, start: int, end: int) -> tuple[int, int] | None:
     if "\n" in text[open_:close] or "]" in text[open_ + 1:start] or "[" in text[end:close]:
         return None
     return open_, close
+
+
+# Fields of an agent's JSON that hold identifiers or labels, not prose (e.g. "cat_02_cost", "supplier_1_extra_days").
+NON_PROSE_KEYS = {"catalog_id", "fact_keys", "sources", "cost_fact_key", "total_fact_key", "money_left_fact_key",
+                  "who", "road_cut_risk", "advice", "stock_up_status", "name_es", "name_en", "city", "product",
+                  "communique_id", "date", "scenario", "verdict", "type", "hazard", "severity", "risk",
+                  "risk_level", "district_hazard_level", "missing_facts", "suspicious_content"}
+
+
+def draft_text(draft) -> str:
+    """All the prose in an agent's JSON draft, joined, so verify_draft can check it."""
+    parts = []
+
+    def walk(value, key=None):
+        if key in NON_PROSE_KEYS:
+            return
+        if isinstance(value, str):
+            parts.append(value)
+        elif isinstance(value, dict):
+            for k, v in value.items():
+                walk(v, k)
+        elif isinstance(value, list):
+            for v in value:
+                walk(v, key)
+
+    walk(draft)
+    return "\n".join(parts)
 
 
 def plan_word_count(draft: str) -> int:
