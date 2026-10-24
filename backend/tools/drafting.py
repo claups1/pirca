@@ -30,7 +30,7 @@ ALLOWED_NUMBER_SPANS = [
     re.compile(rf"\b\d{{1,2}}\s+(?:de\s+)?(?:{MONTHS})\b"),             # 12 de marzo
     re.compile(rf"\b(?:{MONTHS})\s+(?:de\s+)?\d{{1,2}}\b(?!\d)"),       # March 12
     re.compile(r"\b(?:19|20)\d{2}\b"),                                  # years
-    re.compile(r"(?m)^\s*\d+[.)]\s"),                                   # numbered list markers
+    re.compile(r"(?m)^\s*(?:#{1,6}\s*)?\d+[.)]\s"),                      # list markers and "## 1." headings
 ]
 RAW_NUMBER = re.compile(r"\d+(?:[.,]\d+)*")
 
@@ -85,7 +85,7 @@ def verify_draft(draft: str, facts: dict) -> dict:
 
 
 def _is_money(key: str) -> bool:
-    return re.sub(r"^(baseline_|delta_)", "", key) in MONEY_FACTS
+    return re.sub(r"^(?:[a-z_]+?__)?(?:baseline_|delta_)?", "", key) in MONEY_FACTS
 
 
 def _number(value: float, decimals: int) -> str:

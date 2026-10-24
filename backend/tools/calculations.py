@@ -157,11 +157,19 @@ def _weeks_until(start: date, today: date) -> float:
 
 
 def run_scenario(profile: dict | ShopProfile, scenario: str, today: date | None = None) -> dict:
-    """Recompute the plan's numbers under a stress scenario."""
+    """Recompute the plan's numbers under a stress scenario.
+
+    Fact keys are prefixed with the scenario name (e.g. long_closure__cash_gap) so they
+    never collide with the baseline facts from the other tools.
+    """
     if scenario not in SCENARIOS:
         raise ValueError(f"Unknown scenario '{scenario}'. Choose one of: {', '.join(SCENARIOS)}")
-    p = parse_profile(profile)
-    today = today or date.today()
+    result = _run_scenario(parse_profile(profile), scenario, today or date.today())
+    result["facts"] = {f"{scenario}__{k}": v for k, v in result["facts"].items()}
+    return result
+
+
+def _run_scenario(p: ShopProfile, scenario: str, today: date) -> dict:
     base_cash = compute_cash_buffer(p)
 
     if scenario == "rains_one_month_early":

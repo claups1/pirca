@@ -264,21 +264,28 @@ def test_historical_impacts_filters():
 
 # ---- run_scenario ----
 
+def scenario_facts(profile, scenario, today=TODAY) -> dict:
+    """Scenario facts with the '<scenario>__' prefix removed."""
+    facts = run_scenario(profile, scenario, today=today)["facts"]
+    return {k.removeprefix(f"{scenario}__"): v for k, v in facts.items()}
+
+
 @pytest.mark.parametrize("scenario", SCENARIOS)
 def test_every_scenario_runs(scenario):
     r = run_scenario(make_profile(), scenario, today=TODAY)
     json.dumps(r)
     assert r["scenario"] == scenario and r["facts"]
+    assert all(k.startswith(f"{scenario}__") for k in r["facts"])  # never collides with baseline facts
 
 
 def test_long_closure_uses_three_months():
-    f = run_scenario(make_profile(), "long_closure", today=TODAY)["facts"]
+    f = scenario_facts(make_profile(), "long_closure")
     assert f["weeks_closed"] == 13 and f["baseline_weeks_closed"] == 4
     assert f["cash_gap"] > f["baseline_cash_gap"]
 
 
 def test_rains_early_leaves_less_time():
-    f = run_scenario(make_profile(), "rains_one_month_early", today=date(2026, 9, 1))["facts"]
+    f = scenario_facts(make_profile(), "rains_one_month_early", today=date(2026, 9, 1))
     assert f["weeks_until_rains"] < f["baseline_weeks_until_rains"]
     assert f["weekly_saving_needed"] > f["baseline_weekly_saving_needed"]
 
@@ -286,11 +293,12 @@ def test_rains_early_leaves_less_time():
 def test_bridge_cut_raises_all_routes():
     r = run_scenario(make_profile(), "main_bridge_cut", today=TODAY)
     assert all(s["road_cut_risk"] == "high" for s in r["suppliers"])
-    assert r["facts"]["supplier_3_extra_days"] > r["facts"]["baseline_supplier_3_extra_days"]
+    f = r["facts"]
+    assert f["main_bridge_cut__supplier_3_extra_days"] > f["main_bridge_cut__baseline_supplier_3_extra_days"]
 
 
 def test_dengue_with_one_worker_loses_whole_week():
-    f = run_scenario(make_profile(workers=1), "worker_sick_dengue", today=TODAY)["facts"]
+    f = scenario_facts(make_profile(workers=1), "worker_sick_dengue")
     assert f["sales_at_risk"] == 7000
 
 
@@ -314,6 +322,11 @@ def test_verify_flags_raw_numbers_unknown_keys_and_ids():
     types = [i["type"] for i in r["issues"]]
     assert types.count("raw_number") == 2
     assert "unknown_fact_key" in types and "unknown_source_id" in types
+
+
+def test_verify_allows_numbered_markdown_headings():
+    r = verify_draft("## 1. Tu riesgo\nTexto.\n### 7) Lo que revisamos\n", {})
+    assert r["ok"], r["issues"]
 
 
 def test_verify_allows_years_months_and_id_digits():
@@ -342,6 +355,12 @@ def test_fill_handles_non_money_and_missing_keys():
                           {"weeks_closed": 4, "share_to_move_pct": 50.0, "delta_cash_gap": -1500})
     assert r["text"] == "4 semanas, 50%, -S/ 1,500, {nope}"
     assert r["missing"] == ["nope"]
+
+
+def test_fill_formats_prefixed_scenario_money():
+    r = fill_placeholders("{long_closure__cash_gap} vs {long_closure__baseline_cash_gap}",
+                          {"long_closure__cash_gap": 9000, "long_closure__baseline_cash_gap": 692.31})
+    assert r["text"] == "S/ 9,000 vs S/ 692"
 
 
 def test_fill_whole_draft_in_usd():
