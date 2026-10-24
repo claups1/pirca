@@ -85,17 +85,32 @@ def _weeks_closed(p: ShopProfile, override: float | None = None) -> float:
     return table["high"] if p.flooded_before == "yes" else table[district_level(p)]
 
 
+def fund_target(p: ShopProfile, weeks_closed: float | None = None) -> float:
+    """Emergency fund needed: fixed costs for the weeks the shop may be closed."""
+    return p.monthly_fixed_costs / WEEKS_PER_MONTH * _weeks_closed(p, weeks_closed)
+
+
 def compute_cash_buffer(profile: dict | ShopProfile, weeks_closed: float | None = None) -> dict:
-    """Cash needed to keep paying fixed costs while closed, and the gap versus cash on hand."""
+    """Emergency fund target versus the cash that is really left for it.
+
+    The recommended prep purchases come out of the same cash, so the real gap is
+    fund target - (cash on hand - planned purchases).
+    """
+    from backend.tools.actions import optimize_budget  # local import: actions imports this module
+
     p = parse_profile(profile)
     weeks = _weeks_closed(p, weeks_closed)
     weekly_fixed = p.monthly_fixed_costs / WEEKS_PER_MONTH
-    buffer_needed = weekly_fixed * weeks
+    buffer_needed = fund_target(p, weeks_closed)
+    purchases = optimize_budget(p)["facts"]["total_cost"]
+    cash_after = p.cash_on_hand - purchases
     facts = {"weeks_closed": weeks,
              "weekly_fixed_costs": _money(weekly_fixed),
              "buffer_needed": _money(buffer_needed),
              "cash_on_hand": _money(p.cash_on_hand),
-             "cash_gap": _money(max(0.0, buffer_needed - p.cash_on_hand)),
+             "planned_purchases": _money(purchases),
+             "cash_after_purchases": _money(cash_after),
+             "cash_gap": _money(max(0.0, buffer_needed - cash_after)),
              "lost_sales": _money(p.weekly_sales * weeks)}
     names = ("long_closure_weeks",) if weeks_closed is not None else ("weeks_closed",)
     return _envelope("compute_cash_buffer", facts, ["CAT-06"], names)
@@ -130,7 +145,7 @@ def is_perishable(supplier: Supplier) -> bool:
 
 def stock_up_money_available(p: ShopProfile) -> float:
     """Cash left for a supplier stock-up after the emergency fund and the prep budget."""
-    buffer_needed = compute_cash_buffer(p)["facts"]["buffer_needed"]
+    buffer_needed = fund_target(p)
     prep = min(p.prep_budget, p.cash_on_hand)
     return max(0.0, p.cash_on_hand - buffer_needed - prep)
 

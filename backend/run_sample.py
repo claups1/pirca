@@ -54,6 +54,7 @@ def main() -> int:
     parser.add_argument("--profile", default=str(DEFAULT_PROFILE))
     parser.add_argument("--language", choices=["es", "en"], default="es")
     parser.add_argument("--currency", choices=["pen", "usd"], default="pen")
+    parser.add_argument("--example-code", help="Also save the run as plans/examples/{code}.json, e.g. PIU-CAST26")
     args = parser.parse_args()
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
@@ -92,6 +93,13 @@ def main() -> int:
     out = config.OUTPUT_DIR / "sample_run.json"
     out.write_text(json.dumps(result, ensure_ascii=False, indent=2, default=str), encoding="utf-8")
     print(f"\nFull result and trace saved to {out.relative_to(config.PROJECT_ROOT)}")
+    if args.example_code:
+        from backend.api import plans
+        if not plans.is_valid_code(args.example_code):
+            raise SystemExit(f"Invalid code {args.example_code}: use PIU- plus 6 of {plans.CODE_ALPHABET}")
+        example = config.PLANS_DIR / "examples" / f"{args.example_code}.json"
+        plans.write_plan(example, plans.plan_record(args.example_code, profile, args.language, result))
+        print(f"Example plan saved to {example.relative_to(config.PROJECT_ROOT)}")
     return 0 if result["status"].startswith("completed") else 1
 
 

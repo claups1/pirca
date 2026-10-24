@@ -132,7 +132,7 @@ def test_cash_buffer_numbers():
     assert f["weeks_closed"] == 4  # flooded before -> high
     assert f["weekly_fixed_costs"] == pytest.approx(4000 * 12 / 52, abs=0.01)
     assert f["buffer_needed"] == pytest.approx(f["weekly_fixed_costs"] * 4, abs=0.02)
-    assert f["cash_gap"] == pytest.approx(f["buffer_needed"] - 3000, abs=0.02)
+    assert f["cash_gap"] == pytest.approx(f["buffer_needed"] - f["cash_after_purchases"], abs=0.02)
 
 
 def test_cash_buffer_no_gap_when_cash_covers_it():
@@ -382,3 +382,22 @@ def test_fill_formats_prefixed_scenario_money():
 def test_fill_whole_draft_in_usd():
     r = fill_placeholders("{cash_gap}", {"cash_gap": 3447}, currency="usd")
     assert r["text"] == "$1,000"
+
+
+def test_cash_gap_includes_the_recommended_purchases():
+    from backend.tools import optimize_budget
+    p = make_profile()
+    f = compute_cash_buffer(p)["facts"]
+    purchases = optimize_budget(p)["facts"]["total_cost"]
+    assert purchases > 0
+    assert f["planned_purchases"] == pytest.approx(purchases)
+    assert f["cash_after_purchases"] == pytest.approx(3000 - purchases, abs=0.01)
+    assert f["cash_gap"] == pytest.approx(f["buffer_needed"] - (3000 - purchases), abs=0.02)
+    # without purchases the gap would look smaller than it really is
+    assert f["cash_gap"] > f["buffer_needed"] - 3000
+
+
+def test_no_purchases_means_gap_is_fund_minus_cash():
+    f = compute_cash_buffer(make_profile(prep_budget=0))["facts"]
+    assert f["planned_purchases"] == 0
+    assert f["cash_gap"] == pytest.approx(f["buffer_needed"] - 3000, abs=0.01)

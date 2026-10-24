@@ -170,3 +170,25 @@ Rerun the sample and show me the new Spanish plan.
 ## Prompt 17 — Commit readability and affordability fixes
 
 `Commit the working tree changes with a sensible message.`
+
+## Prompt 18 — Real cash gap and the FastAPI app
+
+```
+First, a small fix: in the cash section, the emergency fund gap must include the prep purchases if they come out of the same cash. Show: cash on hand, minus recommended purchases, versus the fund target, so the gap the owner sees is the real one. Add an offline test.
+
+Then, in backend/main.py, build the Pirca FastAPI app:
+
+- POST /api/validate: returns validate_profile warnings so the form can show them before running.
+- POST /api/plans: immediately creates a plan code (PIU- plus 6 random characters, no look-alikes like 0/O or 1/I), returns it, and runs the agents in a background thread so closing the page doesn't stop the run.
+- GET /api/plans/{code}: status (running/done/stopped/error), events so far, and the result when done.
+- POST /api/plans/{code}/translate: translates only the final plan to the other language with one model call and saves the translation in the same file, so the second time is free. Record its tokens separately.
+- Save each finished plan as plans/{code}.json: form, language, final plan with placeholders, all facts, trace, and token usage. Reuse the result format of output/sample_run.json.
+- Copy the current sample run into plans/examples/ with a code so it can be opened without running the agents.
+- Serve the frontend at /.
+
+Run with one command: uvicorn backend.main:app. Add offline API tests that don't call the model.
+```
+
+## Prompt 19 — Commit cash fix and API
+
+`Commit the working tree changes with a sensible message.`

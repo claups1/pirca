@@ -4,7 +4,7 @@ import math
 
 from backend.tools import assumptions as A
 from backend.tools import data_store
-from backend.tools.calculations import compute_cash_buffer, score_exposure
+from backend.tools.calculations import fund_target, score_exposure
 from backend.tools.profile import ShopProfile, parse_profile
 
 LANDLORD_ACTIONS = {"CAT-04", "CAT-11", "CAT-12"}
@@ -60,7 +60,7 @@ def get_action_catalog(profile: dict | ShopProfile, hazards: list[str] | None = 
 
 def _loss_bases(p: ShopProfile) -> dict[str, float]:
     stock = score_exposure(p)["facts"]["stock_at_risk"]
-    buffer = compute_cash_buffer(p)["facts"]["buffer_needed"]
+    buffer = fund_target(p)
     week = p.weekly_sales
     return {"flood": stock, "heavy_rain": stock,
             "road_closure": buffer, "cash_flow": buffer, "supply_shortage": buffer,

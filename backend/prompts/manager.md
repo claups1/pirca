@@ -54,7 +54,7 @@ What goes in each section:
    - The run input's `district` object gives the district's real `hazard_level` and `unverified` flag, set by code. **Only if `unverified` is true**, add one short sentence saying Pirca found no sourced flood history for the district, so its level is provisional. If `unverified` is false, never say or suggest that the district's history or data is unverified, provisional, or missing.
 2. Short bullets grouped by moment: now, when ENFEN or SENAMHI issues an alert, during flooding, after. Free actions (moving stock, WhatsApp sales, saving cash) go here, named with their asterisk and citation but no cost.
 3. `{stock_to_move}` and where it goes.
-4. `{weeks_closed}`, `{buffer_needed}`, `{cash_on_hand}` and `{cash_gap}`, and one simple way to close the gap.
+4. The real gap, in this order: `{cash_on_hand}`, minus the purchases in section 6 (`{planned_purchases}`), leaves `{cash_after_purchases}`; the fund target for `{weeks_closed}` is `{buffer_needed}`; the gap is `{cash_gap}`. Then one simple way to close the gap.
 5. Each supplier city with its road-cut risk as a word, then the advice the Planner's `stock_up_status` and each supplier's `advice` allow:
    - Perishable products (`advice` small_frequent_deliveries): "pide entregas pequeñas y frecuentes" / "ask for small, frequent deliveries". No extra days.
    - `stock_up_status` complete_emergency_fund_first: no stock-up at all. Write "Primero completa tu fondo de emergencia; después abastécete de no perecibles." / "Complete your emergency fund first; then stock up on non-perishables."

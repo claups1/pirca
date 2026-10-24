@@ -1,10 +1,10 @@
 {
   "status": "completed",
   "language": "es",
-  "plan_template": "## 1. Tu riesgo\nRiesgo alto de inundación; Castilla sufrió inundaciones en 2017 [HIST-2017-02] [HIST-2017-30]. ENFEN mantiene Alerta de El Niño Costero, potencialmente hasta otoño de 2027; puede cambiar [ENFEN-2026-18]. No menciona Castilla. Stock al alcance del agua: {stock_at_risk}.\n\n## 2. Qué hacer y cuándo\n- Ahora: Sube mercadería a un lugar seguro* [CAT-05], haz copias digitales* [CAT-07] y vende perecibles sin acumularlos. Ahorra para el fondo* [CAT-06].\n- Confirma con proveedores rutas, entrega o retiro alternativos; no asumas disponibilidad. Pide entregas pequeñas y frecuentes de pan* [CAT-08] [HIST-1998-08].\n- Ante avisos: consulta ENFEN, SENAMHI, INDECI y la municipalidad [ENFEN-2026-18].\n- Durante inundación: protege registros y usa WhatsApp* [CAT-14] solo si es seguro; sigue a INDECI y la municipalidad.\n- Después: revisa electricidad con personal calificado y retira agua estancada* [CAT-09] [CAT-12].\n\n## 3. Tu mercadería\nMueve {stock_to_move} a estantes altos, cajas herméticas o un lugar fuera de la zona inundable.\n\n## 4. Tu caja de emergencia\nEl cierre considerado: {weeks_closed}; fondo: {buffer_needed}. Tienes {cash_on_hand}; falta {cash_gap}. Ahorra primero y prioriza gastos esenciales si se prolonga [HIST-1998-07] [HIST-1998-10].\n\n## 5. Tus proveedores\n- Chiclayo: riesgo alto. Completa primero tu fondo; después abastécete de no perecibles.\n- Piura: riesgo alto. Completa primero tu fondo; después abastécete de no perecibles.\n- Sullana: riesgo medio. Pide entregas pequeñas y frecuentes; no acumules pan.\n\n## 6. Compras dentro de tu presupuesto\n- Sacos de arena en la puerta* ({cat_02_cost}) [CAT-02]\n- Cajas herméticas* ({cat_03_cost}) [CAT-03]\n- Copia de seguridad de tus registros* ({cat_07_cost}) [CAT-07]\n- Control de zancudos contra el dengue* ({cat_09_cost}) [CAT-09]\n- Seguro contra lluvias e inundación ({cat_10_cost}) [CAT-10]\n- Limpiar canaletas y reparar el techo* ({cat_11_cost}) [CAT-11]\n- Seguridad eléctrica ({cat_12_cost}) [CAT-12]\n- Plan para cortes de luz* ({cat_15_cost}) [CAT-15]\nTotal: {total_cost}; queda {money_left}. No incluimos estantes ni barrera porque no alcanzó el presupuesto.\n\n## 7. Lo que revisamos\nProbamos lluvias adelantadas, puente cortado, cortes de luz y cierre prolongado. Las medidas ayudan, pero no aseguran rutas alternas ni cubrir un cierre largo.",
+  "plan_template": "## 1. Tu riesgo\nRiesgo alto de inundación; hubo inundaciones en Castilla y agua en el mercado [HIST-2017-02, HIST-2017-30]. ENFEN mantiene Alerta de El Niño Costero, que podría extenderse hasta otoño de 2027; las previsiones pueden cambiar [ENFEN-2026-18]. No menciona Castilla ni ofrece pronóstico distrital. Mercadería al alcance del agua: {stock_at_risk}.\n\n## 2. Qué hacer y cuándo\n- Ahora: Sube mercadería y documentos a un lugar elevado y seco* [CAT-05, CAT-03]. Activa ventas por WhatsApp y delivery* [CAT-14]. Aparta caja desde ahora* [CAT-06]. Confirma entregas con cada proveedor, ubica alternativas locales, prioriza productos esenciales y avisa si faltan.\n- Ante aviso de ENFEN o SENAMHI: consulta sus canales y sigue alertas de INDECI y la municipalidad [ENFEN-2026-18].\n- Durante inundación: opera solo si es seguro; no ingreses a zonas inundadas. Sigue a INDECI y la municipalidad.\n- Después: Controla agua estancada* y revisa techo y canaletas*; pide a personal calificado revisar la instalación eléctrica [CAT-09, CAT-11, CAT-12].\n\n## 3. Tu mercadería\nTraslada {stock_to_move} a estantes elevados o recipientes herméticos*, fuera de la zona inundable [CAT-05, CAT-03].\n\n## 4. Tu caja de emergencia\nTienes {cash_on_hand}; menos compras por {planned_purchases}, quedan {cash_after_purchases}. El fondo para {weeks_closed} es {buffer_needed}; faltan {cash_gap}. Aparta parte de tus ventas cuando puedas* [CAT-06].\n\n## 5. Tus proveedores\nChiclayo: riesgo alto; completa primero tu fondo y luego abastécete de no perecibles. Piura: riesgo alto; completa primero tu fondo y luego abastécete de no perecibles. Sullana: riesgo medio; pide entregas pequeñas y frecuentes [HIST-1998-08].\n\n## 6. Compras dentro de tu presupuesto\n- Sacos de arena en la puerta* ({cat_02_cost}) [CAT-02]\n- Cajas herméticas* ({cat_03_cost}) [CAT-03]\n- Copia de seguridad de tus registros* ({cat_07_cost}) [CAT-07]\n- Control de zancudos contra el dengue* ({cat_09_cost}) [CAT-09]\n- Seguro contra lluvias e inundación ({cat_10_cost}) [CAT-10]\n- Limpiar canaletas y reparar el techo* ({cat_11_cost}) [CAT-11]\n- Seguridad eléctrica ({cat_12_cost}) [CAT-12]\n- Plan para cortes de luz* ({cat_15_cost}) [CAT-15]\nTotal: {total_cost}; queda {money_left}. No incluimos estantes ni barrera para la puerta porque no alcanzó el presupuesto.\n\n## 7. Lo que revisamos\nProbamos lluvias adelantadas, corte de puente y corte de luz. El plan ayuda a prepararte, pero no elimina el riesgo ni asegura abastecimiento.",
   "plan": {
-    "pen": "## 1. Tu riesgo\nRiesgo alto de inundación; Castilla sufrió inundaciones en 2017 [HIST-2017-02] [HIST-2017-30]. ENFEN mantiene Alerta de El Niño Costero, potencialmente hasta otoño de 2027; puede cambiar [ENFEN-2026-18]. No menciona Castilla. Stock al alcance del agua: S/ 10,000.\n\n## 2. Qué hacer y cuándo\n- Ahora: Sube mercadería a un lugar seguro* [CAT-05], haz copias digitales* [CAT-07] y vende perecibles sin acumularlos. Ahorra para el fondo* [CAT-06].\n- Confirma con proveedores rutas, entrega o retiro alternativos; no asumas disponibilidad. Pide entregas pequeñas y frecuentes de pan* [CAT-08] [HIST-1998-08].\n- Ante avisos: consulta ENFEN, SENAMHI, INDECI y la municipalidad [ENFEN-2026-18].\n- Durante inundación: protege registros y usa WhatsApp* [CAT-14] solo si es seguro; sigue a INDECI y la municipalidad.\n- Después: revisa electricidad con personal calificado y retira agua estancada* [CAT-09] [CAT-12].\n\n## 3. Tu mercadería\nMueve S/ 10,000 a estantes altos, cajas herméticas o un lugar fuera de la zona inundable.\n\n## 4. Tu caja de emergencia\nEl cierre considerado: 4 semanas; fondo: S/ 3,692. Tienes S/ 3,000; falta S/ 692. Ahorra primero y prioriza gastos esenciales si se prolonga [HIST-1998-07] [HIST-1998-10].\n\n## 5. Tus proveedores\n- Chiclayo: riesgo alto. Completa primero tu fondo; después abastécete de no perecibles.\n- Piura: riesgo alto. Completa primero tu fondo; después abastécete de no perecibles.\n- Sullana: riesgo medio. Pide entregas pequeñas y frecuentes; no acumules pan.\n\n## 6. Compras dentro de tu presupuesto\n- Sacos de arena en la puerta* (S/ 77 por 10 sacos llenos) [CAT-02]\n- Cajas herméticas* (S/ 64.90 por caja) [CAT-03]\n- Copia de seguridad de tus registros* (S/ 64.99 al año, en la nube) [CAT-07]\n- Control de zancudos contra el dengue* (S/ 5.90 por malla de ventana) [CAT-09]\n- Seguro contra lluvias e inundación (S/ 36 al año) [CAT-10]\n- Limpiar canaletas y reparar el techo* (S/ 69.90 por canaleta) [CAT-11]\n- Seguridad eléctrica (S/ 49.90 por interruptor, sin instalación) [CAT-12]\n- Plan para cortes de luz* (S/ 14.90 por linterna) [CAT-15]\nTotal: S/ 383; queda S/ 117. No incluimos estantes ni barrera porque no alcanzó el presupuesto.\n\n## 7. Lo que revisamos\nProbamos lluvias adelantadas, puente cortado, cortes de luz y cierre prolongado. Las medidas ayudan, pero no aseguran rutas alternas ni cubrir un cierre largo.\n\n\\* Costo o beneficio estimado, no medido.\n\n_Pirca no es una agencia oficial. Sigue los avisos de ENFEN, SENAMHI, INDECI y tu municipalidad._\n",
-    "usd": "## 1. Tu riesgo\nRiesgo alto de inundación; Castilla sufrió inundaciones en 2017 [HIST-2017-02] [HIST-2017-30]. ENFEN mantiene Alerta de El Niño Costero, potencialmente hasta otoño de 2027; puede cambiar [ENFEN-2026-18]. No menciona Castilla. Stock al alcance del agua: $2,901.\n\n## 2. Qué hacer y cuándo\n- Ahora: Sube mercadería a un lugar seguro* [CAT-05], haz copias digitales* [CAT-07] y vende perecibles sin acumularlos. Ahorra para el fondo* [CAT-06].\n- Confirma con proveedores rutas, entrega o retiro alternativos; no asumas disponibilidad. Pide entregas pequeñas y frecuentes de pan* [CAT-08] [HIST-1998-08].\n- Ante avisos: consulta ENFEN, SENAMHI, INDECI y la municipalidad [ENFEN-2026-18].\n- Durante inundación: protege registros y usa WhatsApp* [CAT-14] solo si es seguro; sigue a INDECI y la municipalidad.\n- Después: revisa electricidad con personal calificado y retira agua estancada* [CAT-09] [CAT-12].\n\n## 3. Tu mercadería\nMueve $2,901 a estantes altos, cajas herméticas o un lugar fuera de la zona inundable.\n\n## 4. Tu caja de emergencia\nEl cierre considerado: 4 semanas; fondo: $1,071. Tienes $870; falta $201. Ahorra primero y prioriza gastos esenciales si se prolonga [HIST-1998-07] [HIST-1998-10].\n\n## 5. Tus proveedores\n- Chiclayo: riesgo alto. Completa primero tu fondo; después abastécete de no perecibles.\n- Piura: riesgo alto. Completa primero tu fondo; después abastécete de no perecibles.\n- Sullana: riesgo medio. Pide entregas pequeñas y frecuentes; no acumules pan.\n\n## 6. Compras dentro de tu presupuesto\n- Sacos de arena en la puerta* ($22.34 por 10 sacos llenos) [CAT-02]\n- Cajas herméticas* ($18.83 por caja) [CAT-03]\n- Copia de seguridad de tus registros* ($18.85 al año, en la nube) [CAT-07]\n- Control de zancudos contra el dengue* ($1.71 por malla de ventana) [CAT-09]\n- Seguro contra lluvias e inundación ($10.44 al año) [CAT-10]\n- Limpiar canaletas y reparar el techo* ($20.28 por canaleta) [CAT-11]\n- Seguridad eléctrica ($14.48 por interruptor, sin instalación) [CAT-12]\n- Plan para cortes de luz* ($4.32 por linterna) [CAT-15]\nTotal: $111; queda $33.80. No incluimos estantes ni barrera porque no alcanzó el presupuesto.\n\n## 7. Lo que revisamos\nProbamos lluvias adelantadas, puente cortado, cortes de luz y cierre prolongado. Las medidas ayudan, pero no aseguran rutas alternas ni cubrir un cierre largo.\n\n\\* Costo o beneficio estimado, no medido.\n\n_Pirca no es una agencia oficial. Sigue los avisos de ENFEN, SENAMHI, INDECI y tu municipalidad._\n"
+    "pen": "## 1. Tu riesgo\nRiesgo alto de inundación; hubo inundaciones en Castilla y agua en el mercado [HIST-2017-02, HIST-2017-30]. ENFEN mantiene Alerta de El Niño Costero, que podría extenderse hasta otoño de 2027; las previsiones pueden cambiar [ENFEN-2026-18]. No menciona Castilla ni ofrece pronóstico distrital. Mercadería al alcance del agua: S/ 10,000.\n\n## 2. Qué hacer y cuándo\n- Ahora: Sube mercadería y documentos a un lugar elevado y seco* [CAT-05, CAT-03]. Activa ventas por WhatsApp y delivery* [CAT-14]. Aparta caja desde ahora* [CAT-06]. Confirma entregas con cada proveedor, ubica alternativas locales, prioriza productos esenciales y avisa si faltan.\n- Ante aviso de ENFEN o SENAMHI: consulta sus canales y sigue alertas de INDECI y la municipalidad [ENFEN-2026-18].\n- Durante inundación: opera solo si es seguro; no ingreses a zonas inundadas. Sigue a INDECI y la municipalidad.\n- Después: Controla agua estancada* y revisa techo y canaletas*; pide a personal calificado revisar la instalación eléctrica [CAT-09, CAT-11, CAT-12].\n\n## 3. Tu mercadería\nTraslada S/ 10,000 a estantes elevados o recipientes herméticos*, fuera de la zona inundable [CAT-05, CAT-03].\n\n## 4. Tu caja de emergencia\nTienes S/ 3,000; menos compras por S/ 383, quedan S/ 2,617. El fondo para 4 semanas es S/ 3,692; faltan S/ 1,076. Aparta parte de tus ventas cuando puedas* [CAT-06].\n\n## 5. Tus proveedores\nChiclayo: riesgo alto; completa primero tu fondo y luego abastécete de no perecibles. Piura: riesgo alto; completa primero tu fondo y luego abastécete de no perecibles. Sullana: riesgo medio; pide entregas pequeñas y frecuentes [HIST-1998-08].\n\n## 6. Compras dentro de tu presupuesto\n- Sacos de arena en la puerta* (S/ 77 por 10 sacos llenos) [CAT-02]\n- Cajas herméticas* (S/ 64.90 por caja) [CAT-03]\n- Copia de seguridad de tus registros* (S/ 64.99 al año, en la nube) [CAT-07]\n- Control de zancudos contra el dengue* (S/ 5.90 por malla de ventana) [CAT-09]\n- Seguro contra lluvias e inundación (S/ 36 al año) [CAT-10]\n- Limpiar canaletas y reparar el techo* (S/ 69.90 por canaleta) [CAT-11]\n- Seguridad eléctrica (S/ 49.90 por interruptor, sin instalación) [CAT-12]\n- Plan para cortes de luz* (S/ 14.90 por linterna) [CAT-15]\nTotal: S/ 383; queda S/ 117. No incluimos estantes ni barrera para la puerta porque no alcanzó el presupuesto.\n\n## 7. Lo que revisamos\nProbamos lluvias adelantadas, corte de puente y corte de luz. El plan ayuda a prepararte, pero no elimina el riesgo ni asegura abastecimiento.\n\n\\* Costo o beneficio estimado, no medido.\n\n_Pirca no es una agencia oficial. Sigue los avisos de ENFEN, SENAMHI, INDECI y tu municipalidad._\n",
+    "usd": "## 1. Tu riesgo\nRiesgo alto de inundación; hubo inundaciones en Castilla y agua en el mercado [HIST-2017-02, HIST-2017-30]. ENFEN mantiene Alerta de El Niño Costero, que podría extenderse hasta otoño de 2027; las previsiones pueden cambiar [ENFEN-2026-18]. No menciona Castilla ni ofrece pronóstico distrital. Mercadería al alcance del agua: $2,901.\n\n## 2. Qué hacer y cuándo\n- Ahora: Sube mercadería y documentos a un lugar elevado y seco* [CAT-05, CAT-03]. Activa ventas por WhatsApp y delivery* [CAT-14]. Aparta caja desde ahora* [CAT-06]. Confirma entregas con cada proveedor, ubica alternativas locales, prioriza productos esenciales y avisa si faltan.\n- Ante aviso de ENFEN o SENAMHI: consulta sus canales y sigue alertas de INDECI y la municipalidad [ENFEN-2026-18].\n- Durante inundación: opera solo si es seguro; no ingreses a zonas inundadas. Sigue a INDECI y la municipalidad.\n- Después: Controla agua estancada* y revisa techo y canaletas*; pide a personal calificado revisar la instalación eléctrica [CAT-09, CAT-11, CAT-12].\n\n## 3. Tu mercadería\nTraslada $2,901 a estantes elevados o recipientes herméticos*, fuera de la zona inundable [CAT-05, CAT-03].\n\n## 4. Tu caja de emergencia\nTienes $870; menos compras por $111, quedan $759. El fondo para 4 semanas es $1,071; faltan $312. Aparta parte de tus ventas cuando puedas* [CAT-06].\n\n## 5. Tus proveedores\nChiclayo: riesgo alto; completa primero tu fondo y luego abastécete de no perecibles. Piura: riesgo alto; completa primero tu fondo y luego abastécete de no perecibles. Sullana: riesgo medio; pide entregas pequeñas y frecuentes [HIST-1998-08].\n\n## 6. Compras dentro de tu presupuesto\n- Sacos de arena en la puerta* ($22.34 por 10 sacos llenos) [CAT-02]\n- Cajas herméticas* ($18.83 por caja) [CAT-03]\n- Copia de seguridad de tus registros* ($18.85 al año, en la nube) [CAT-07]\n- Control de zancudos contra el dengue* ($1.71 por malla de ventana) [CAT-09]\n- Seguro contra lluvias e inundación ($10.44 al año) [CAT-10]\n- Limpiar canaletas y reparar el techo* ($20.28 por canaleta) [CAT-11]\n- Seguridad eléctrica ($14.48 por interruptor, sin instalación) [CAT-12]\n- Plan para cortes de luz* ($4.32 por linterna) [CAT-15]\nTotal: $111; queda $33.80. No incluimos estantes ni barrera para la puerta porque no alcanzó el presupuesto.\n\n## 7. Lo que revisamos\nProbamos lluvias adelantadas, corte de puente y corte de luz. El plan ayuda a prepararte, pero no elimina el riesgo ni asegura abastecimiento.\n\n\\* Costo o beneficio estimado, no medido.\n\n_Pirca no es una agencia oficial. Sigue los avisos de ENFEN, SENAMHI, INDECI y tu municipalidad._\n"
   },
   "warning": null,
   "verification": {
@@ -15,42 +15,37 @@
   "affordability": {
     "purchases": {
       "cat_11_cost": 69.9,
+      "cat_10_cost": 36.0,
       "cat_02_cost": 77.0,
       "cat_09_cost": 5.9,
       "cat_15_cost": 14.9,
-      "cat_10_cost": 36.0,
-      "cat_07_cost": 64.99,
       "cat_03_cost": 64.9,
-      "cat_12_cost": 49.9
+      "cat_12_cost": 49.9,
+      "cat_07_cost": 64.99
     },
     "stock_up": 0.0,
     "total": 383.49,
     "cash_on_hand": 3000.0,
     "within_cash": true
   },
-  "summary_en": "The plan prioritizes moving stock, emergency savings, and supplier coordination without assuming alternate routes are available. It lists selected purchases within the available budget and notes that a prolonged closure may exceed the emergency fund. The revised Critic still found material concerns about supply contingency and the tested scenarios, which remain open.",
+  "summary_en": "The plan addresses flood exposure, stock protection, emergency cash, and supplier contingencies. It prioritizes immediate free steps and follows official updates without making a forecast or promising safety. The second critique still found gaps around early rainfall timing and complete supplier-route alternatives; these are acknowledged as open issues.",
   "decisions": [
     {
-      "decision": "Accepted the remaining gap that alternative supplier routes or pickup options cannot be confirmed in advance.",
-      "reason": "The plan tells the owner to check availability with suppliers and not assume alternatives exist; the available budget does not permit additional stock-up."
+      "decision": "Accepted the remaining early-rain timing gap after the single permitted revision.",
+      "reason": "The final plan makes free preparedness steps immediate and advises setting cash aside, but does not claim the fund can be completed in time."
     },
     {
-      "decision": "Accepted the remaining uncertainty for a prolonged closure.",
-      "reason": "The plan asks the owner to prioritize essential spending but does not promise that the emergency fund covers an extended closure."
+      "decision": "Accepted the remaining supplier-contingency gap after the single permitted revision.",
+      "reason": "The plan tells the owner to confirm deliveries, seek local alternatives, prioritize essentials, and inform customers; no extra stock is affordable under the given status."
     },
     {
-      "decision": "Kept risk at high and did not describe Castilla's history as unverified.",
-      "reason": "The run input marks district data as verified and sets the hazard level to high."
-    },
-    {
-      "decision": "Included no-cost supplier coordination and early perishable sales.",
-      "reason": "These steps address the Critic's supplier-contingency and power-cut concerns without implying supply is guaranteed."
+      "decision": "Included all purchases selected by the Planner and the emergency-fund-first supplier advice.",
+      "reason": "These reflect the available budget and stock-up status."
     }
   ],
   "open_issues": [
-    "Alternate supplier routes and supply during a bridge closure are not assured, and no extra stock is affordable.",
-    "The emergency fund may not cover a prolonged closure.",
-    "The final shortened plan is based on the last draft checked; the verification tool limit prevented a further check."
+    "The short-time-to-rain scenario may leave the emergency fund incomplete.",
+    "Local alternatives may not cover every supplier route if all routes are cut."
   ],
   "missing_facts": [],
   "suspicious_content": [],
@@ -74,7 +69,9 @@
     "weekly_fixed_costs": 923.08,
     "buffer_needed": 3692.31,
     "cash_on_hand": 3000.0,
-    "cash_gap": 692.31,
+    "planned_purchases": 383.49,
+    "cash_after_purchases": 2616.51,
+    "cash_gap": 1075.8,
     "lost_sales": 28000.0,
     "supplier_count": 3,
     "days_of_stock": 7.0,
@@ -106,7 +103,7 @@
     "cat_11_cost": 69.9,
     "cat_12_cost": 49.9,
     "cat_15_cost": 14.9,
-    "issue_count": 1,
+    "issue_count": 5,
     "raw_number_count": 0,
     "unknown_fact_key_count": 0,
     "invalid_placeholder_count": 0,
@@ -114,10 +111,10 @@
     "unknown_source_id_count": 0,
     "forbidden_content_count": 0,
     "bare_catalog_id_count": 0,
-    "missing_asterisk_count": 0,
+    "missing_asterisk_count": 5,
     "internal_term_count": 0,
     "grammar_count": 0,
-    "too_long_count": 1,
+    "too_long_count": 0,
     "missing_section_count": 0,
     "section_7_too_long_count": 0,
     "false_unverified_claim_count": 0,
@@ -127,9 +124,9 @@
     "rains_one_month_early__weeks_until_rains": 0.0,
     "rains_one_month_early__baseline_weeks_until_rains": 1.1,
     "rains_one_month_early__delta_weeks_until_rains": -1.1,
-    "rains_one_month_early__weekly_saving_needed": 692.31,
-    "rains_one_month_early__baseline_weekly_saving_needed": 629.37,
-    "rains_one_month_early__delta_weekly_saving_needed": 62.94,
+    "rains_one_month_early__weekly_saving_needed": 1075.8,
+    "rains_one_month_early__baseline_weekly_saving_needed": 978.0,
+    "rains_one_month_early__delta_weekly_saving_needed": 97.8,
     "main_bridge_cut__supplier_count": 3,
     "main_bridge_cut__baseline_supplier_count": 3,
     "main_bridge_cut__delta_supplier_count": 0,
@@ -166,24 +163,6 @@
     "main_bridge_cut__supplier_3_extra_days": 0.0,
     "main_bridge_cut__baseline_supplier_3_extra_days": 0.0,
     "main_bridge_cut__delta_supplier_3_extra_days": 0.0,
-    "long_closure__weeks_closed": 13,
-    "long_closure__baseline_weeks_closed": 4,
-    "long_closure__delta_weeks_closed": 9,
-    "long_closure__weekly_fixed_costs": 923.08,
-    "long_closure__baseline_weekly_fixed_costs": 923.08,
-    "long_closure__delta_weekly_fixed_costs": 0.0,
-    "long_closure__buffer_needed": 12000.0,
-    "long_closure__baseline_buffer_needed": 3692.31,
-    "long_closure__delta_buffer_needed": 8307.69,
-    "long_closure__cash_on_hand": 3000.0,
-    "long_closure__baseline_cash_on_hand": 3000.0,
-    "long_closure__delta_cash_on_hand": 0.0,
-    "long_closure__cash_gap": 9000.0,
-    "long_closure__baseline_cash_gap": 692.31,
-    "long_closure__delta_cash_gap": 8307.69,
-    "long_closure__lost_sales": 91000.0,
-    "long_closure__baseline_lost_sales": 28000.0,
-    "long_closure__delta_lost_sales": 63000.0,
     "power_cut_week__power_cut_days": 7,
     "power_cut_week__sales_at_risk": 7000.0,
     "power_cut_week__perishables": 1
@@ -239,25 +218,25 @@
     "HIST-2017-33"
   ],
   "usage": {
-    "input_tokens": 261293,
-    "cached_input_tokens": 191953,
-    "cache_write_tokens": 69265,
-    "output_tokens": 20635,
-    "reasoning_tokens": 402,
-    "model_calls": 25,
-    "cost_usd": 0.020903,
-    "total_tokens": 281928
+    "input_tokens": 200515,
+    "cached_input_tokens": 139846,
+    "cache_write_tokens": 60600,
+    "output_tokens": 14352,
+    "reasoning_tokens": 790,
+    "model_calls": 23,
+    "cost_usd": 0.016156,
+    "total_tokens": 214867
   },
   "usage_by_agent": {
     "manager": {
-      "input_tokens": 149806,
-      "cached_input_tokens": 125988,
-      "cache_write_tokens": 23788,
-      "output_tokens": 4651,
+      "input_tokens": 98182,
+      "cached_input_tokens": 78127,
+      "cache_write_tokens": 20031,
+      "output_tokens": 2831,
       "reasoning_tokens": 0,
-      "model_calls": 10,
-      "cost_usd": 0.006562,
-      "total_tokens": 154457
+      "model_calls": 8,
+      "cost_usd": 0.004703,
+      "total_tokens": 101013
     },
     "risk_analyst": {
       "input_tokens": 27493,
@@ -270,24 +249,24 @@
       "total_tokens": 29249
     },
     "planner": {
-      "input_tokens": 29278,
-      "cached_input_tokens": 10415,
-      "cache_write_tokens": 18851,
-      "output_tokens": 6955,
-      "reasoning_tokens": 111,
+      "input_tokens": 29490,
+      "cached_input_tokens": 10537,
+      "cache_write_tokens": 18941,
+      "output_tokens": 7331,
+      "reasoning_tokens": 0,
       "model_calls": 4,
-      "cost_usd": 0.005939,
-      "total_tokens": 36233
+      "cost_usd": 0.00614,
+      "total_tokens": 36821
     },
     "critic": {
-      "input_tokens": 54716,
-      "cached_input_tokens": 36318,
-      "cache_write_tokens": 18380,
-      "output_tokens": 7273,
-      "reasoning_tokens": 166,
+      "input_tokens": 45350,
+      "cached_input_tokens": 31950,
+      "cache_write_tokens": 13382,
+      "output_tokens": 2434,
+      "reasoning_tokens": 665,
       "model_calls": 6,
-      "cost_usd": 0.006299,
-      "total_tokens": 61989
+      "cost_usd": 0.003211,
+      "total_tokens": 47784
     }
   },
   "agent_runs": {
@@ -346,68 +325,68 @@
       "seq": 3,
       "type": "model_call",
       "agent": "manager",
-      "elapsed_s": 1.2,
+      "elapsed_s": 2.92,
       "call": {
-        "input_tokens": 3318,
+        "input_tokens": 3357,
         "cached_input_tokens": 0,
-        "cache_write_tokens": 3315,
+        "cache_write_tokens": 3354,
         "output_tokens": 18,
         "reasoning_tokens": 0,
         "model_calls": 1,
-        "cost_usd": 0.000424,
-        "total_tokens": 3336
+        "cost_usd": 0.000429,
+        "total_tokens": 3375
       },
       "totals": {
-        "input_tokens": 3318,
+        "input_tokens": 3357,
         "cached_input_tokens": 0,
-        "cache_write_tokens": 3315,
+        "cache_write_tokens": 3354,
         "output_tokens": 18,
         "reasoning_tokens": 0,
         "model_calls": 1,
-        "cost_usd": 0.000424,
-        "total_tokens": 3336
+        "cost_usd": 0.000429,
+        "total_tokens": 3375
       }
     },
     {
       "seq": 4,
       "type": "tool_called",
       "agent": "manager",
-      "elapsed_s": 1.2,
+      "elapsed_s": 2.93,
       "tool": "run_risk_analyst",
       "args": {},
       "totals": {
-        "input_tokens": 3318,
+        "input_tokens": 3357,
         "cached_input_tokens": 0,
-        "cache_write_tokens": 3315,
+        "cache_write_tokens": 3354,
         "output_tokens": 18,
         "reasoning_tokens": 0,
         "model_calls": 1,
-        "cost_usd": 0.000424,
-        "total_tokens": 3336
+        "cost_usd": 0.000429,
+        "total_tokens": 3375
       }
     },
     {
       "seq": 5,
       "type": "agent_started",
       "agent": "risk_analyst",
-      "elapsed_s": 1.2,
+      "elapsed_s": 2.93,
       "run": 1,
       "totals": {
-        "input_tokens": 3318,
+        "input_tokens": 3357,
         "cached_input_tokens": 0,
-        "cache_write_tokens": 3315,
+        "cache_write_tokens": 3354,
         "output_tokens": 18,
         "reasoning_tokens": 0,
         "model_calls": 1,
-        "cost_usd": 0.000424,
-        "total_tokens": 3336
+        "cost_usd": 0.000429,
+        "total_tokens": 3375
       }
     },
     {
       "seq": 6,
       "type": "model_call",
       "agent": "risk_analyst",
-      "elapsed_s": 1.56,
+      "elapsed_s": 3.15,
       "call": {
         "input_tokens": 2358,
         "cached_input_tokens": 0,
@@ -419,39 +398,39 @@
         "total_tokens": 2373
       },
       "totals": {
-        "input_tokens": 5676,
+        "input_tokens": 5715,
         "cached_input_tokens": 0,
-        "cache_write_tokens": 5670,
+        "cache_write_tokens": 5709,
         "output_tokens": 33,
         "reasoning_tokens": 0,
         "model_calls": 2,
-        "cost_usd": 0.000726,
-        "total_tokens": 5709
+        "cost_usd": 0.000731,
+        "total_tokens": 5748
       }
     },
     {
       "seq": 7,
       "type": "tool_called",
       "agent": "risk_analyst",
-      "elapsed_s": 1.56,
+      "elapsed_s": 3.15,
       "tool": "score_exposure",
       "args": {},
       "totals": {
-        "input_tokens": 5676,
+        "input_tokens": 5715,
         "cached_input_tokens": 0,
-        "cache_write_tokens": 5670,
+        "cache_write_tokens": 5709,
         "output_tokens": 33,
         "reasoning_tokens": 0,
         "model_calls": 2,
-        "cost_usd": 0.000726,
-        "total_tokens": 5709
+        "cost_usd": 0.000731,
+        "total_tokens": 5748
       }
     },
     {
       "seq": 8,
       "type": "tool_result",
       "agent": "risk_analyst",
-      "elapsed_s": 1.56,
+      "elapsed_s": 3.15,
       "tool": "score_exposure",
       "result": {
         "facts": {
@@ -473,21 +452,21 @@
         "risk_level": "high"
       },
       "totals": {
-        "input_tokens": 5676,
+        "input_tokens": 5715,
         "cached_input_tokens": 0,
-        "cache_write_tokens": 5670,
+        "cache_write_tokens": 5709,
         "output_tokens": 33,
         "reasoning_tokens": 0,
         "model_calls": 2,
-        "cost_usd": 0.000726,
-        "total_tokens": 5709
+        "cost_usd": 0.000731,
+        "total_tokens": 5748
       }
     },
     {
       "seq": 9,
       "type": "model_call",
       "agent": "risk_analyst",
-      "elapsed_s": 1.86,
+      "elapsed_s": 3.44,
       "call": {
         "input_tokens": 2815,
         "cached_input_tokens": 2355,
@@ -499,42 +478,42 @@
         "total_tokens": 2894
       },
       "totals": {
-        "input_tokens": 8491,
+        "input_tokens": 8530,
         "cached_input_tokens": 2355,
-        "cache_write_tokens": 6127,
+        "cache_write_tokens": 6166,
         "output_tokens": 112,
         "reasoning_tokens": 0,
         "model_calls": 3,
-        "cost_usd": 0.000846,
-        "total_tokens": 8603
+        "cost_usd": 0.000851,
+        "total_tokens": 8642
       }
     },
     {
       "seq": 10,
       "type": "tool_called",
       "agent": "risk_analyst",
-      "elapsed_s": 1.86,
+      "elapsed_s": 3.44,
       "tool": "search_documents",
       "args": {
         "query": "alerta El Niño costero ENFEN octubre 2026",
         "limit": 8
       },
       "totals": {
-        "input_tokens": 8491,
+        "input_tokens": 8530,
         "cached_input_tokens": 2355,
-        "cache_write_tokens": 6127,
+        "cache_write_tokens": 6166,
         "output_tokens": 112,
         "reasoning_tokens": 0,
         "model_calls": 3,
-        "cost_usd": 0.000846,
-        "total_tokens": 8603
+        "cost_usd": 0.000851,
+        "total_tokens": 8642
       }
     },
     {
       "seq": 11,
       "type": "tool_result",
       "agent": "risk_analyst",
-      "elapsed_s": 1.89,
+      "elapsed_s": 3.47,
       "tool": "search_documents",
       "result": {
         "facts": {
@@ -548,21 +527,21 @@
         ]
       },
       "totals": {
-        "input_tokens": 8491,
+        "input_tokens": 8530,
         "cached_input_tokens": 2355,
-        "cache_write_tokens": 6127,
+        "cache_write_tokens": 6166,
         "output_tokens": 112,
         "reasoning_tokens": 0,
         "model_calls": 3,
-        "cost_usd": 0.000846,
-        "total_tokens": 8603
+        "cost_usd": 0.000851,
+        "total_tokens": 8642
       }
     },
     {
       "seq": 12,
       "type": "tool_called",
       "agent": "risk_analyst",
-      "elapsed_s": 1.89,
+      "elapsed_s": 3.47,
       "tool": "get_historical_impacts",
       "args": {
         "district": "Castilla",
@@ -572,21 +551,21 @@
         "include_region": true
       },
       "totals": {
-        "input_tokens": 8491,
+        "input_tokens": 8530,
         "cached_input_tokens": 2355,
-        "cache_write_tokens": 6127,
+        "cache_write_tokens": 6166,
         "output_tokens": 112,
         "reasoning_tokens": 0,
         "model_calls": 3,
-        "cost_usd": 0.000846,
-        "total_tokens": 8603
+        "cost_usd": 0.000851,
+        "total_tokens": 8642
       }
     },
     {
       "seq": 13,
       "type": "tool_result",
       "agent": "risk_analyst",
-      "elapsed_s": 1.89,
+      "elapsed_s": 3.47,
       "tool": "get_historical_impacts",
       "result": {
         "facts": {
@@ -621,21 +600,21 @@
         ]
       },
       "totals": {
-        "input_tokens": 8491,
+        "input_tokens": 8530,
         "cached_input_tokens": 2355,
-        "cache_write_tokens": 6127,
+        "cache_write_tokens": 6166,
         "output_tokens": 112,
         "reasoning_tokens": 0,
         "model_calls": 3,
-        "cost_usd": 0.000846,
-        "total_tokens": 8603
+        "cost_usd": 0.000851,
+        "total_tokens": 8642
       }
     },
     {
       "seq": 14,
       "type": "model_call",
       "agent": "risk_analyst",
-      "elapsed_s": 2.19,
+      "elapsed_s": 3.74,
       "call": {
         "input_tokens": 6727,
         "cached_input_tokens": 2812,
@@ -647,42 +626,42 @@
         "total_tokens": 6770
       },
       "totals": {
-        "input_tokens": 15218,
+        "input_tokens": 15257,
         "cached_input_tokens": 5167,
-        "cache_write_tokens": 10039,
+        "cache_write_tokens": 10078,
         "output_tokens": 155,
         "reasoning_tokens": 0,
         "model_calls": 4,
-        "cost_usd": 0.001385,
-        "total_tokens": 15373
+        "cost_usd": 0.00139,
+        "total_tokens": 15412
       }
     },
     {
       "seq": 15,
       "type": "tool_called",
       "agent": "risk_analyst",
-      "elapsed_s": 2.19,
+      "elapsed_s": 3.74,
       "tool": "search_documents",
       "args": {
         "query": "ENFEN-2026-18 lluvias caudales temperatura septiembre octubre noviembre diciembre otoño 2027",
         "limit": 5
       },
       "totals": {
-        "input_tokens": 15218,
+        "input_tokens": 15257,
         "cached_input_tokens": 5167,
-        "cache_write_tokens": 10039,
+        "cache_write_tokens": 10078,
         "output_tokens": 155,
         "reasoning_tokens": 0,
         "model_calls": 4,
-        "cost_usd": 0.001385,
-        "total_tokens": 15373
+        "cost_usd": 0.00139,
+        "total_tokens": 15412
       }
     },
     {
       "seq": 16,
       "type": "tool_result",
       "agent": "risk_analyst",
-      "elapsed_s": 2.23,
+      "elapsed_s": 3.76,
       "tool": "search_documents",
       "result": {
         "facts": {
@@ -696,21 +675,21 @@
         ]
       },
       "totals": {
-        "input_tokens": 15218,
+        "input_tokens": 15257,
         "cached_input_tokens": 5167,
-        "cache_write_tokens": 10039,
+        "cache_write_tokens": 10078,
         "output_tokens": 155,
         "reasoning_tokens": 0,
         "model_calls": 4,
-        "cost_usd": 0.001385,
-        "total_tokens": 15373
+        "cost_usd": 0.00139,
+        "total_tokens": 15412
       }
     },
     {
       "seq": 17,
       "type": "model_call",
       "agent": "risk_analyst",
-      "elapsed_s": 2.42,
+      "elapsed_s": 3.95,
       "call": {
         "input_tokens": 7344,
         "cached_input_tokens": 6724,
@@ -722,42 +701,42 @@
         "total_tokens": 7388
       },
       "totals": {
-        "input_tokens": 22562,
+        "input_tokens": 22601,
         "cached_input_tokens": 11891,
-        "cache_write_tokens": 10656,
+        "cache_write_tokens": 10695,
         "output_tokens": 199,
         "reasoning_tokens": 0,
         "model_calls": 5,
-        "cost_usd": 0.001552,
-        "total_tokens": 22761
+        "cost_usd": 0.001557,
+        "total_tokens": 22800
       }
     },
     {
       "seq": 18,
       "type": "tool_called",
       "agent": "risk_analyst",
-      "elapsed_s": 2.42,
+      "elapsed_s": 3.95,
       "tool": "search_documents",
       "args": {
         "query": "ENFEN-2026-18 octubre 2026 lluvias costa norte río Piura caudales aire",
         "limit": 8
       },
       "totals": {
-        "input_tokens": 22562,
+        "input_tokens": 22601,
         "cached_input_tokens": 11891,
-        "cache_write_tokens": 10656,
+        "cache_write_tokens": 10695,
         "output_tokens": 199,
         "reasoning_tokens": 0,
         "model_calls": 5,
-        "cost_usd": 0.001552,
-        "total_tokens": 22761
+        "cost_usd": 0.001557,
+        "total_tokens": 22800
       }
     },
     {
       "seq": 19,
       "type": "tool_result",
       "agent": "risk_analyst",
-      "elapsed_s": 2.45,
+      "elapsed_s": 3.98,
       "tool": "search_documents",
       "result": {
         "facts": {
@@ -771,21 +750,21 @@
         ]
       },
       "totals": {
-        "input_tokens": 22562,
+        "input_tokens": 22601,
         "cached_input_tokens": 11891,
-        "cache_write_tokens": 10656,
+        "cache_write_tokens": 10695,
         "output_tokens": 199,
         "reasoning_tokens": 0,
         "model_calls": 5,
-        "cost_usd": 0.001552,
-        "total_tokens": 22761
+        "cost_usd": 0.001557,
+        "total_tokens": 22800
       }
     },
     {
       "seq": 20,
       "type": "model_call",
       "agent": "risk_analyst",
-      "elapsed_s": 2.69,
+      "elapsed_s": 4.21,
       "call": {
         "input_tokens": 8249,
         "cached_input_tokens": 7341,
@@ -797,21 +776,21 @@
         "total_tokens": 9824
       },
       "totals": {
-        "input_tokens": 30811,
+        "input_tokens": 30850,
         "cached_input_tokens": 19232,
-        "cache_write_tokens": 11561,
+        "cache_write_tokens": 11600,
         "output_tokens": 1774,
         "reasoning_tokens": 125,
         "model_calls": 6,
-        "cost_usd": 0.002526,
-        "total_tokens": 32585
+        "cost_usd": 0.002531,
+        "total_tokens": 32624
       }
     },
     {
       "seq": 21,
       "type": "agent_finished",
       "agent": "risk_analyst",
-      "elapsed_s": 2.69,
+      "elapsed_s": 4.23,
       "keys": [
         "enfen_mentions_district",
         "enfen_status",
@@ -835,149 +814,149 @@
         "total_tokens": 29249
       },
       "totals": {
-        "input_tokens": 30811,
+        "input_tokens": 30850,
         "cached_input_tokens": 19232,
-        "cache_write_tokens": 11561,
+        "cache_write_tokens": 11600,
         "output_tokens": 1774,
         "reasoning_tokens": 125,
         "model_calls": 6,
-        "cost_usd": 0.002526,
-        "total_tokens": 32585
+        "cost_usd": 0.002531,
+        "total_tokens": 32624
       }
     },
     {
       "seq": 22,
       "type": "tool_result",
       "agent": "manager",
-      "elapsed_s": 2.69,
+      "elapsed_s": 4.23,
       "tool": "run_risk_analyst",
       "result": {
         "facts": {},
         "sources": []
       },
       "totals": {
-        "input_tokens": 30811,
+        "input_tokens": 30850,
         "cached_input_tokens": 19232,
-        "cache_write_tokens": 11561,
+        "cache_write_tokens": 11600,
         "output_tokens": 1774,
         "reasoning_tokens": 125,
         "model_calls": 6,
-        "cost_usd": 0.002526,
-        "total_tokens": 32585
+        "cost_usd": 0.002531,
+        "total_tokens": 32624
       }
     },
     {
       "seq": 23,
       "type": "model_call",
       "agent": "manager",
-      "elapsed_s": 2.98,
+      "elapsed_s": 5.69,
       "call": {
-        "input_tokens": 4684,
-        "cached_input_tokens": 3315,
+        "input_tokens": 4723,
+        "cached_input_tokens": 3354,
         "cache_write_tokens": 1366,
         "output_tokens": 19,
         "reasoning_tokens": 0,
         "model_calls": 1,
         "cost_usd": 0.000214,
-        "total_tokens": 4703
+        "total_tokens": 4742
       },
       "totals": {
-        "input_tokens": 35495,
-        "cached_input_tokens": 22547,
-        "cache_write_tokens": 12927,
+        "input_tokens": 35573,
+        "cached_input_tokens": 22586,
+        "cache_write_tokens": 12966,
         "output_tokens": 1793,
         "reasoning_tokens": 125,
         "model_calls": 7,
-        "cost_usd": 0.00274,
-        "total_tokens": 37288
+        "cost_usd": 0.002745,
+        "total_tokens": 37366
       }
     },
     {
       "seq": 24,
       "type": "tool_called",
       "agent": "manager",
-      "elapsed_s": 2.98,
+      "elapsed_s": 5.69,
       "tool": "run_planner",
       "args": {
         "revision_notes": []
       },
       "totals": {
-        "input_tokens": 35495,
-        "cached_input_tokens": 22547,
-        "cache_write_tokens": 12927,
+        "input_tokens": 35573,
+        "cached_input_tokens": 22586,
+        "cache_write_tokens": 12966,
         "output_tokens": 1793,
         "reasoning_tokens": 125,
         "model_calls": 7,
-        "cost_usd": 0.00274,
-        "total_tokens": 37288
+        "cost_usd": 0.002745,
+        "total_tokens": 37366
       }
     },
     {
       "seq": 25,
       "type": "agent_started",
       "agent": "planner",
-      "elapsed_s": 2.99,
+      "elapsed_s": 5.69,
       "run": 1,
       "totals": {
-        "input_tokens": 35495,
-        "cached_input_tokens": 22547,
-        "cache_write_tokens": 12927,
+        "input_tokens": 35573,
+        "cached_input_tokens": 22586,
+        "cache_write_tokens": 12966,
         "output_tokens": 1793,
         "reasoning_tokens": 125,
         "model_calls": 7,
-        "cost_usd": 0.00274,
-        "total_tokens": 37288
+        "cost_usd": 0.002745,
+        "total_tokens": 37366
       }
     },
     {
       "seq": 26,
       "type": "model_call",
       "agent": "planner",
-      "elapsed_s": 3.21,
+      "elapsed_s": 6.92,
       "call": {
-        "input_tokens": 3885,
+        "input_tokens": 3924,
         "cached_input_tokens": 0,
-        "cache_write_tokens": 3882,
+        "cache_write_tokens": 3921,
         "output_tokens": 80,
         "reasoning_tokens": 0,
         "model_calls": 1,
-        "cost_usd": 0.000526,
-        "total_tokens": 3965
+        "cost_usd": 0.00053,
+        "total_tokens": 4004
       },
       "totals": {
-        "input_tokens": 39380,
-        "cached_input_tokens": 22547,
-        "cache_write_tokens": 16809,
+        "input_tokens": 39497,
+        "cached_input_tokens": 22586,
+        "cache_write_tokens": 16887,
         "output_tokens": 1873,
         "reasoning_tokens": 125,
         "model_calls": 8,
-        "cost_usd": 0.003265,
-        "total_tokens": 41253
+        "cost_usd": 0.003276,
+        "total_tokens": 41370
       }
     },
     {
       "seq": 27,
       "type": "tool_called",
       "agent": "planner",
-      "elapsed_s": 3.21,
+      "elapsed_s": 6.92,
       "tool": "compute_stock_move",
       "args": {},
       "totals": {
-        "input_tokens": 39380,
-        "cached_input_tokens": 22547,
-        "cache_write_tokens": 16809,
+        "input_tokens": 39497,
+        "cached_input_tokens": 22586,
+        "cache_write_tokens": 16887,
         "output_tokens": 1873,
         "reasoning_tokens": 125,
         "model_calls": 8,
-        "cost_usd": 0.003265,
-        "total_tokens": 41253
+        "cost_usd": 0.003276,
+        "total_tokens": 41370
       }
     },
     {
       "seq": 28,
       "type": "tool_result",
       "agent": "planner",
-      "elapsed_s": 3.21,
+      "elapsed_s": 6.92,
       "tool": "compute_stock_move",
       "result": {
         "facts": {
@@ -993,39 +972,39 @@
         ]
       },
       "totals": {
-        "input_tokens": 39380,
-        "cached_input_tokens": 22547,
-        "cache_write_tokens": 16809,
+        "input_tokens": 39497,
+        "cached_input_tokens": 22586,
+        "cache_write_tokens": 16887,
         "output_tokens": 1873,
         "reasoning_tokens": 125,
         "model_calls": 8,
-        "cost_usd": 0.003265,
-        "total_tokens": 41253
+        "cost_usd": 0.003276,
+        "total_tokens": 41370
       }
     },
     {
       "seq": 29,
       "type": "tool_called",
       "agent": "planner",
-      "elapsed_s": 3.21,
+      "elapsed_s": 6.92,
       "tool": "compute_cash_buffer",
       "args": {},
       "totals": {
-        "input_tokens": 39380,
-        "cached_input_tokens": 22547,
-        "cache_write_tokens": 16809,
+        "input_tokens": 39497,
+        "cached_input_tokens": 22586,
+        "cache_write_tokens": 16887,
         "output_tokens": 1873,
         "reasoning_tokens": 125,
         "model_calls": 8,
-        "cost_usd": 0.003265,
-        "total_tokens": 41253
+        "cost_usd": 0.003276,
+        "total_tokens": 41370
       }
     },
     {
       "seq": 30,
       "type": "tool_result",
       "agent": "planner",
-      "elapsed_s": 3.21,
+      "elapsed_s": 6.92,
       "tool": "compute_cash_buffer",
       "result": {
         "facts": {
@@ -1033,7 +1012,9 @@
           "weekly_fixed_costs": 923.08,
           "buffer_needed": 3692.31,
           "cash_on_hand": 3000.0,
-          "cash_gap": 692.31,
+          "planned_purchases": 383.49,
+          "cash_after_purchases": 2616.51,
+          "cash_gap": 1075.8,
           "lost_sales": 28000.0
         },
         "sources": [
@@ -1043,39 +1024,39 @@
         ]
       },
       "totals": {
-        "input_tokens": 39380,
-        "cached_input_tokens": 22547,
-        "cache_write_tokens": 16809,
+        "input_tokens": 39497,
+        "cached_input_tokens": 22586,
+        "cache_write_tokens": 16887,
         "output_tokens": 1873,
         "reasoning_tokens": 125,
         "model_calls": 8,
-        "cost_usd": 0.003265,
-        "total_tokens": 41253
+        "cost_usd": 0.003276,
+        "total_tokens": 41370
       }
     },
     {
       "seq": 31,
       "type": "tool_called",
       "agent": "planner",
-      "elapsed_s": 3.21,
+      "elapsed_s": 6.92,
       "tool": "compute_supplier_buffer",
       "args": {},
       "totals": {
-        "input_tokens": 39380,
-        "cached_input_tokens": 22547,
-        "cache_write_tokens": 16809,
+        "input_tokens": 39497,
+        "cached_input_tokens": 22586,
+        "cache_write_tokens": 16887,
         "output_tokens": 1873,
         "reasoning_tokens": 125,
         "model_calls": 8,
-        "cost_usd": 0.003265,
-        "total_tokens": 41253
+        "cost_usd": 0.003276,
+        "total_tokens": 41370
       }
     },
     {
       "seq": 32,
       "type": "tool_result",
       "agent": "planner",
-      "elapsed_s": 3.21,
+      "elapsed_s": 6.92,
       "tool": "compute_supplier_buffer",
       "result": {
         "facts": {
@@ -1103,39 +1084,39 @@
         ]
       },
       "totals": {
-        "input_tokens": 39380,
-        "cached_input_tokens": 22547,
-        "cache_write_tokens": 16809,
+        "input_tokens": 39497,
+        "cached_input_tokens": 22586,
+        "cache_write_tokens": 16887,
         "output_tokens": 1873,
         "reasoning_tokens": 125,
         "model_calls": 8,
-        "cost_usd": 0.003265,
-        "total_tokens": 41253
+        "cost_usd": 0.003276,
+        "total_tokens": 41370
       }
     },
     {
       "seq": 33,
       "type": "tool_called",
       "agent": "planner",
-      "elapsed_s": 3.21,
+      "elapsed_s": 6.92,
       "tool": "get_action_catalog",
       "args": {},
       "totals": {
-        "input_tokens": 39380,
-        "cached_input_tokens": 22547,
-        "cache_write_tokens": 16809,
+        "input_tokens": 39497,
+        "cached_input_tokens": 22586,
+        "cache_write_tokens": 16887,
         "output_tokens": 1873,
         "reasoning_tokens": 125,
         "model_calls": 8,
-        "cost_usd": 0.003265,
-        "total_tokens": 41253
+        "cost_usd": 0.003276,
+        "total_tokens": 41370
       }
     },
     {
       "seq": 34,
       "type": "tool_result",
       "agent": "planner",
-      "elapsed_s": 3.21,
+      "elapsed_s": 6.92,
       "tool": "get_action_catalog",
       "result": {
         "facts": {
@@ -1161,39 +1142,39 @@
         ]
       },
       "totals": {
-        "input_tokens": 39380,
-        "cached_input_tokens": 22547,
-        "cache_write_tokens": 16809,
+        "input_tokens": 39497,
+        "cached_input_tokens": 22586,
+        "cache_write_tokens": 16887,
         "output_tokens": 1873,
         "reasoning_tokens": 125,
         "model_calls": 8,
-        "cost_usd": 0.003265,
-        "total_tokens": 41253
+        "cost_usd": 0.003276,
+        "total_tokens": 41370
       }
     },
     {
       "seq": 35,
       "type": "tool_called",
       "agent": "planner",
-      "elapsed_s": 3.21,
+      "elapsed_s": 6.92,
       "tool": "optimize_budget",
       "args": {},
       "totals": {
-        "input_tokens": 39380,
-        "cached_input_tokens": 22547,
-        "cache_write_tokens": 16809,
+        "input_tokens": 39497,
+        "cached_input_tokens": 22586,
+        "cache_write_tokens": 16887,
         "output_tokens": 1873,
         "reasoning_tokens": 125,
         "model_calls": 8,
-        "cost_usd": 0.003265,
-        "total_tokens": 41253
+        "cost_usd": 0.003276,
+        "total_tokens": 41370
       }
     },
     {
       "seq": 36,
       "type": "tool_result",
       "agent": "planner",
-      "elapsed_s": 3.21,
+      "elapsed_s": 6.93,
       "tool": "optimize_budget",
       "result": {
         "facts": {
@@ -1227,47 +1208,47 @@
         ]
       },
       "totals": {
-        "input_tokens": 39380,
-        "cached_input_tokens": 22547,
-        "cache_write_tokens": 16809,
+        "input_tokens": 39497,
+        "cached_input_tokens": 22586,
+        "cache_write_tokens": 16887,
         "output_tokens": 1873,
         "reasoning_tokens": 125,
         "model_calls": 8,
-        "cost_usd": 0.003265,
-        "total_tokens": 41253
+        "cost_usd": 0.003276,
+        "total_tokens": 41370
       }
     },
     {
       "seq": 37,
       "type": "model_call",
       "agent": "planner",
-      "elapsed_s": 85.48,
+      "elapsed_s": 23.97,
       "call": {
-        "input_tokens": 10641,
-        "cached_input_tokens": 3882,
-        "cache_write_tokens": 6756,
-        "output_tokens": 2993,
+        "input_tokens": 10703,
+        "cached_input_tokens": 3921,
+        "cache_write_tokens": 6779,
+        "output_tokens": 3485,
         "reasoning_tokens": 0,
         "model_calls": 1,
-        "cost_usd": 0.00238,
-        "total_tokens": 13634
+        "cost_usd": 0.002629,
+        "total_tokens": 14188
       },
       "totals": {
-        "input_tokens": 50021,
-        "cached_input_tokens": 26429,
-        "cache_write_tokens": 23565,
-        "output_tokens": 4866,
+        "input_tokens": 50200,
+        "cached_input_tokens": 26507,
+        "cache_write_tokens": 23666,
+        "output_tokens": 5358,
         "reasoning_tokens": 125,
         "model_calls": 9,
-        "cost_usd": 0.005646,
-        "total_tokens": 54887
+        "cost_usd": 0.005905,
+        "total_tokens": 55558
       }
     },
     {
       "seq": 38,
       "type": "agent_finished",
       "agent": "planner",
-      "elapsed_s": 85.48,
+      "elapsed_s": 23.97,
       "keys": [
         "cash",
         "missing_facts",
@@ -1282,159 +1263,159 @@
         "suspicious_content"
       ],
       "usage": {
-        "input_tokens": 14526,
-        "cached_input_tokens": 3882,
-        "cache_write_tokens": 10638,
-        "output_tokens": 3073,
+        "input_tokens": 14627,
+        "cached_input_tokens": 3921,
+        "cache_write_tokens": 10700,
+        "output_tokens": 3565,
         "reasoning_tokens": 0,
         "model_calls": 2,
-        "cost_usd": 0.002906,
-        "total_tokens": 17599
+        "cost_usd": 0.00316,
+        "total_tokens": 18192
       },
       "totals": {
-        "input_tokens": 50021,
-        "cached_input_tokens": 26429,
-        "cache_write_tokens": 23565,
-        "output_tokens": 4866,
+        "input_tokens": 50200,
+        "cached_input_tokens": 26507,
+        "cache_write_tokens": 23666,
+        "output_tokens": 5358,
         "reasoning_tokens": 125,
         "model_calls": 9,
-        "cost_usd": 0.005646,
-        "total_tokens": 54887
+        "cost_usd": 0.005905,
+        "total_tokens": 55558
       }
     },
     {
       "seq": 39,
       "type": "tool_result",
       "agent": "manager",
-      "elapsed_s": 85.48,
+      "elapsed_s": 23.97,
       "tool": "run_planner",
       "result": {
         "facts": {},
         "sources": []
       },
       "totals": {
-        "input_tokens": 50021,
-        "cached_input_tokens": 26429,
-        "cache_write_tokens": 23565,
-        "output_tokens": 4866,
+        "input_tokens": 50200,
+        "cached_input_tokens": 26507,
+        "cache_write_tokens": 23666,
+        "output_tokens": 5358,
         "reasoning_tokens": 125,
         "model_calls": 9,
-        "cost_usd": 0.005646,
-        "total_tokens": 54887
+        "cost_usd": 0.005905,
+        "total_tokens": 55558
       }
     },
     {
       "seq": 40,
       "type": "model_call",
       "agent": "manager",
-      "elapsed_s": 87.37,
+      "elapsed_s": 25.26,
       "call": {
-        "input_tokens": 7830,
-        "cached_input_tokens": 4681,
-        "cache_write_tokens": 3146,
+        "input_tokens": 8366,
+        "cached_input_tokens": 4720,
+        "cache_write_tokens": 3643,
         "output_tokens": 15,
         "reasoning_tokens": 0,
         "model_calls": 1,
-        "cost_usd": 0.000448,
-        "total_tokens": 7845
+        "cost_usd": 0.00051,
+        "total_tokens": 8381
       },
       "totals": {
-        "input_tokens": 57851,
-        "cached_input_tokens": 31110,
-        "cache_write_tokens": 26711,
-        "output_tokens": 4881,
+        "input_tokens": 58566,
+        "cached_input_tokens": 31227,
+        "cache_write_tokens": 27309,
+        "output_tokens": 5373,
         "reasoning_tokens": 125,
         "model_calls": 10,
-        "cost_usd": 0.006093,
-        "total_tokens": 62732
+        "cost_usd": 0.006415,
+        "total_tokens": 63939
       }
     },
     {
       "seq": 41,
       "type": "tool_called",
       "agent": "manager",
-      "elapsed_s": 87.37,
+      "elapsed_s": 25.26,
       "tool": "run_critic",
       "args": {},
       "totals": {
-        "input_tokens": 57851,
-        "cached_input_tokens": 31110,
-        "cache_write_tokens": 26711,
-        "output_tokens": 4881,
+        "input_tokens": 58566,
+        "cached_input_tokens": 31227,
+        "cache_write_tokens": 27309,
+        "output_tokens": 5373,
         "reasoning_tokens": 125,
         "model_calls": 10,
-        "cost_usd": 0.006093,
-        "total_tokens": 62732
+        "cost_usd": 0.006415,
+        "total_tokens": 63939
       }
     },
     {
       "seq": 42,
       "type": "agent_started",
       "agent": "critic",
-      "elapsed_s": 87.37,
+      "elapsed_s": 25.26,
       "run": 1,
       "totals": {
-        "input_tokens": 57851,
-        "cached_input_tokens": 31110,
-        "cache_write_tokens": 26711,
-        "output_tokens": 4881,
+        "input_tokens": 58566,
+        "cached_input_tokens": 31227,
+        "cache_write_tokens": 27309,
+        "output_tokens": 5373,
         "reasoning_tokens": 125,
         "model_calls": 10,
-        "cost_usd": 0.006093,
-        "total_tokens": 62732
+        "cost_usd": 0.006415,
+        "total_tokens": 63939
       }
     },
     {
       "seq": 43,
       "type": "model_call",
       "agent": "critic",
-      "elapsed_s": 91.06,
+      "elapsed_s": 26.58,
       "call": {
-        "input_tokens": 5780,
+        "input_tokens": 6320,
         "cached_input_tokens": 2049,
-        "cache_write_tokens": 3728,
-        "output_tokens": 691,
+        "cache_write_tokens": 4268,
+        "output_tokens": 29,
         "reasoning_tokens": 0,
         "model_calls": 1,
-        "cost_usd": 0.000832,
-        "total_tokens": 6471
+        "cost_usd": 0.000569,
+        "total_tokens": 6349
       },
       "totals": {
-        "input_tokens": 63631,
-        "cached_input_tokens": 33159,
-        "cache_write_tokens": 30439,
-        "output_tokens": 5572,
+        "input_tokens": 64886,
+        "cached_input_tokens": 33276,
+        "cache_write_tokens": 31577,
+        "output_tokens": 5402,
         "reasoning_tokens": 125,
         "model_calls": 11,
-        "cost_usd": 0.006926,
-        "total_tokens": 69203
+        "cost_usd": 0.006984,
+        "total_tokens": 70288
       }
     },
     {
       "seq": 44,
       "type": "tool_called",
       "agent": "critic",
-      "elapsed_s": 91.06,
+      "elapsed_s": 26.58,
       "tool": "verify_draft",
       "args": {
-        "draft": "Planner draft JSON, all text:\nEl perfil del local y los antecedentes de Castilla apuntan a riesgo alto de inundación; el resultado de exposición usa ponderaciones ilustrativas de Pirca.\nENFEN no menciona Castilla en los fragmentos consultados; sus previsiones no son pronósticos a escala de distrito.\nSube la mercadería de mayor valor a un lugar seguro; prioriza la que el modelo identifica como alcanzable por el agua. Es una estimación orientativa, no una medición.\nPrepara pedidos por WhatsApp, delivery y pagos digitales para mantener un canal alternativo de ventas. El beneficio es orientativo.\nColoca sacos de arena en la entrada; la cantidad estimada es ilustrativa.\nGuarda mercadería y documentos en cajas herméticas; el valor de protección es una estimación ilustrativa.\nHaz copias digitales de registros y fotos del inventario, y conserva una copia protegida; el valor de protección es orientativo.\nRetira agua estancada, tapa recipientes y aplica medidas de control de zancudos; la cantidad de elementos estimada es ilustrativa.\nConsulta las condiciones y exclusiones del seguro contra lluvia e inundación antes de contratarlo.\nLimpia canaletas y desagües y revisa el techo; acuerda con el arrendador antes de hacer reparaciones. Alcance y protección estimados son ilustrativos.\nRevisa la seguridad eléctrica con un electricista y acuerda con el arrendador cualquier modificación; corta la energía antes de que entre agua.\nPrepara un plan para cortes de luz y cadena de frío; consigue una linterna recargable. El beneficio estimado es ilustrativo.\nAparta ahorro para completar primero el fondo de emergencia: el efectivo disponible no alcanza para cubrir la brecha calculada.\nNo aumentes todavía el stock de abarrotes ni bebidas: primero completa el fondo de emergencia. Para el pan, coordina entregas pequeñas y frecuentes porque es perecible.\nAnte una nueva alerta de ENFEN o aviso de lluvia de SENAMHI para la costa norte, vuelve a revisar el plan y sigue los comunicados oficiales; sus previsiones pueden cambiar.\nSi el agua afecta el local, protege los registros y usa el canal alternativo de ventas solo si es seguro. Para emergencias, sigue las indicaciones de INDECI y la municipalidad; no ingreses a zonas inundadas.\nCuando baje el agua, limpia el local, revisa la instalación eléctrica con personal calificado y retoma el control de zancudos.\nMueve {stock_to_move} a un lugar seguro y considera que {stock_staying} permanecería en su ubicación actual. La cantidad es una guía aproximada; vende los perecibles antes de las lluvias en vez de intentar moverlos.\nLa estimación contempla un posible cierre de {weeks_closed}; el fondo necesario sería {buffer_needed}. Hay {cash_on_hand} disponibles y una brecha de {cash_gap}. La duración es una estimación ilustrativa, no una predicción.\nNo aumentes el stock ahora: primero completa el fondo de emergencia. La guía de días extra es ilustrativa y no hay dinero disponible para abastecimiento adicional.\n"
+        "draft": "(All planner_draft text joined together)\n"
       },
       "totals": {
-        "input_tokens": 63631,
-        "cached_input_tokens": 33159,
-        "cache_write_tokens": 30439,
-        "output_tokens": 5572,
+        "input_tokens": 64886,
+        "cached_input_tokens": 33276,
+        "cache_write_tokens": 31577,
+        "output_tokens": 5402,
         "reasoning_tokens": 125,
         "model_calls": 11,
-        "cost_usd": 0.006926,
-        "total_tokens": 69203
+        "cost_usd": 0.006984,
+        "total_tokens": 70288
       }
     },
     {
       "seq": 45,
       "type": "tool_result",
       "agent": "critic",
-      "elapsed_s": 91.07,
+      "elapsed_s": 26.58,
       "tool": "verify_draft",
       "result": {
         "facts": {
@@ -1461,76 +1442,76 @@
         "ok": true
       },
       "totals": {
-        "input_tokens": 63631,
-        "cached_input_tokens": 33159,
-        "cache_write_tokens": 30439,
-        "output_tokens": 5572,
+        "input_tokens": 64886,
+        "cached_input_tokens": 33276,
+        "cache_write_tokens": 31577,
+        "output_tokens": 5402,
         "reasoning_tokens": 125,
         "model_calls": 11,
-        "cost_usd": 0.006926,
-        "total_tokens": 69203
+        "cost_usd": 0.006984,
+        "total_tokens": 70288
       }
     },
     {
       "seq": 46,
       "type": "model_call",
       "agent": "critic",
-      "elapsed_s": 92.49,
+      "elapsed_s": 28.28,
       "call": {
-        "input_tokens": 6672,
-        "cached_input_tokens": 5777,
-        "cache_write_tokens": 892,
+        "input_tokens": 6549,
+        "cached_input_tokens": 6317,
+        "cache_write_tokens": 229,
         "output_tokens": 74,
         "reasoning_tokens": 0,
         "model_calls": 1,
-        "cost_usd": 0.000207,
-        "total_tokens": 6746
+        "cost_usd": 0.000129,
+        "total_tokens": 6623
       },
       "totals": {
-        "input_tokens": 70303,
-        "cached_input_tokens": 38936,
-        "cache_write_tokens": 31331,
-        "output_tokens": 5646,
+        "input_tokens": 71435,
+        "cached_input_tokens": 39593,
+        "cache_write_tokens": 31806,
+        "output_tokens": 5476,
         "reasoning_tokens": 125,
         "model_calls": 12,
-        "cost_usd": 0.007132,
-        "total_tokens": 75949
+        "cost_usd": 0.007113,
+        "total_tokens": 76911
       }
     },
     {
       "seq": 47,
       "type": "tool_called",
       "agent": "critic",
-      "elapsed_s": 92.49,
+      "elapsed_s": 28.28,
       "tool": "run_scenario",
       "args": {
         "scenario": "rains_one_month_early"
       },
       "totals": {
-        "input_tokens": 70303,
-        "cached_input_tokens": 38936,
-        "cache_write_tokens": 31331,
-        "output_tokens": 5646,
+        "input_tokens": 71435,
+        "cached_input_tokens": 39593,
+        "cache_write_tokens": 31806,
+        "output_tokens": 5476,
         "reasoning_tokens": 125,
         "model_calls": 12,
-        "cost_usd": 0.007132,
-        "total_tokens": 75949
+        "cost_usd": 0.007113,
+        "total_tokens": 76911
       }
     },
     {
       "seq": 48,
       "type": "tool_result",
       "agent": "critic",
-      "elapsed_s": 92.49,
+      "elapsed_s": 28.28,
       "tool": "run_scenario",
       "result": {
         "facts": {
           "rains_one_month_early__weeks_until_rains": 0.0,
           "rains_one_month_early__baseline_weeks_until_rains": 1.1,
           "rains_one_month_early__delta_weeks_until_rains": -1.1,
-          "rains_one_month_early__weekly_saving_needed": 692.31,
-          "rains_one_month_early__baseline_weekly_saving_needed": 629.37,
-          "rains_one_month_early__delta_weekly_saving_needed": 62.94
+          "rains_one_month_early__weekly_saving_needed": 1075.8,
+          "rains_one_month_early__baseline_weekly_saving_needed": 978.0,
+          "rains_one_month_early__delta_weekly_saving_needed": 97.8
         },
         "sources": [
           "CAT-06",
@@ -1541,41 +1522,41 @@
         ]
       },
       "totals": {
-        "input_tokens": 70303,
-        "cached_input_tokens": 38936,
-        "cache_write_tokens": 31331,
-        "output_tokens": 5646,
+        "input_tokens": 71435,
+        "cached_input_tokens": 39593,
+        "cache_write_tokens": 31806,
+        "output_tokens": 5476,
         "reasoning_tokens": 125,
         "model_calls": 12,
-        "cost_usd": 0.007132,
-        "total_tokens": 75949
+        "cost_usd": 0.007113,
+        "total_tokens": 76911
       }
     },
     {
       "seq": 49,
       "type": "tool_called",
       "agent": "critic",
-      "elapsed_s": 92.49,
+      "elapsed_s": 28.28,
       "tool": "run_scenario",
       "args": {
         "scenario": "main_bridge_cut"
       },
       "totals": {
-        "input_tokens": 70303,
-        "cached_input_tokens": 38936,
-        "cache_write_tokens": 31331,
-        "output_tokens": 5646,
+        "input_tokens": 71435,
+        "cached_input_tokens": 39593,
+        "cache_write_tokens": 31806,
+        "output_tokens": 5476,
         "reasoning_tokens": 125,
         "model_calls": 12,
-        "cost_usd": 0.007132,
-        "total_tokens": 75949
+        "cost_usd": 0.007113,
+        "total_tokens": 76911
       }
     },
     {
       "seq": 50,
       "type": "tool_result",
       "agent": "critic",
-      "elapsed_s": 92.49,
+      "elapsed_s": 28.28,
       "tool": "run_scenario",
       "result": {
         "facts": {
@@ -1627,112 +1608,95 @@
         ]
       },
       "totals": {
-        "input_tokens": 70303,
-        "cached_input_tokens": 38936,
-        "cache_write_tokens": 31331,
-        "output_tokens": 5646,
+        "input_tokens": 71435,
+        "cached_input_tokens": 39593,
+        "cache_write_tokens": 31806,
+        "output_tokens": 5476,
         "reasoning_tokens": 125,
         "model_calls": 12,
-        "cost_usd": 0.007132,
-        "total_tokens": 75949
+        "cost_usd": 0.007113,
+        "total_tokens": 76911
       }
     },
     {
       "seq": 51,
       "type": "tool_called",
       "agent": "critic",
-      "elapsed_s": 92.49,
+      "elapsed_s": 28.28,
       "tool": "run_scenario",
       "args": {
-        "scenario": "long_closure"
+        "scenario": "power_cut_week"
       },
       "totals": {
-        "input_tokens": 70303,
-        "cached_input_tokens": 38936,
-        "cache_write_tokens": 31331,
-        "output_tokens": 5646,
+        "input_tokens": 71435,
+        "cached_input_tokens": 39593,
+        "cache_write_tokens": 31806,
+        "output_tokens": 5476,
         "reasoning_tokens": 125,
         "model_calls": 12,
-        "cost_usd": 0.007132,
-        "total_tokens": 75949
+        "cost_usd": 0.007113,
+        "total_tokens": 76911
       }
     },
     {
       "seq": 52,
       "type": "tool_result",
       "agent": "critic",
-      "elapsed_s": 92.49,
+      "elapsed_s": 28.28,
       "tool": "run_scenario",
       "result": {
         "facts": {
-          "long_closure__weeks_closed": 13,
-          "long_closure__baseline_weeks_closed": 4,
-          "long_closure__delta_weeks_closed": 9,
-          "long_closure__weekly_fixed_costs": 923.08,
-          "long_closure__baseline_weekly_fixed_costs": 923.08,
-          "long_closure__delta_weekly_fixed_costs": 0.0,
-          "long_closure__buffer_needed": 12000.0,
-          "long_closure__baseline_buffer_needed": 3692.31,
-          "long_closure__delta_buffer_needed": 8307.69,
-          "long_closure__cash_on_hand": 3000.0,
-          "long_closure__baseline_cash_on_hand": 3000.0,
-          "long_closure__delta_cash_on_hand": 0.0,
-          "long_closure__cash_gap": 9000.0,
-          "long_closure__baseline_cash_gap": 692.31,
-          "long_closure__delta_cash_gap": 8307.69,
-          "long_closure__lost_sales": 91000.0,
-          "long_closure__baseline_lost_sales": 28000.0,
-          "long_closure__delta_lost_sales": 63000.0
+          "power_cut_week__power_cut_days": 7,
+          "power_cut_week__sales_at_risk": 7000.0,
+          "power_cut_week__perishables": 1
         },
         "sources": [
-          "CAT-06",
-          "HIST-1998-06",
-          "HIST-1998-07",
-          "HIST-1998-10"
+          "CAT-12",
+          "CAT-15"
         ]
       },
       "totals": {
-        "input_tokens": 70303,
-        "cached_input_tokens": 38936,
-        "cache_write_tokens": 31331,
-        "output_tokens": 5646,
+        "input_tokens": 71435,
+        "cached_input_tokens": 39593,
+        "cache_write_tokens": 31806,
+        "output_tokens": 5476,
         "reasoning_tokens": 125,
         "model_calls": 12,
-        "cost_usd": 0.007132,
-        "total_tokens": 75949
+        "cost_usd": 0.007113,
+        "total_tokens": 76911
       }
     },
     {
       "seq": 53,
       "type": "model_call",
       "agent": "critic",
-      "elapsed_s": 100.27,
+      "elapsed_s": 35.28,
       "call": {
-        "input_tokens": 8648,
-        "cached_input_tokens": 6669,
-        "cache_write_tokens": 1976,
-        "output_tokens": 1167,
-        "reasoning_tokens": 166,
+        "input_tokens": 8211,
+        "cached_input_tokens": 6546,
+        "cache_write_tokens": 1662,
+        "output_tokens": 1018,
+        "reasoning_tokens": 316,
         "model_calls": 1,
-        "cost_usd": 0.000897,
-        "total_tokens": 9815
+        "cost_usd": 0.000783,
+        "total_tokens": 9229
       },
       "totals": {
-        "input_tokens": 78951,
-        "cached_input_tokens": 45605,
-        "cache_write_tokens": 33307,
-        "output_tokens": 6813,
-        "reasoning_tokens": 291,
+        "input_tokens": 79646,
+        "cached_input_tokens": 46139,
+        "cache_write_tokens": 33468,
+        "output_tokens": 6494,
+        "reasoning_tokens": 441,
         "model_calls": 13,
-        "cost_usd": 0.00803,
-        "total_tokens": 85764
+        "cost_usd": 0.007896,
+        "total_tokens": 86140
       }
     },
     {
       "seq": 54,
       "type": "agent_finished",
       "agent": "critic",
-      "elapsed_s": 100.27,
+      "elapsed_s": 35.28,
       "keys": [
         "failed_checks",
         "material_gaps",
@@ -1744,163 +1708,163 @@
         "verify_draft"
       ],
       "usage": {
-        "input_tokens": 21100,
-        "cached_input_tokens": 14495,
-        "cache_write_tokens": 6596,
-        "output_tokens": 1932,
-        "reasoning_tokens": 166,
+        "input_tokens": 21080,
+        "cached_input_tokens": 14912,
+        "cache_write_tokens": 6159,
+        "output_tokens": 1121,
+        "reasoning_tokens": 316,
         "model_calls": 3,
-        "cost_usd": 0.001936,
-        "total_tokens": 23032
+        "cost_usd": 0.00148,
+        "total_tokens": 22201
       },
       "totals": {
-        "input_tokens": 78951,
-        "cached_input_tokens": 45605,
-        "cache_write_tokens": 33307,
-        "output_tokens": 6813,
-        "reasoning_tokens": 291,
+        "input_tokens": 79646,
+        "cached_input_tokens": 46139,
+        "cache_write_tokens": 33468,
+        "output_tokens": 6494,
+        "reasoning_tokens": 441,
         "model_calls": 13,
-        "cost_usd": 0.00803,
-        "total_tokens": 85764
+        "cost_usd": 0.007896,
+        "total_tokens": 86140
       }
     },
     {
       "seq": 55,
       "type": "tool_result",
       "agent": "manager",
-      "elapsed_s": 100.27,
+      "elapsed_s": 35.28,
       "tool": "run_critic",
       "result": {
         "facts": {},
         "sources": []
       },
       "totals": {
-        "input_tokens": 78951,
-        "cached_input_tokens": 45605,
-        "cache_write_tokens": 33307,
-        "output_tokens": 6813,
-        "reasoning_tokens": 291,
+        "input_tokens": 79646,
+        "cached_input_tokens": 46139,
+        "cache_write_tokens": 33468,
+        "output_tokens": 6494,
+        "reasoning_tokens": 441,
         "model_calls": 13,
-        "cost_usd": 0.00803,
-        "total_tokens": 85764
+        "cost_usd": 0.007896,
+        "total_tokens": 86140
       }
     },
     {
       "seq": 56,
       "type": "model_call",
       "agent": "manager",
-      "elapsed_s": 102.33,
+      "elapsed_s": 37.74,
       "call": {
-        "input_tokens": 10339,
-        "cached_input_tokens": 7827,
-        "cache_write_tokens": 2509,
-        "output_tokens": 126,
+        "input_tokens": 10380,
+        "cached_input_tokens": 8363,
+        "cache_write_tokens": 2014,
+        "output_tokens": 129,
         "reasoning_tokens": 0,
         "model_calls": 1,
-        "cost_usd": 0.000455,
-        "total_tokens": 10465
+        "cost_usd": 0.0004,
+        "total_tokens": 10509
       },
       "totals": {
-        "input_tokens": 89290,
-        "cached_input_tokens": 53432,
-        "cache_write_tokens": 35816,
-        "output_tokens": 6939,
-        "reasoning_tokens": 291,
+        "input_tokens": 90026,
+        "cached_input_tokens": 54502,
+        "cache_write_tokens": 35482,
+        "output_tokens": 6623,
+        "reasoning_tokens": 441,
         "model_calls": 14,
-        "cost_usd": 0.008485,
-        "total_tokens": 96229
+        "cost_usd": 0.008296,
+        "total_tokens": 96649
       }
     },
     {
       "seq": 57,
       "type": "tool_called",
       "agent": "manager",
-      "elapsed_s": 102.33,
+      "elapsed_s": 37.74,
       "tool": "run_planner",
       "args": {
         "revision_notes": [
-          "Añade coordinacion sin costo con proveedores para consultar rutas alternativas, entregas o puntos de retiro disponibles; no prometer disponibilidad. Conserva entregas pequenas y frecuentes para pan. [CAT-08] [HIST-1998-08]",
-          "Añade para cierre prolongado revisar y priorizar gastos esenciales y el fondo de emergencia, sin prometer cubrir toda la brecha. [CAT-06]",
-          "Mantén el ahorro como prioridad inmediata y consulta canales oficiales. [ENFEN-2026-18]"
+          "Prioriza las acciones gratuitas inmediatamente ante lluvias un mes antes: mover mercadería y documentos, preparar canal alternativo de ventas y apartar caja; aplaza compras opcionales y sigue avisos oficiales.",
+          "Añade contingencia gratuita: contactar proveedores y ubicar fuentes locales alternativas para no perecibles si se cortan rutas, manteniendo la prioridad de completar el fondo antes de comprar stock.",
+          "Mantén control frecuente de perecibles y su venta/rotación antes de que se malogren, además del plan de cadena de frío."
         ]
       },
       "totals": {
-        "input_tokens": 89290,
-        "cached_input_tokens": 53432,
-        "cache_write_tokens": 35816,
-        "output_tokens": 6939,
-        "reasoning_tokens": 291,
+        "input_tokens": 90026,
+        "cached_input_tokens": 54502,
+        "cache_write_tokens": 35482,
+        "output_tokens": 6623,
+        "reasoning_tokens": 441,
         "model_calls": 14,
-        "cost_usd": 0.008485,
-        "total_tokens": 96229
+        "cost_usd": 0.008296,
+        "total_tokens": 96649
       }
     },
     {
       "seq": 58,
       "type": "agent_started",
       "agent": "planner",
-      "elapsed_s": 102.33,
+      "elapsed_s": 37.74,
       "run": 2,
       "totals": {
-        "input_tokens": 89290,
-        "cached_input_tokens": 53432,
-        "cache_write_tokens": 35816,
-        "output_tokens": 6939,
-        "reasoning_tokens": 291,
+        "input_tokens": 90026,
+        "cached_input_tokens": 54502,
+        "cache_write_tokens": 35482,
+        "output_tokens": 6623,
+        "reasoning_tokens": 441,
         "model_calls": 14,
-        "cost_usd": 0.008485,
-        "total_tokens": 96229
+        "cost_usd": 0.008296,
+        "total_tokens": 96649
       }
     },
     {
       "seq": 59,
       "type": "model_call",
       "agent": "planner",
-      "elapsed_s": 104.16,
+      "elapsed_s": 39.19,
       "call": {
-        "input_tokens": 3998,
-        "cached_input_tokens": 2538,
-        "cache_write_tokens": 1457,
+        "input_tokens": 4042,
+        "cached_input_tokens": 2577,
+        "cache_write_tokens": 1462,
         "output_tokens": 80,
         "reasoning_tokens": 0,
         "model_calls": 1,
-        "cost_usd": 0.000248,
-        "total_tokens": 4078
+        "cost_usd": 0.000249,
+        "total_tokens": 4122
       },
       "totals": {
-        "input_tokens": 93288,
-        "cached_input_tokens": 55970,
-        "cache_write_tokens": 37273,
-        "output_tokens": 7019,
-        "reasoning_tokens": 291,
+        "input_tokens": 94068,
+        "cached_input_tokens": 57079,
+        "cache_write_tokens": 36944,
+        "output_tokens": 6703,
+        "reasoning_tokens": 441,
         "model_calls": 15,
-        "cost_usd": 0.008733,
-        "total_tokens": 100307
+        "cost_usd": 0.008545,
+        "total_tokens": 100771
       }
     },
     {
       "seq": 60,
       "type": "tool_called",
       "agent": "planner",
-      "elapsed_s": 104.16,
+      "elapsed_s": 39.19,
       "tool": "compute_stock_move",
       "args": {},
       "totals": {
-        "input_tokens": 93288,
-        "cached_input_tokens": 55970,
-        "cache_write_tokens": 37273,
-        "output_tokens": 7019,
-        "reasoning_tokens": 291,
+        "input_tokens": 94068,
+        "cached_input_tokens": 57079,
+        "cache_write_tokens": 36944,
+        "output_tokens": 6703,
+        "reasoning_tokens": 441,
         "model_calls": 15,
-        "cost_usd": 0.008733,
-        "total_tokens": 100307
+        "cost_usd": 0.008545,
+        "total_tokens": 100771
       }
     },
     {
       "seq": 61,
       "type": "tool_result",
       "agent": "planner",
-      "elapsed_s": 104.16,
+      "elapsed_s": 39.19,
       "tool": "compute_stock_move",
       "result": {
         "facts": {
@@ -1916,39 +1880,39 @@
         ]
       },
       "totals": {
-        "input_tokens": 93288,
-        "cached_input_tokens": 55970,
-        "cache_write_tokens": 37273,
-        "output_tokens": 7019,
-        "reasoning_tokens": 291,
+        "input_tokens": 94068,
+        "cached_input_tokens": 57079,
+        "cache_write_tokens": 36944,
+        "output_tokens": 6703,
+        "reasoning_tokens": 441,
         "model_calls": 15,
-        "cost_usd": 0.008733,
-        "total_tokens": 100307
+        "cost_usd": 0.008545,
+        "total_tokens": 100771
       }
     },
     {
       "seq": 62,
       "type": "tool_called",
       "agent": "planner",
-      "elapsed_s": 104.16,
+      "elapsed_s": 39.19,
       "tool": "compute_cash_buffer",
       "args": {},
       "totals": {
-        "input_tokens": 93288,
-        "cached_input_tokens": 55970,
-        "cache_write_tokens": 37273,
-        "output_tokens": 7019,
-        "reasoning_tokens": 291,
+        "input_tokens": 94068,
+        "cached_input_tokens": 57079,
+        "cache_write_tokens": 36944,
+        "output_tokens": 6703,
+        "reasoning_tokens": 441,
         "model_calls": 15,
-        "cost_usd": 0.008733,
-        "total_tokens": 100307
+        "cost_usd": 0.008545,
+        "total_tokens": 100771
       }
     },
     {
       "seq": 63,
       "type": "tool_result",
       "agent": "planner",
-      "elapsed_s": 104.16,
+      "elapsed_s": 39.19,
       "tool": "compute_cash_buffer",
       "result": {
         "facts": {
@@ -1956,7 +1920,9 @@
           "weekly_fixed_costs": 923.08,
           "buffer_needed": 3692.31,
           "cash_on_hand": 3000.0,
-          "cash_gap": 692.31,
+          "planned_purchases": 383.49,
+          "cash_after_purchases": 2616.51,
+          "cash_gap": 1075.8,
           "lost_sales": 28000.0
         },
         "sources": [
@@ -1966,39 +1932,39 @@
         ]
       },
       "totals": {
-        "input_tokens": 93288,
-        "cached_input_tokens": 55970,
-        "cache_write_tokens": 37273,
-        "output_tokens": 7019,
-        "reasoning_tokens": 291,
+        "input_tokens": 94068,
+        "cached_input_tokens": 57079,
+        "cache_write_tokens": 36944,
+        "output_tokens": 6703,
+        "reasoning_tokens": 441,
         "model_calls": 15,
-        "cost_usd": 0.008733,
-        "total_tokens": 100307
+        "cost_usd": 0.008545,
+        "total_tokens": 100771
       }
     },
     {
       "seq": 64,
       "type": "tool_called",
       "agent": "planner",
-      "elapsed_s": 104.16,
+      "elapsed_s": 39.19,
       "tool": "compute_supplier_buffer",
       "args": {},
       "totals": {
-        "input_tokens": 93288,
-        "cached_input_tokens": 55970,
-        "cache_write_tokens": 37273,
-        "output_tokens": 7019,
-        "reasoning_tokens": 291,
+        "input_tokens": 94068,
+        "cached_input_tokens": 57079,
+        "cache_write_tokens": 36944,
+        "output_tokens": 6703,
+        "reasoning_tokens": 441,
         "model_calls": 15,
-        "cost_usd": 0.008733,
-        "total_tokens": 100307
+        "cost_usd": 0.008545,
+        "total_tokens": 100771
       }
     },
     {
       "seq": 65,
       "type": "tool_result",
       "agent": "planner",
-      "elapsed_s": 104.16,
+      "elapsed_s": 39.19,
       "tool": "compute_supplier_buffer",
       "result": {
         "facts": {
@@ -2026,39 +1992,39 @@
         ]
       },
       "totals": {
-        "input_tokens": 93288,
-        "cached_input_tokens": 55970,
-        "cache_write_tokens": 37273,
-        "output_tokens": 7019,
-        "reasoning_tokens": 291,
+        "input_tokens": 94068,
+        "cached_input_tokens": 57079,
+        "cache_write_tokens": 36944,
+        "output_tokens": 6703,
+        "reasoning_tokens": 441,
         "model_calls": 15,
-        "cost_usd": 0.008733,
-        "total_tokens": 100307
+        "cost_usd": 0.008545,
+        "total_tokens": 100771
       }
     },
     {
       "seq": 66,
       "type": "tool_called",
       "agent": "planner",
-      "elapsed_s": 104.16,
+      "elapsed_s": 39.19,
       "tool": "get_action_catalog",
       "args": {},
       "totals": {
-        "input_tokens": 93288,
-        "cached_input_tokens": 55970,
-        "cache_write_tokens": 37273,
-        "output_tokens": 7019,
-        "reasoning_tokens": 291,
+        "input_tokens": 94068,
+        "cached_input_tokens": 57079,
+        "cache_write_tokens": 36944,
+        "output_tokens": 6703,
+        "reasoning_tokens": 441,
         "model_calls": 15,
-        "cost_usd": 0.008733,
-        "total_tokens": 100307
+        "cost_usd": 0.008545,
+        "total_tokens": 100771
       }
     },
     {
       "seq": 67,
       "type": "tool_result",
       "agent": "planner",
-      "elapsed_s": 104.16,
+      "elapsed_s": 39.19,
       "tool": "get_action_catalog",
       "result": {
         "facts": {
@@ -2084,39 +2050,39 @@
         ]
       },
       "totals": {
-        "input_tokens": 93288,
-        "cached_input_tokens": 55970,
-        "cache_write_tokens": 37273,
-        "output_tokens": 7019,
-        "reasoning_tokens": 291,
+        "input_tokens": 94068,
+        "cached_input_tokens": 57079,
+        "cache_write_tokens": 36944,
+        "output_tokens": 6703,
+        "reasoning_tokens": 441,
         "model_calls": 15,
-        "cost_usd": 0.008733,
-        "total_tokens": 100307
+        "cost_usd": 0.008545,
+        "total_tokens": 100771
       }
     },
     {
       "seq": 68,
       "type": "tool_called",
       "agent": "planner",
-      "elapsed_s": 104.16,
+      "elapsed_s": 39.19,
       "tool": "optimize_budget",
       "args": {},
       "totals": {
-        "input_tokens": 93288,
-        "cached_input_tokens": 55970,
-        "cache_write_tokens": 37273,
-        "output_tokens": 7019,
-        "reasoning_tokens": 291,
+        "input_tokens": 94068,
+        "cached_input_tokens": 57079,
+        "cache_write_tokens": 36944,
+        "output_tokens": 6703,
+        "reasoning_tokens": 441,
         "model_calls": 15,
-        "cost_usd": 0.008733,
-        "total_tokens": 100307
+        "cost_usd": 0.008545,
+        "total_tokens": 100771
       }
     },
     {
       "seq": 69,
       "type": "tool_result",
       "agent": "planner",
-      "elapsed_s": 104.16,
+      "elapsed_s": 39.19,
       "tool": "optimize_budget",
       "result": {
         "facts": {
@@ -2150,47 +2116,47 @@
         ]
       },
       "totals": {
-        "input_tokens": 93288,
-        "cached_input_tokens": 55970,
-        "cache_write_tokens": 37273,
-        "output_tokens": 7019,
-        "reasoning_tokens": 291,
+        "input_tokens": 94068,
+        "cached_input_tokens": 57079,
+        "cache_write_tokens": 36944,
+        "output_tokens": 6703,
+        "reasoning_tokens": 441,
         "model_calls": 15,
-        "cost_usd": 0.008733,
-        "total_tokens": 100307
+        "cost_usd": 0.008545,
+        "total_tokens": 100771
       }
     },
     {
       "seq": 70,
       "type": "model_call",
       "agent": "planner",
-      "elapsed_s": 122.41,
+      "elapsed_s": 55.74,
       "call": {
-        "input_tokens": 10754,
-        "cached_input_tokens": 3995,
-        "cache_write_tokens": 6756,
-        "output_tokens": 3802,
-        "reasoning_tokens": 111,
+        "input_tokens": 10821,
+        "cached_input_tokens": 4039,
+        "cache_write_tokens": 6779,
+        "output_tokens": 3686,
+        "reasoning_tokens": 0,
         "model_calls": 1,
-        "cost_usd": 0.002786,
-        "total_tokens": 14556
+        "cost_usd": 0.002731,
+        "total_tokens": 14507
       },
       "totals": {
-        "input_tokens": 104042,
-        "cached_input_tokens": 59965,
-        "cache_write_tokens": 44029,
-        "output_tokens": 10821,
-        "reasoning_tokens": 402,
+        "input_tokens": 104889,
+        "cached_input_tokens": 61118,
+        "cache_write_tokens": 43723,
+        "output_tokens": 10389,
+        "reasoning_tokens": 441,
         "model_calls": 16,
-        "cost_usd": 0.011519,
-        "total_tokens": 114863
+        "cost_usd": 0.011276,
+        "total_tokens": 115278
       }
     },
     {
       "seq": 71,
       "type": "agent_finished",
       "agent": "planner",
-      "elapsed_s": 122.41,
+      "elapsed_s": 55.74,
       "keys": [
         "cash",
         "missing_facts",
@@ -2205,169 +2171,169 @@
         "suspicious_content"
       ],
       "usage": {
-        "input_tokens": 29278,
-        "cached_input_tokens": 10415,
-        "cache_write_tokens": 18851,
-        "output_tokens": 6955,
-        "reasoning_tokens": 111,
+        "input_tokens": 29490,
+        "cached_input_tokens": 10537,
+        "cache_write_tokens": 18941,
+        "output_tokens": 7331,
+        "reasoning_tokens": 0,
         "model_calls": 4,
-        "cost_usd": 0.005939,
-        "total_tokens": 36233
+        "cost_usd": 0.00614,
+        "total_tokens": 36821
       },
       "totals": {
-        "input_tokens": 104042,
-        "cached_input_tokens": 59965,
-        "cache_write_tokens": 44029,
-        "output_tokens": 10821,
-        "reasoning_tokens": 402,
+        "input_tokens": 104889,
+        "cached_input_tokens": 61118,
+        "cache_write_tokens": 43723,
+        "output_tokens": 10389,
+        "reasoning_tokens": 441,
         "model_calls": 16,
-        "cost_usd": 0.011519,
-        "total_tokens": 114863
+        "cost_usd": 0.011276,
+        "total_tokens": 115278
       }
     },
     {
       "seq": 72,
       "type": "tool_result",
       "agent": "manager",
-      "elapsed_s": 122.41,
+      "elapsed_s": 55.74,
       "tool": "run_planner",
       "result": {
         "facts": {},
         "sources": []
       },
       "totals": {
-        "input_tokens": 104042,
-        "cached_input_tokens": 59965,
-        "cache_write_tokens": 44029,
-        "output_tokens": 10821,
-        "reasoning_tokens": 402,
+        "input_tokens": 104889,
+        "cached_input_tokens": 61118,
+        "cache_write_tokens": 43723,
+        "output_tokens": 10389,
+        "reasoning_tokens": 441,
         "model_calls": 16,
-        "cost_usd": 0.011519,
-        "total_tokens": 114863
+        "cost_usd": 0.011276,
+        "total_tokens": 115278
       }
     },
     {
       "seq": 73,
       "type": "model_call",
       "agent": "manager",
-      "elapsed_s": 124.59,
+      "elapsed_s": 58.17,
       "call": {
-        "input_tokens": 15298,
-        "cached_input_tokens": 10336,
-        "cache_write_tokens": 4959,
+        "input_tokens": 15171,
+        "cached_input_tokens": 10377,
+        "cache_write_tokens": 4791,
         "output_tokens": 15,
         "reasoning_tokens": 0,
         "model_calls": 1,
-        "cost_usd": 0.000731,
-        "total_tokens": 15313
+        "cost_usd": 0.00071,
+        "total_tokens": 15186
       },
       "totals": {
-        "input_tokens": 119340,
-        "cached_input_tokens": 70301,
-        "cache_write_tokens": 48988,
-        "output_tokens": 10836,
-        "reasoning_tokens": 402,
+        "input_tokens": 120060,
+        "cached_input_tokens": 71495,
+        "cache_write_tokens": 48514,
+        "output_tokens": 10404,
+        "reasoning_tokens": 441,
         "model_calls": 17,
-        "cost_usd": 0.01225,
-        "total_tokens": 130176
+        "cost_usd": 0.011986,
+        "total_tokens": 130464
       }
     },
     {
       "seq": 74,
       "type": "tool_called",
       "agent": "manager",
-      "elapsed_s": 124.59,
+      "elapsed_s": 58.17,
       "tool": "run_critic",
       "args": {},
       "totals": {
-        "input_tokens": 119340,
-        "cached_input_tokens": 70301,
-        "cache_write_tokens": 48988,
-        "output_tokens": 10836,
-        "reasoning_tokens": 402,
+        "input_tokens": 120060,
+        "cached_input_tokens": 71495,
+        "cache_write_tokens": 48514,
+        "output_tokens": 10404,
+        "reasoning_tokens": 441,
         "model_calls": 17,
-        "cost_usd": 0.01225,
-        "total_tokens": 130176
+        "cost_usd": 0.011986,
+        "total_tokens": 130464
       }
     },
     {
       "seq": 75,
       "type": "agent_started",
       "agent": "critic",
-      "elapsed_s": 124.59,
+      "elapsed_s": 58.18,
       "run": 2,
       "totals": {
-        "input_tokens": 119340,
-        "cached_input_tokens": 70301,
-        "cache_write_tokens": 48988,
-        "output_tokens": 10836,
-        "reasoning_tokens": 402,
+        "input_tokens": 120060,
+        "cached_input_tokens": 71495,
+        "cache_write_tokens": 48514,
+        "output_tokens": 10404,
+        "reasoning_tokens": 441,
         "model_calls": 17,
-        "cost_usd": 0.01225,
-        "total_tokens": 130176
+        "cost_usd": 0.011986,
+        "total_tokens": 130464
       }
     },
     {
       "seq": 76,
       "type": "model_call",
       "agent": "critic",
-      "elapsed_s": 137.11,
+      "elapsed_s": 59.87,
       "call": {
-        "input_tokens": 7605,
+        "input_tokens": 7382,
         "cached_input_tokens": 2049,
-        "cache_write_tokens": 5553,
-        "output_tokens": 2739,
+        "cache_write_tokens": 5330,
+        "output_tokens": 30,
         "reasoning_tokens": 0,
         "model_calls": 1,
-        "cost_usd": 0.002084,
-        "total_tokens": 10344
+        "cost_usd": 0.000702,
+        "total_tokens": 7412
       },
       "totals": {
-        "input_tokens": 126945,
-        "cached_input_tokens": 72350,
-        "cache_write_tokens": 54541,
-        "output_tokens": 13575,
-        "reasoning_tokens": 402,
+        "input_tokens": 127442,
+        "cached_input_tokens": 73544,
+        "cache_write_tokens": 53844,
+        "output_tokens": 10434,
+        "reasoning_tokens": 441,
         "model_calls": 18,
-        "cost_usd": 0.014334,
-        "total_tokens": 140520
+        "cost_usd": 0.012688,
+        "total_tokens": 137876
       }
     },
     {
       "seq": 77,
       "type": "tool_called",
       "agent": "critic",
-      "elapsed_s": 137.11,
+      "elapsed_s": 59.88,
       "tool": "verify_draft",
       "args": {
-        "draft": "(all text of Planner draft JSON joined together)\n{\"phases\":{\"now\":[{\"action\":\"Aparta dinero de forma prioritaria para el fondo de emergencia; revisa y prioriza los gastos esenciales si el cierre se prolonga. El cálculo es una guía y no garantiza cubrir toda la brecha.\",\"who\":\"owner\",\"catalog_id\":\"CAT-06\",\"fact_keys\":[\"buffer_needed\",\"cash_gap\"],\"sources\":[\"CAT-06\",\"HIST-1998-07\",\"HIST-1998-10\"],\"illustrative_estimate\":true},{\"action\":\"Mueve la mercadería de mayor valor a un lugar seguro y más alto; usa cajas herméticas para proteger bienes y documentos. La cantidad recomendada es una guía ilustrativa.\",\"who\":\"owner\",\"catalog_id\":\"CAT-05\",\"fact_keys\":[\"stock_to_move\",\"stock_staying\"],\"sources\":[\"CAT-05\",\"CAT-03\",\"HIST-2017-30\"],\"illustrative_estimate\":true},{\"action\":\"Compra sacos de arena para la entrada; la cantidad asociada al costo es ilustrativa.\",\"who\":\"owner\",\"catalog_id\":\"CAT-02\",\"fact_keys\":[\"cat_02_cost\"],\"sources\":[\"CAT-02\",\"HIST-2017-02\",\"HIST-2017-30\"],\"illustrative_estimate\":true},{\"action\":\"Compra cajas herméticas para mercadería y documentos; el beneficio de protección es una estimación ilustrativa.\",\"who\":\"owner\",\"catalog_id\":\"CAT-03\",\"fact_keys\":[\"cat_03_cost\"],\"sources\":[\"CAT-03\",\"HIST-2017-30\"],\"illustrative_estimate\":true},{\"action\":\"Haz copias de respaldo de los registros del negocio; la protección estimada es ilustrativa.\",\"who\":\"owner\",\"catalog_id\":\"CAT-07\",\"fact_keys\":[\"cat_07_cost\"],\"sources\":[\"CAT-07\"],\"illustrative_estimate\":true},{\"action\":\"Retira agua estancada, tapa recipientes y aplica medidas de control de zancudos; la cantidad asociada al costo es ilustrativa. En 2017 Castilla figuró entre los distritos con casos notificados de dengue; esto es un antecedente, no una previsión actual.\",\"who\":\"owner\",\"catalog_id\":\"CAT-09\",\"fact_keys\":[\"cat_09_cost\"],\"sources\":[\"CAT-09\",\"HIST-2017-28\"],\"illustrative_estimate\":true},{\"action\":\"Consulta y contrata, si las condiciones te convienen, un seguro que cubra lluvia e inundación; verifica el alcance de la póliza.\",\"who\":\"owner\",\"catalog_id\":\"CAT-10\",\"fact_keys\":[\"cat_10_cost\"],\"sources\":[\"CAT-10\"],\"illustrative_estimate\":false},{\"action\":\"Coordina primero con el arrendador la limpieza de canaletas y cualquier reparación o impermeabilización del techo; el costo y la protección son estimaciones ilustrativas.\",\"who\":\"owner\",\"catalog_id\":\"CAT-11\",\"fact_keys\":[\"cat_11_cost\"],\"sources\":[\"CAT-11\",\"HIST-1998-05\"],\"illustrative_estimate\":true},{\"action\":\"Acuerda primero con el arrendador la seguridad eléctrica; solicita a un electricista que revise la instalación. El costo no incluye mano de obra.\",\"who\":\"owner\",\"catalog_id\":\"CAT-12\",\"fact_keys\":[\"cat_12_cost\"],\"sources\":[\"CAT-12\"],\"illustrative_estimate\":false},{\"action\":\"Prepara un plan para cortes de luz y cadena de frío, incluyendo una linterna recargable; la protección estimada es ilustrativa.\",\"who\":\"owner\",\"catalog_id\":\"CAT-15\",\"fact_keys\":[\"cat_15_cost\"],\"sources\":[\"CAT-15\"],\"illustrative_estimate\":true},{\"action\":\"Acuerda con proveedores consultar rutas alternativas, opciones de entrega y puntos de retiro disponibles; confirma antes de contar con su disponibilidad. Para el pan, mantén entregas pequeñas y frecuentes, sin acumular producto perecible.\",\"who\":\"owner\",\"catalog_id\":\"CAT-08\",\"fact_keys\":[\"supplier_1_extra_days\",\"supplier_2_extra_days\",\"supplier_3_extra_days\"],\"sources\":[\"CAT-08\",\"HIST-1998-08\"],\"illustrative_estimate\":true},{\"action\":\"Define cómo recibir pedidos por WhatsApp y coordinar ventas o entregas alternativas; la protección estimada es ilustrativa.\",\"who\":\"owner\",\"catalog_id\":\"CAT-14\",\"fact_keys\":[],\"sources\":[\"CAT-14\"],\"illustrative_estimate\":true},{\"action\":\"Sigue los nuevos comunicados de ENFEN, los avisos de SENAMHI y las alertas de INDECI y de la municipalidad. Las previsiones pueden cambiar y no son pronósticos a escala de distrito.\",\"who\":\"owner\",\"catalog_id\":null,\"fact_keys\":[],\"sources\":[\"ENFEN-2026-18\"],\"illustrative_estimate\":false},{\"action\":\"Vende gradualmente los perecibles antes de las lluvias, en lugar de moverlos.\",\"who\":\"owner\",\"catalog_id\":null,\"fact_keys\":[],\"sources\":[\"CAT-05\"],\"illustrative_estimate\":false}],\"on_enfen_alert\":[{\"action\":\"Ante un nuevo aviso de lluvia o alerta para la costa norte, confirma con los proveedores rutas y opciones de entrega o retiro; no des por hecho que estarán disponibles. Mantén entregas pequeñas y frecuentes de pan.\",\"who\":\"owner\",\"catalog_id\":\"CAT-08\",\"fact_keys\":[\"supplier_1_extra_days\",\"supplier_2_extra_days\",\"supplier_3_extra_days\"],\"sources\":[\"CAT-08\",\"HIST-1998-08\"],\"illustrative_estimate\":true}],\"during_flooding\":[{\"action\":\"Si el agua amenaza el local, corta la energía solo si puede hacerse sin exponerte; protege los registros y usa canales alternativos de venta cuando sea posible. Para emergencias, sigue las indicaciones de INDECI y la municipalidad; Pirca no emite órdenes de evacuación.\",\"who\":\"owner\",\"catalog_id\":\"CAT-12\",\"fact_keys\":[],\"sources\":[\"CAT-12\",\"CAT-07\",\"CAT-14\"],\"illustrative_estimate\":false}],\"after\":[{\"action\":\"Cuando baje el agua, limpia canaletas y desagües y revisa el techo con el arrendador antes de reparar; la estimación es ilustrativa.\",\"who\":\"owner\",\"catalog_id\":\"CAT-11\",\"fact_keys\":[\"cat_11_cost\"],\"sources\":[\"CAT-11\"],\"illustrative_estimate\":true},{\"action\":\"Revisa la instalación eléctrica con personal calificado antes de volver a usarla y coordina con el arrendador cualquier intervención.\",\"who\":\"owner\",\"catalog_id\":\"CAT-12\",\"fact_keys\":[\"cat_12_cost\"],\"sources\":[\"CAT-12\"],\"illustrative_estimate\":false},{\"action\":\"Retira agua estancada y mantén recipientes tapados para reducir criaderos de zancudos. El antecedente de dengue en Castilla no es una previsión actual.\",\"who\":\"owner\",\"catalog_id\":\"CAT-09\",\"fact_keys\":[\"cat_09_cost\"],\"sources\":[\"CAT-09\",\"HIST-2017-28\"],\"illustrative_estimate\":true},{\"action\":\"Documenta daños y consulta el procedimiento de reclamo de la póliza, si contrataste una.\",\"who\":\"owner\",\"catalog_id\":\"CAT-10\",\"fact_keys\":[],\"sources\":[\"CAT-10\"],\"illustrative_estimate\":false}]},\"stock\":{\"summary\":\"Mueve {stock_to_move} a un lugar seguro y deja {stock_staying} sin mover; es una guía de preparación ante inundaciones, no una garantía de evitar pérdidas.\",\"destination\":\"Estantes por encima de un metro, cajas herméticas o un espacio seguro fuera de la zona inundable; vende los perecibles antes de las lluvias.\",\"sources\":[\"CAT-05\",\"CAT-03\",\"HIST-2017-30\"]},\"cash\":{\"summary\":\"El cierre usado como escenario es de {weeks_closed}; el fondo estimado es {buffer_needed} y la brecha calculada es {cash_gap}. Prioriza el fondo y revisa los gastos esenciales si el cierre se prolonga; no se garantiza cubrir toda la brecha.\",\"sources\":[\"CAT-06\",\"HIST-1998-07\",\"HIST-1998-10\"]},\"stock_up_status\":\"complete_emergency_fund_first\",\"suppliers\":[{\"city\":\"Chiclayo\",\"product\":\"abarrotes\",\"road_cut_risk\":\"high\",\"perishable\":false,\"advice\":\"stock_up\",\"summary\":\"No compres stock adicional todavía: completa primero el fondo de emergencia. Coordina con el proveedor para consultar rutas alternativas y opciones de entrega o retiro, sin asumir que estarán disponibles.\",\"fact_keys\":[\"supplier_1_extra_days\"],\"sources\":[\"HIST-1998-07\",\"HIST-2017-21\",\"CAT-08\"]},{\"city\":\"Piura\",\"product\":\"bebidas\",\"road_cut_risk\":\"high\",\"perishable\":false,\"advice\":\"stock_up\",\"summary\":\"No compres stock adicional todavía: completa primero el fondo de emergencia. Consulta con el proveedor rutas alternativas y opciones de entrega o retiro; su disponibilidad no está garantizada.\",\"fact_keys\":[\"supplier_2_extra_days\"],\"sources\":[\"HIST-2017-01\",\"HIST-2017-02\",\"HIST-2017-33\",\"CAT-08\"]},{\"city\":\"Sullana\",\"product\":\"pan\",\"road_cut_risk\":\"medium\",\"perishable\":true,\"advice\":\"small_frequent_deliveries\",\"summary\":\"Mantén entregas pequeñas y frecuentes de pan y consulta con el proveedor opciones de ruta, entrega o retiro, sin asumir disponibilidad.\",\"fact_keys\":[\"supplier_3_extra_days\"],\"sources\":[\"HIST-1998-08\",\"CAT-08\"]}],\"purchases\":{\"selected\":[{\"catalog_id\":\"CAT-05\",\"name_es\":\"Subir la mercadería a un lugar seguro\",\"name_en\":\"Move stock to a safe, higher place\",\"cost_fact_key\":null,\"illustrative_estimate\":true},{\"catalog_id\":\"CAT-14\",\"name_es\":\"Ventas por WhatsApp y delivery\",\"name_en\":\"WhatsApp and delivery sales\",\"cost_fact_key\":null,\"illustrative_estimate\":true},{\"catalog_id\":\"CAT-02\",\"name_es\":\"Sacos de arena en la puerta\",\"name_en\":\"Sandbags at the door\",\"cost_fact_key\":\"cat_02_cost\",\"illustrative_estimate\":true},{\"catalog_id\":\"CAT-03\",\"name_es\":\"Cajas herméticas\",\"name_en\":\"Sealed storage boxes\",\"cost_fact_key\":\"cat_03_cost\",\"illustrative_estimate\":true},{\"catalog_id\":\"CAT-07\",\"name_es\":\"Copia de seguridad de tus registros\",\"name_en\":\"Backup of your business records\",\"cost_fact_key\":\"cat_07_cost\",\"illustrative_estimate\":true},{\"catalog_id\":\"CAT-09\",\"name_es\":\"Control de zancudos contra el dengue\",\"name_en\":\"Mosquito control against dengue\",\"cost_fact_key\":\"cat_09_cost\",\"illustrative_estimate\":true},{\"catalog_id\":\"CAT-10\",\"name_es\":\"Seguro contra lluvias e inundación\",\"name_en\":\"Rain and flood insurance\",\"cost_fact_key\":\"cat_10_cost\",\"illustrative_estimate\":false},{\"catalog_id\":\"CAT-11\",\"name_es\":\"Limpiar canaletas y reparar el techo\",\"name_en\":\"Clean gutters and fix the roof\",\"cost_fact_key\":\"cat_11_cost\",\"illustrative_estimate\":true},{\"catalog_id\":\"CAT-12\",\"name_es\":\"Seguridad eléctrica\",\"name_en\":\"Electrical safety\",\"cost_fact_key\":\"cat_12_cost\",\"illustrative_estimate\":false},{\"catalog_id\":\"CAT-15\",\"name_es\":\"Plan para cortes de luz\",\"name_en\":\"Power cut plan\",\"cost_fact_key\":\"cat_15_cost\",\"illustrative_estimate\":true}],\"total_fact_key\":\"total_cost\",\"money_left_fact_key\":\"money_left\"},\"notes\":[\"Las estimaciones ilustrativas son orientativas, no garantías.\",\"Las previsiones pueden cambiar.\"],\"missing_facts\":[],\"suspicious_content\":[]}"
+        "draft": "{ all text in planner_draft JSON provided by user }"
       },
       "totals": {
-        "input_tokens": 126945,
-        "cached_input_tokens": 72350,
-        "cache_write_tokens": 54541,
-        "output_tokens": 13575,
-        "reasoning_tokens": 402,
+        "input_tokens": 127442,
+        "cached_input_tokens": 73544,
+        "cache_write_tokens": 53844,
+        "output_tokens": 10434,
+        "reasoning_tokens": 441,
         "model_calls": 18,
-        "cost_usd": 0.014334,
-        "total_tokens": 140520
+        "cost_usd": 0.012688,
+        "total_tokens": 137876
       }
     },
     {
       "seq": 78,
       "type": "tool_result",
       "agent": "critic",
-      "elapsed_s": 137.12,
+      "elapsed_s": 59.88,
       "tool": "verify_draft",
       "result": {
         "facts": {
-          "issue_count": 29,
-          "raw_number_count": 28,
+          "issue_count": 0,
+          "raw_number_count": 0,
           "unknown_fact_key_count": 0,
           "invalid_placeholder_count": 0,
           "unit_next_to_placeholder_count": 0,
           "unknown_source_id_count": 0,
-          "forbidden_content_count": 1,
+          "forbidden_content_count": 0,
           "bare_catalog_id_count": 0,
           "missing_asterisk_count": 0,
           "internal_term_count": 0,
@@ -2380,104 +2346,80 @@
           "zero_stock_up_mentioned_count": 0,
           "affordability_unknown_count": 0
         },
-        "sources": [
-          "CAT-02",
-          "CAT-03",
-          "CAT-05",
-          "CAT-06",
-          "CAT-07",
-          "CAT-08",
-          "CAT-09",
-          "CAT-10",
-          "CAT-11",
-          "CAT-12",
-          "CAT-14",
-          "CAT-15",
-          "ENFEN-2026-18",
-          "HIST-1998-05",
-          "HIST-1998-07",
-          "HIST-1998-08",
-          "HIST-1998-10",
-          "HIST-2017-01",
-          "HIST-2017-02",
-          "HIST-2017-21",
-          "HIST-2017-28",
-          "HIST-2017-30",
-          "HIST-2017-33"
-        ],
-        "ok": false
+        "sources": [],
+        "ok": true
       },
       "totals": {
-        "input_tokens": 126945,
-        "cached_input_tokens": 72350,
-        "cache_write_tokens": 54541,
-        "output_tokens": 13575,
-        "reasoning_tokens": 402,
+        "input_tokens": 127442,
+        "cached_input_tokens": 73544,
+        "cache_write_tokens": 53844,
+        "output_tokens": 10434,
+        "reasoning_tokens": 441,
         "model_calls": 18,
-        "cost_usd": 0.014334,
-        "total_tokens": 140520
+        "cost_usd": 0.012688,
+        "total_tokens": 137876
       }
     },
     {
       "seq": 79,
       "type": "model_call",
       "agent": "critic",
-      "elapsed_s": 138.37,
+      "elapsed_s": 61.99,
       "call": {
-        "input_tokens": 12175,
-        "cached_input_tokens": 7602,
-        "cache_write_tokens": 4570,
+        "input_tokens": 7613,
+        "cached_input_tokens": 7379,
+        "cache_write_tokens": 231,
         "output_tokens": 74,
         "reasoning_tokens": 0,
         "model_calls": 1,
-        "cost_usd": 0.000685,
-        "total_tokens": 12249
+        "cost_usd": 0.00014,
+        "total_tokens": 7687
       },
       "totals": {
-        "input_tokens": 139120,
-        "cached_input_tokens": 79952,
-        "cache_write_tokens": 59111,
-        "output_tokens": 13649,
-        "reasoning_tokens": 402,
+        "input_tokens": 135055,
+        "cached_input_tokens": 80923,
+        "cache_write_tokens": 54075,
+        "output_tokens": 10508,
+        "reasoning_tokens": 441,
         "model_calls": 19,
-        "cost_usd": 0.015019,
-        "total_tokens": 152769
+        "cost_usd": 0.012828,
+        "total_tokens": 145563
       }
     },
     {
       "seq": 80,
       "type": "tool_called",
       "agent": "critic",
-      "elapsed_s": 138.37,
+      "elapsed_s": 61.99,
       "tool": "run_scenario",
       "args": {
         "scenario": "rains_one_month_early"
       },
       "totals": {
-        "input_tokens": 139120,
-        "cached_input_tokens": 79952,
-        "cache_write_tokens": 59111,
-        "output_tokens": 13649,
-        "reasoning_tokens": 402,
+        "input_tokens": 135055,
+        "cached_input_tokens": 80923,
+        "cache_write_tokens": 54075,
+        "output_tokens": 10508,
+        "reasoning_tokens": 441,
         "model_calls": 19,
-        "cost_usd": 0.015019,
-        "total_tokens": 152769
+        "cost_usd": 0.012828,
+        "total_tokens": 145563
       }
     },
     {
       "seq": 81,
       "type": "tool_result",
       "agent": "critic",
-      "elapsed_s": 138.37,
+      "elapsed_s": 62.0,
       "tool": "run_scenario",
       "result": {
         "facts": {
           "rains_one_month_early__weeks_until_rains": 0.0,
           "rains_one_month_early__baseline_weeks_until_rains": 1.1,
           "rains_one_month_early__delta_weeks_until_rains": -1.1,
-          "rains_one_month_early__weekly_saving_needed": 692.31,
-          "rains_one_month_early__baseline_weekly_saving_needed": 629.37,
-          "rains_one_month_early__delta_weekly_saving_needed": 62.94
+          "rains_one_month_early__weekly_saving_needed": 1075.8,
+          "rains_one_month_early__baseline_weekly_saving_needed": 978.0,
+          "rains_one_month_early__delta_weekly_saving_needed": 97.8
         },
         "sources": [
           "CAT-06",
@@ -2488,41 +2430,41 @@
         ]
       },
       "totals": {
-        "input_tokens": 139120,
-        "cached_input_tokens": 79952,
-        "cache_write_tokens": 59111,
-        "output_tokens": 13649,
-        "reasoning_tokens": 402,
+        "input_tokens": 135055,
+        "cached_input_tokens": 80923,
+        "cache_write_tokens": 54075,
+        "output_tokens": 10508,
+        "reasoning_tokens": 441,
         "model_calls": 19,
-        "cost_usd": 0.015019,
-        "total_tokens": 152769
+        "cost_usd": 0.012828,
+        "total_tokens": 145563
       }
     },
     {
       "seq": 82,
       "type": "tool_called",
       "agent": "critic",
-      "elapsed_s": 138.37,
+      "elapsed_s": 62.0,
       "tool": "run_scenario",
       "args": {
         "scenario": "main_bridge_cut"
       },
       "totals": {
-        "input_tokens": 139120,
-        "cached_input_tokens": 79952,
-        "cache_write_tokens": 59111,
-        "output_tokens": 13649,
-        "reasoning_tokens": 402,
+        "input_tokens": 135055,
+        "cached_input_tokens": 80923,
+        "cache_write_tokens": 54075,
+        "output_tokens": 10508,
+        "reasoning_tokens": 441,
         "model_calls": 19,
-        "cost_usd": 0.015019,
-        "total_tokens": 152769
+        "cost_usd": 0.012828,
+        "total_tokens": 145563
       }
     },
     {
       "seq": 83,
       "type": "tool_result",
       "agent": "critic",
-      "elapsed_s": 138.37,
+      "elapsed_s": 62.0,
       "tool": "run_scenario",
       "result": {
         "facts": {
@@ -2574,41 +2516,41 @@
         ]
       },
       "totals": {
-        "input_tokens": 139120,
-        "cached_input_tokens": 79952,
-        "cache_write_tokens": 59111,
-        "output_tokens": 13649,
-        "reasoning_tokens": 402,
+        "input_tokens": 135055,
+        "cached_input_tokens": 80923,
+        "cache_write_tokens": 54075,
+        "output_tokens": 10508,
+        "reasoning_tokens": 441,
         "model_calls": 19,
-        "cost_usd": 0.015019,
-        "total_tokens": 152769
+        "cost_usd": 0.012828,
+        "total_tokens": 145563
       }
     },
     {
       "seq": 84,
       "type": "tool_called",
       "agent": "critic",
-      "elapsed_s": 138.37,
+      "elapsed_s": 62.0,
       "tool": "run_scenario",
       "args": {
         "scenario": "power_cut_week"
       },
       "totals": {
-        "input_tokens": 139120,
-        "cached_input_tokens": 79952,
-        "cache_write_tokens": 59111,
-        "output_tokens": 13649,
-        "reasoning_tokens": 402,
+        "input_tokens": 135055,
+        "cached_input_tokens": 80923,
+        "cache_write_tokens": 54075,
+        "output_tokens": 10508,
+        "reasoning_tokens": 441,
         "model_calls": 19,
-        "cost_usd": 0.015019,
-        "total_tokens": 152769
+        "cost_usd": 0.012828,
+        "total_tokens": 145563
       }
     },
     {
       "seq": 85,
       "type": "tool_result",
       "agent": "critic",
-      "elapsed_s": 138.37,
+      "elapsed_s": 62.0,
       "tool": "run_scenario",
       "result": {
         "facts": {
@@ -2622,47 +2564,47 @@
         ]
       },
       "totals": {
-        "input_tokens": 139120,
-        "cached_input_tokens": 79952,
-        "cache_write_tokens": 59111,
-        "output_tokens": 13649,
-        "reasoning_tokens": 402,
+        "input_tokens": 135055,
+        "cached_input_tokens": 80923,
+        "cache_write_tokens": 54075,
+        "output_tokens": 10508,
+        "reasoning_tokens": 441,
         "model_calls": 19,
-        "cost_usd": 0.015019,
-        "total_tokens": 152769
+        "cost_usd": 0.012828,
+        "total_tokens": 145563
       }
     },
     {
       "seq": 86,
       "type": "model_call",
       "agent": "critic",
-      "elapsed_s": 150.35,
+      "elapsed_s": 70.16,
       "call": {
-        "input_tokens": 13836,
-        "cached_input_tokens": 12172,
-        "cache_write_tokens": 1661,
-        "output_tokens": 2528,
-        "reasoning_tokens": 0,
+        "input_tokens": 9275,
+        "cached_input_tokens": 7610,
+        "cache_write_tokens": 1662,
+        "output_tokens": 1209,
+        "reasoning_tokens": 349,
         "model_calls": 1,
-        "cost_usd": 0.001594,
-        "total_tokens": 16364
+        "cost_usd": 0.000889,
+        "total_tokens": 10484
       },
       "totals": {
-        "input_tokens": 152956,
-        "cached_input_tokens": 92124,
-        "cache_write_tokens": 60772,
-        "output_tokens": 16177,
-        "reasoning_tokens": 402,
+        "input_tokens": 144330,
+        "cached_input_tokens": 88533,
+        "cache_write_tokens": 55737,
+        "output_tokens": 11717,
+        "reasoning_tokens": 790,
         "model_calls": 20,
-        "cost_usd": 0.016612,
-        "total_tokens": 169133
+        "cost_usd": 0.013717,
+        "total_tokens": 156047
       }
     },
     {
       "seq": 87,
       "type": "agent_finished",
       "agent": "critic",
-      "elapsed_s": 150.35,
+      "elapsed_s": 70.16,
       "keys": [
         "failed_checks",
         "material_gaps",
@@ -2674,103 +2616,103 @@
         "verify_draft"
       ],
       "usage": {
-        "input_tokens": 54716,
-        "cached_input_tokens": 36318,
-        "cache_write_tokens": 18380,
-        "output_tokens": 7273,
-        "reasoning_tokens": 166,
+        "input_tokens": 45350,
+        "cached_input_tokens": 31950,
+        "cache_write_tokens": 13382,
+        "output_tokens": 2434,
+        "reasoning_tokens": 665,
         "model_calls": 6,
-        "cost_usd": 0.006299,
-        "total_tokens": 61989
+        "cost_usd": 0.003211,
+        "total_tokens": 47784
       },
       "totals": {
-        "input_tokens": 152956,
-        "cached_input_tokens": 92124,
-        "cache_write_tokens": 60772,
-        "output_tokens": 16177,
-        "reasoning_tokens": 402,
+        "input_tokens": 144330,
+        "cached_input_tokens": 88533,
+        "cache_write_tokens": 55737,
+        "output_tokens": 11717,
+        "reasoning_tokens": 790,
         "model_calls": 20,
-        "cost_usd": 0.016612,
-        "total_tokens": 169133
+        "cost_usd": 0.013717,
+        "total_tokens": 156047
       }
     },
     {
       "seq": 88,
       "type": "tool_result",
       "agent": "manager",
-      "elapsed_s": 150.35,
+      "elapsed_s": 70.16,
       "tool": "run_critic",
       "result": {
         "facts": {},
         "sources": []
       },
       "totals": {
-        "input_tokens": 152956,
-        "cached_input_tokens": 92124,
-        "cache_write_tokens": 60772,
-        "output_tokens": 16177,
-        "reasoning_tokens": 402,
+        "input_tokens": 144330,
+        "cached_input_tokens": 88533,
+        "cache_write_tokens": 55737,
+        "output_tokens": 11717,
+        "reasoning_tokens": 790,
         "model_calls": 20,
-        "cost_usd": 0.016612,
-        "total_tokens": 169133
+        "cost_usd": 0.013717,
+        "total_tokens": 156047
       }
     },
     {
       "seq": 89,
       "type": "model_call",
       "agent": "manager",
-      "elapsed_s": 156.25,
+      "elapsed_s": 75.99,
       "call": {
-        "input_tokens": 19167,
-        "cached_input_tokens": 15295,
-        "cache_write_tokens": 3869,
-        "output_tokens": 915,
+        "input_tokens": 17335,
+        "cached_input_tokens": 15168,
+        "cache_write_tokens": 2164,
+        "output_tokens": 898,
         "reasoning_tokens": 0,
         "model_calls": 1,
-        "cost_usd": 0.001094,
-        "total_tokens": 20082
+        "cost_usd": 0.000871,
+        "total_tokens": 18233
       },
       "totals": {
-        "input_tokens": 172123,
-        "cached_input_tokens": 107419,
-        "cache_write_tokens": 64641,
-        "output_tokens": 17092,
-        "reasoning_tokens": 402,
+        "input_tokens": 161665,
+        "cached_input_tokens": 103701,
+        "cache_write_tokens": 57901,
+        "output_tokens": 12615,
+        "reasoning_tokens": 790,
         "model_calls": 21,
-        "cost_usd": 0.017707,
-        "total_tokens": 189215
+        "cost_usd": 0.014588,
+        "total_tokens": 174280
       }
     },
     {
       "seq": 90,
       "type": "tool_called",
       "agent": "manager",
-      "elapsed_s": 156.25,
+      "elapsed_s": 75.99,
       "tool": "verify_draft",
       "args": {
-        "draft": "## 1. Tu riesgo\nRiesgo alto de inundación: el local está cerca del agua, ya se inundó y está a nivel del suelo. En 2017 hubo inundaciones en Castilla y agua en el mercado [HIST-2017-02] [HIST-2017-30]. ENFEN mantiene Alerta de El Niño Costero; señala que podría extenderse hasta otoño de 2027, y sus previsiones pueden cambiar [ENFEN-2026-18]. ENFEN no menciona Castilla. El stock al alcance del agua es {stock_at_risk}.\n\n## 2. Qué hacer y cuándo\n- Ahora: Sube la mercadería a un lugar seguro* [CAT-05]. Haz copias digitales de tus registros* [CAT-07]. Vende los perecibles gradualmente y no los acumules [CAT-05]. Prioriza ahorrar para el fondo de emergencia* [CAT-06]; si el cierre se prolonga, revisa y prioriza gastos esenciales.\n- Ahora: Contacta a cada proveedor para confirmar rutas alternativas, entrega o retiro; si no hay opciones, evita contar con abastecimiento. Mantén entregas pequeñas y frecuentes para el pan [CAT-08] [HIST-1998-08].\n- Ante avisos de ENFEN o SENAMHI: revisa los comunicados y alertas de INDECI y la municipalidad; las previsiones pueden cambiar [ENFEN-2026-18].\n- Durante una inundación: protege registros y usa ventas por WhatsApp* [CAT-14] solo si es seguro. Para emergencias, sigue a INDECI y la municipalidad; no ingreses a zonas inundadas.\n- Después: revisa la instalación eléctrica con personal calificado y retira agua estancada [CAT-09] [CAT-12].\n\n## 3. Tu mercadería\nMueve {stock_to_move} a estantes altos, cajas herméticas o un espacio seguro fuera de la zona inundable. Vende los perecibles antes de lluvias.\n\n## 4. Tu caja de emergencia\nEl cierre usado como escenario es de {weeks_closed}; el fondo estimado es {buffer_needed}. Tienes {cash_on_hand} y falta {cash_gap}. Ahorra primero y revisa gastos esenciales si el cierre se prolonga [HIST-1998-07] [HIST-1998-10].\n\n## 5. Tus proveedores\n- Chiclayo: riesgo alto de corte. Completa primero tu fondo de emergencia; después abastécete de no perecibles. Confirma opciones con tu proveedor.\n- Piura: riesgo alto de corte. Completa primero tu fondo de emergencia; después abastécete de no perecibles. Confirma opciones con tu proveedor.\n- Sullana: riesgo medio de corte. Pide entregas pequeñas y frecuentes; no acumules pan.\n\n## 6. Compras dentro de tu presupuesto\n- Sacos de arena en la puerta* ({cat_02_cost}) [CAT-02]\n- Cajas herméticas* ({cat_03_cost}) [CAT-03]\n- Copia de seguridad de tus registros* ({cat_07_cost}) [CAT-07]\n- Control de zancudos contra el dengue* ({cat_09_cost}) [CAT-09]\n- Seguro contra lluvias e inundación ({cat_10_cost}) [CAT-10]\n- Limpiar canaletas y reparar el techo* ({cat_11_cost}) [CAT-11]\n- Seguridad eléctrica ({cat_12_cost}) [CAT-12]\n- Plan para cortes de luz* ({cat_15_cost}) [CAT-15]\nTotal: {total_cost}. Te queda {money_left}. No se incluyeron estantes elevados ni barrera de agua porque el presupuesto no alcanzó para esas compras.\n\n## 7. Lo que revisamos\nEl plan se probó con lluvias adelantadas, un puente cortado, cortes de luz y un cierre prolongado. Las acciones inmediatas ayudan, pero no se garantiza que haya rutas alternas ni que el fondo cubra un cierre largo.",
+        "draft": "## 1. Tu riesgo\nRiesgo alto de inundación: el perfil señala cercanía al agua, antecedentes de inundación y local a nivel del suelo [HIST-2017-02, HIST-2017-30]. ENFEN mantiene Alerta de El Niño Costero; indica que podría extenderse hasta otoño de 2027 y las previsiones pueden cambiar [ENFEN-2026-18]. ENFEN no menciona Castilla ni ofrece pronóstico distrital. Mercadería al alcance del agua: {stock_at_risk}. En 2017 hubo inundaciones en Castilla y agua en el mercado del distrito [HIST-2017-02, HIST-2017-30].\n\n## 2. Qué hacer y cuándo\n- Ahora: Mueve tu mercadería de mayor valor a un lugar elevado y protege documentos en cajas herméticas* [CAT-05, CAT-03]. Activa ventas por WhatsApp y delivery* [CAT-14]. Aparta caja desde ahora; si no completas el fondo antes de las lluvias, conserva lo disponible y prioriza seguridad y gastos esenciales [CAT-06]. Contacta a cada proveedor, confirma entregas y busca alternativas locales para abarrotes y bebidas; prioriza productos esenciales y avisa a clientes si faltan [HIST-1998-07, HIST-2017-21].\n- Si ENFEN o SENAMHI emite un aviso: revisa sus canales y sigue alertas de INDECI y la municipalidad [ENFEN-2026-18].\n- Durante una inundación: opera por canales alternativos solo si es seguro; no ingreses a zonas inundadas. Sigue a INDECI y la municipalidad.\n- Después: controla el agua estancada y revisa techo, canaletas e instalación eléctrica con personal calificado [CAT-09, CAT-11, CAT-12].\n\n## 3. Tu mercadería\nTraslada {stock_to_move} a estantes elevados o recipientes herméticos, fuera de la zona inundable [CAT-05, CAT-03].\n\n## 4. Tu caja de emergencia\nTienes {cash_on_hand}; menos compras por {planned_purchases}, quedan {cash_after_purchases}. El fondo para {weeks_closed} es {buffer_needed}; faltan {cash_gap}. Aparta una parte de tus ventas cada vez que puedas [CAT-06].\n\n## 5. Tus proveedores\nChiclayo: riesgo alto; primero completa tu fondo de emergencia y luego abastécete de no perecibles [HIST-1998-07, HIST-2017-21]. Piura: riesgo alto; primero completa tu fondo de emergencia y luego abastécete de no perecibles [HIST-2017-01, HIST-2017-02]. Sullana: riesgo medio; pide entregas pequeñas y frecuentes [HIST-1998-08].\n\n## 6. Compras dentro de tu presupuesto\n- Sacos de arena en la puerta* ({cat_02_cost}) [CAT-02]\n- Cajas herméticas* ({cat_03_cost}) [CAT-03]\n- Copia de seguridad de tus registros* ({cat_07_cost}) [CAT-07]\n- Control de zancudos contra el dengue* ({cat_09_cost}) [CAT-09]\n- Seguro contra lluvias e inundación ({cat_10_cost}) [CAT-10]\n- Limpiar canaletas y reparar el techo* ({cat_11_cost}) [CAT-11]\n- Seguridad eléctrica ({cat_12_cost}) [CAT-12]\n- Plan para cortes de luz* ({cat_15_cost}) [CAT-15]\nTotal: {total_cost}; queda {money_left}. No incluimos estantes elevados ni barrera para la puerta; no alcanzó el presupuesto disponible.\n\n## 7. Lo que revisamos\nEl plan se probó ante lluvias adelantadas, corte de puente y corte de luz. Las medidas ayudan a prepararte, pero no aseguran disponibilidad de proveedores ni eliminan el riesgo.",
         "final_plan": true
       },
       "totals": {
-        "input_tokens": 172123,
-        "cached_input_tokens": 107419,
-        "cache_write_tokens": 64641,
-        "output_tokens": 17092,
-        "reasoning_tokens": 402,
+        "input_tokens": 161665,
+        "cached_input_tokens": 103701,
+        "cache_write_tokens": 57901,
+        "output_tokens": 12615,
+        "reasoning_tokens": 790,
         "model_calls": 21,
-        "cost_usd": 0.017707,
-        "total_tokens": 189215
+        "cost_usd": 0.014588,
+        "total_tokens": 174280
       }
     },
     {
       "seq": 91,
       "type": "tool_result",
       "agent": "manager",
-      "elapsed_s": 156.26,
+      "elapsed_s": 75.99,
       "tool": "verify_draft",
       "result": {
         "facts": {
-          "issue_count": 4,
+          "issue_count": 7,
           "raw_number_count": 0,
           "unknown_fact_key_count": 0,
           "invalid_placeholder_count": 0,
@@ -2778,7 +2720,7 @@
           "unknown_source_id_count": 0,
           "forbidden_content_count": 0,
           "bare_catalog_id_count": 0,
-          "missing_asterisk_count": 3,
+          "missing_asterisk_count": 6,
           "internal_term_count": 0,
           "grammar_count": 0,
           "too_long_count": 1,
@@ -2795,7 +2737,6 @@
           "CAT-05",
           "CAT-06",
           "CAT-07",
-          "CAT-08",
           "CAT-09",
           "CAT-10",
           "CAT-11",
@@ -2805,79 +2746,80 @@
           "ENFEN-2026-18",
           "HIST-1998-07",
           "HIST-1998-08",
-          "HIST-1998-10",
+          "HIST-2017-01",
           "HIST-2017-02",
+          "HIST-2017-21",
           "HIST-2017-30"
         ],
         "ok": false
       },
       "totals": {
-        "input_tokens": 172123,
-        "cached_input_tokens": 107419,
-        "cache_write_tokens": 64641,
-        "output_tokens": 17092,
-        "reasoning_tokens": 402,
+        "input_tokens": 161665,
+        "cached_input_tokens": 103701,
+        "cache_write_tokens": 57901,
+        "output_tokens": 12615,
+        "reasoning_tokens": 790,
         "model_calls": 21,
-        "cost_usd": 0.017707,
-        "total_tokens": 189215
+        "cost_usd": 0.014588,
+        "total_tokens": 174280
       }
     },
     {
       "seq": 92,
       "type": "model_call",
       "agent": "manager",
-      "elapsed_s": 161.1,
+      "elapsed_s": 80.26,
       "call": {
-        "input_tokens": 20553,
-        "cached_input_tokens": 19164,
-        "cache_write_tokens": 1386,
-        "output_tokens": 868,
+        "input_tokens": 18816,
+        "cached_input_tokens": 17332,
+        "cache_write_tokens": 1481,
+        "output_tokens": 746,
         "reasoning_tokens": 0,
         "model_calls": 1,
-        "cost_usd": 0.000799,
-        "total_tokens": 21421
+        "cost_usd": 0.000732,
+        "total_tokens": 19562
       },
       "totals": {
-        "input_tokens": 192676,
-        "cached_input_tokens": 126583,
-        "cache_write_tokens": 66027,
-        "output_tokens": 17960,
-        "reasoning_tokens": 402,
+        "input_tokens": 180481,
+        "cached_input_tokens": 121033,
+        "cache_write_tokens": 59382,
+        "output_tokens": 13361,
+        "reasoning_tokens": 790,
         "model_calls": 22,
-        "cost_usd": 0.018506,
-        "total_tokens": 210636
+        "cost_usd": 0.01532,
+        "total_tokens": 193842
       }
     },
     {
       "seq": 93,
       "type": "tool_called",
       "agent": "manager",
-      "elapsed_s": 161.1,
+      "elapsed_s": 80.26,
       "tool": "verify_draft",
       "args": {
-        "draft": "## 1. Tu riesgo\nRiesgo alto de inundación: el local está cerca del agua y ya se inundó. En 2017 hubo inundaciones en Castilla [HIST-2017-02] [HIST-2017-30]. ENFEN mantiene Alerta de El Niño Costero y señala que podría extenderse hasta otoño de 2027; sus previsiones pueden cambiar [ENFEN-2026-18]. ENFEN no menciona Castilla. El stock al alcance del agua es {stock_at_risk}.\n\n## 2. Qué hacer y cuándo\n- Ahora: Sube la mercadería a un lugar seguro* [CAT-05]. Haz copias digitales de tus registros* [CAT-07]. Vende los perecibles gradualmente, sin acumularlos. Ahorra para el fondo; si el cierre se prolonga, prioriza gastos esenciales [CAT-06].\n- Ahora: Contacta a cada proveedor para confirmar rutas, entrega o retiro alternativos; no cuentes con opciones sin confirmarlas. Mantén entregas pequeñas y frecuentes para el pan* [CAT-08] [HIST-1998-08].\n- Ante avisos: revisa ENFEN, SENAMHI, INDECI y la municipalidad; las previsiones pueden cambiar [ENFEN-2026-18].\n- Durante una inundación: protege registros y usa WhatsApp* [CAT-14] solo si es seguro. Sigue indicaciones de INDECI y la municipalidad; no ingreses a zonas inundadas.\n- Después: revisa la electricidad con personal calificado y retira agua estancada* [CAT-09] [CAT-12].\n\n## 3. Tu mercadería\nMueve {stock_to_move} a estantes altos, cajas herméticas o un espacio seguro fuera de la zona inundable. Vende los perecibles antes de lluvias.\n\n## 4. Tu caja de emergencia\nEl cierre considerado es de {weeks_closed}; el fondo es {buffer_needed}. Tienes {cash_on_hand} y falta {cash_gap}. Ahorra primero y prioriza gastos esenciales si el cierre se prolonga [HIST-1998-07] [HIST-1998-10].\n\n## 5. Tus proveedores\n- Chiclayo: riesgo alto de corte. Completa primero tu fondo de emergencia; después abastécete de no perecibles. Confirma opciones con el proveedor.\n- Piura: riesgo alto de corte. Completa primero tu fondo de emergencia; después abastécete de no perecibles. Confirma opciones con el proveedor.\n- Sullana: riesgo medio de corte. Pide entregas pequeñas y frecuentes; no acumules pan.\n\n## 6. Compras dentro de tu presupuesto\n- Sacos de arena en la puerta* ({cat_02_cost}) [CAT-02]\n- Cajas herméticas* ({cat_03_cost}) [CAT-03]\n- Copia de seguridad de tus registros* ({cat_07_cost}) [CAT-07]\n- Control de zancudos contra el dengue* ({cat_09_cost}) [CAT-09]\n- Seguro contra lluvias e inundación ({cat_10_cost}) [CAT-10]\n- Limpiar canaletas y reparar el techo* ({cat_11_cost}) [CAT-11]\n- Seguridad eléctrica ({cat_12_cost}) [CAT-12]\n- Plan para cortes de luz* ({cat_15_cost}) [CAT-15]\nTotal: {total_cost}. Te queda {money_left}. No se incluyeron estantes elevados ni barrera de agua porque no alcanzó el presupuesto.\n\n## 7. Lo que revisamos\nProbamos lluvias adelantadas, un puente cortado, cortes de luz y un cierre prolongado. Las medidas ayudan a prepararte, pero no aseguran abastecimiento alternativo ni cubrir un cierre largo.",
+        "draft": "## 1. Tu riesgo\nRiesgo alto de inundación; hubo inundaciones en Castilla y agua en el mercado [HIST-2017-02, HIST-2017-30]. ENFEN mantiene Alerta de El Niño Costero, que podría extenderse hasta otoño de 2027; las previsiones pueden cambiar [ENFEN-2026-18]. No menciona Castilla ni ofrece pronóstico distrital. Mercadería al alcance del agua: {stock_at_risk}.\n\n## 2. Qué hacer y cuándo\n- Ahora: Sube mercadería y documentos a un lugar elevado y seco* [CAT-05, CAT-03]. Activa ventas por WhatsApp y delivery* [CAT-14]. Aparta caja desde ahora* [CAT-06]. Confirma entregas con cada proveedor, ubica alternativas locales, prioriza productos esenciales y avisa si faltan.\n- Ante aviso de ENFEN o SENAMHI: consulta sus canales y sigue alertas de INDECI y la municipalidad [ENFEN-2026-18].\n- Durante inundación: opera solo si es seguro; no ingreses a zonas inundadas. Sigue a INDECI y la municipalidad.\n- Después: controla agua estancada y revisa techo, canaletas e instalación eléctrica con personal calificado [CAT-09, CAT-11, CAT-12].\n\n## 3. Tu mercadería\nTraslada {stock_to_move} a estantes elevados o recipientes herméticos, fuera de la zona inundable [CAT-05, CAT-03].\n\n## 4. Tu caja de emergencia\nTienes {cash_on_hand}; menos compras por {planned_purchases}, quedan {cash_after_purchases}. El fondo para {weeks_closed} es {buffer_needed}; faltan {cash_gap}. Aparta parte de tus ventas cuando puedas [CAT-06].\n\n## 5. Tus proveedores\nChiclayo: riesgo alto; completa primero tu fondo y luego abastécete de no perecibles. Piura: riesgo alto; completa primero tu fondo y luego abastécete de no perecibles. Sullana: riesgo medio; pide entregas pequeñas y frecuentes [HIST-1998-08].\n\n## 6. Compras dentro de tu presupuesto\n- Sacos de arena en la puerta* ({cat_02_cost}) [CAT-02]\n- Cajas herméticas* ({cat_03_cost}) [CAT-03]\n- Copia de seguridad de tus registros* ({cat_07_cost}) [CAT-07]\n- Control de zancudos contra el dengue* ({cat_09_cost}) [CAT-09]\n- Seguro contra lluvias e inundación ({cat_10_cost}) [CAT-10]\n- Limpiar canaletas y reparar el techo* ({cat_11_cost}) [CAT-11]\n- Seguridad eléctrica ({cat_12_cost}) [CAT-12]\n- Plan para cortes de luz* ({cat_15_cost}) [CAT-15]\nTotal: {total_cost}; queda {money_left}. No incluimos estantes ni barrera para la puerta porque no alcanzó el presupuesto.\n\n## 7. Lo que revisamos\nProbamos lluvias adelantadas, corte de puente y corte de luz. El plan ayuda a prepararte, pero no elimina el riesgo ni asegura abastecimiento.",
         "final_plan": true
       },
       "totals": {
-        "input_tokens": 192676,
-        "cached_input_tokens": 126583,
-        "cache_write_tokens": 66027,
-        "output_tokens": 17960,
-        "reasoning_tokens": 402,
+        "input_tokens": 180481,
+        "cached_input_tokens": 121033,
+        "cache_write_tokens": 59382,
+        "output_tokens": 13361,
+        "reasoning_tokens": 790,
         "model_calls": 22,
-        "cost_usd": 0.018506,
-        "total_tokens": 210636
+        "cost_usd": 0.01532,
+        "total_tokens": 193842
       }
     },
     {
       "seq": 94,
       "type": "tool_result",
       "agent": "manager",
-      "elapsed_s": 161.1,
+      "elapsed_s": 80.26,
       "tool": "verify_draft",
       "result": {
         "facts": {
-          "issue_count": 2,
+          "issue_count": 5,
           "raw_number_count": 0,
           "unknown_fact_key_count": 0,
           "invalid_placeholder_count": 0,
@@ -2885,10 +2827,10 @@
           "unknown_source_id_count": 0,
           "forbidden_content_count": 0,
           "bare_catalog_id_count": 0,
-          "missing_asterisk_count": 1,
+          "missing_asterisk_count": 5,
           "internal_term_count": 0,
           "grammar_count": 0,
-          "too_long_count": 1,
+          "too_long_count": 0,
           "missing_section_count": 0,
           "section_7_too_long_count": 0,
           "false_unverified_claim_count": 0,
@@ -2902,7 +2844,6 @@
           "CAT-05",
           "CAT-06",
           "CAT-07",
-          "CAT-08",
           "CAT-09",
           "CAT-10",
           "CAT-11",
@@ -2910,251 +2851,54 @@
           "CAT-14",
           "CAT-15",
           "ENFEN-2026-18",
-          "HIST-1998-07",
           "HIST-1998-08",
-          "HIST-1998-10",
           "HIST-2017-02",
           "HIST-2017-30"
         ],
         "ok": false
       },
       "totals": {
-        "input_tokens": 192676,
-        "cached_input_tokens": 126583,
-        "cache_write_tokens": 66027,
-        "output_tokens": 17960,
-        "reasoning_tokens": 402,
+        "input_tokens": 180481,
+        "cached_input_tokens": 121033,
+        "cache_write_tokens": 59382,
+        "output_tokens": 13361,
+        "reasoning_tokens": 790,
         "model_calls": 22,
-        "cost_usd": 0.018506,
-        "total_tokens": 210636
+        "cost_usd": 0.01532,
+        "total_tokens": 193842
       }
     },
     {
       "seq": 95,
       "type": "model_call",
       "agent": "manager",
-      "elapsed_s": 166.98,
+      "elapsed_s": 87.48,
       "call": {
-        "input_tokens": 21820,
-        "cached_input_tokens": 20550,
-        "cache_write_tokens": 1267,
-        "output_tokens": 823,
+        "input_tokens": 20034,
+        "cached_input_tokens": 18813,
+        "cache_write_tokens": 1218,
+        "output_tokens": 991,
         "reasoning_tokens": 0,
         "model_calls": 1,
-        "cost_usd": 0.000776,
-        "total_tokens": 22643
+        "cost_usd": 0.000836,
+        "total_tokens": 21025
       },
       "totals": {
-        "input_tokens": 214496,
-        "cached_input_tokens": 147133,
-        "cache_write_tokens": 67294,
-        "output_tokens": 18783,
-        "reasoning_tokens": 402,
+        "input_tokens": 200515,
+        "cached_input_tokens": 139846,
+        "cache_write_tokens": 60600,
+        "output_tokens": 14352,
+        "reasoning_tokens": 790,
         "model_calls": 23,
-        "cost_usd": 0.019281,
-        "total_tokens": 233279
+        "cost_usd": 0.016156,
+        "total_tokens": 214867
       }
     },
     {
       "seq": 96,
-      "type": "tool_called",
-      "agent": "manager",
-      "elapsed_s": 166.98,
-      "tool": "verify_draft",
-      "args": {
-        "draft": "## 1. Tu riesgo\nRiesgo alto de inundación: el local está cerca del agua y ya se inundó. En 2017 hubo inundaciones en Castilla [HIST-2017-02] [HIST-2017-30]. ENFEN mantiene Alerta de El Niño Costero, que podría extenderse hasta otoño de 2027; las previsiones pueden cambiar [ENFEN-2026-18]. ENFEN no menciona Castilla. El stock al alcance del agua es {stock_at_risk}.\n\n## 2. Qué hacer y cuándo\n- Ahora: Sube mercadería a un lugar seguro* [CAT-05], haz copias digitales* [CAT-07] y vende perecibles sin acumularlos. Ahorra para el fondo* [CAT-06] y prioriza gastos esenciales si el cierre se prolonga.\n- Contacta proveedores para confirmar rutas, entrega o retiro alternativos; no cuentes con opciones sin confirmarlas. Pide entregas pequeñas y frecuentes de pan* [CAT-08] [HIST-1998-08].\n- Ante avisos: revisa ENFEN, SENAMHI, INDECI y la municipalidad [ENFEN-2026-18].\n- Durante una inundación: protege registros y usa WhatsApp* [CAT-14] solo si es seguro. Sigue a INDECI y la municipalidad; no ingreses al agua.\n- Después: revisa la electricidad con personal calificado y retira agua estancada* [CAT-09] [CAT-12].\n\n## 3. Tu mercadería\nMueve {stock_to_move} a estantes altos, cajas herméticas o un lugar fuera de la zona inundable.\n\n## 4. Tu caja de emergencia\nEl cierre considerado es de {weeks_closed}; el fondo es {buffer_needed}. Tienes {cash_on_hand} y falta {cash_gap}. Ahorra primero; prioriza gastos esenciales si el cierre se prolonga [HIST-1998-07] [HIST-1998-10].\n\n## 5. Tus proveedores\n- Chiclayo: riesgo alto. Completa primero tu fondo de emergencia; después abastécete de no perecibles. Confirma opciones con el proveedor.\n- Piura: riesgo alto. Completa primero tu fondo de emergencia; después abastécete de no perecibles. Confirma opciones con el proveedor.\n- Sullana: riesgo medio. Pide entregas pequeñas y frecuentes; no acumules pan.\n\n## 6. Compras dentro de tu presupuesto\n- Sacos de arena en la puerta* ({cat_02_cost}) [CAT-02]\n- Cajas herméticas* ({cat_03_cost}) [CAT-03]\n- Copia de seguridad de tus registros* ({cat_07_cost}) [CAT-07]\n- Control de zancudos contra el dengue* ({cat_09_cost}) [CAT-09]\n- Seguro contra lluvias e inundación ({cat_10_cost}) [CAT-10]\n- Limpiar canaletas y reparar el techo* ({cat_11_cost}) [CAT-11]\n- Seguridad eléctrica ({cat_12_cost}) [CAT-12]\n- Plan para cortes de luz* ({cat_15_cost}) [CAT-15]\nTotal: {total_cost}. Te queda {money_left}. No se incluyeron estantes elevados ni barrera de agua porque no alcanzó el presupuesto.\n\n## 7. Lo que revisamos\nProbamos lluvias adelantadas, un puente cortado, cortes de luz y un cierre prolongado. Las medidas ayudan, pero no aseguran abastecimiento alternativo ni cubrir un cierre largo.",
-        "final_plan": true
-      },
-      "totals": {
-        "input_tokens": 214496,
-        "cached_input_tokens": 147133,
-        "cache_write_tokens": 67294,
-        "output_tokens": 18783,
-        "reasoning_tokens": 402,
-        "model_calls": 23,
-        "cost_usd": 0.019281,
-        "total_tokens": 233279
-      }
-    },
-    {
-      "seq": 97,
-      "type": "tool_result",
-      "agent": "manager",
-      "elapsed_s": 166.99,
-      "tool": "verify_draft",
-      "result": {
-        "facts": {
-          "issue_count": 1,
-          "raw_number_count": 0,
-          "unknown_fact_key_count": 0,
-          "invalid_placeholder_count": 0,
-          "unit_next_to_placeholder_count": 0,
-          "unknown_source_id_count": 0,
-          "forbidden_content_count": 0,
-          "bare_catalog_id_count": 0,
-          "missing_asterisk_count": 0,
-          "internal_term_count": 0,
-          "grammar_count": 0,
-          "too_long_count": 1,
-          "missing_section_count": 0,
-          "section_7_too_long_count": 0,
-          "false_unverified_claim_count": 0,
-          "spending_exceeds_cash_count": 0,
-          "zero_stock_up_mentioned_count": 0,
-          "affordability_unknown_count": 0
-        },
-        "sources": [
-          "CAT-02",
-          "CAT-03",
-          "CAT-05",
-          "CAT-06",
-          "CAT-07",
-          "CAT-08",
-          "CAT-09",
-          "CAT-10",
-          "CAT-11",
-          "CAT-12",
-          "CAT-14",
-          "CAT-15",
-          "ENFEN-2026-18",
-          "HIST-1998-07",
-          "HIST-1998-08",
-          "HIST-1998-10",
-          "HIST-2017-02",
-          "HIST-2017-30"
-        ],
-        "ok": false
-      },
-      "totals": {
-        "input_tokens": 214496,
-        "cached_input_tokens": 147133,
-        "cache_write_tokens": 67294,
-        "output_tokens": 18783,
-        "reasoning_tokens": 402,
-        "model_calls": 23,
-        "cost_usd": 0.019281,
-        "total_tokens": 233279
-      }
-    },
-    {
-      "seq": 98,
-      "type": "model_call",
-      "agent": "manager",
-      "elapsed_s": 175.03,
-      "call": {
-        "input_tokens": 23006,
-        "cached_input_tokens": 21817,
-        "cache_write_tokens": 1186,
-        "output_tokens": 744,
-        "reasoning_tokens": 0,
-        "model_calls": 1,
-        "cost_usd": 0.000739,
-        "total_tokens": 23750
-      },
-      "totals": {
-        "input_tokens": 237502,
-        "cached_input_tokens": 168950,
-        "cache_write_tokens": 68480,
-        "output_tokens": 19527,
-        "reasoning_tokens": 402,
-        "model_calls": 24,
-        "cost_usd": 0.02002,
-        "total_tokens": 257029
-      }
-    },
-    {
-      "seq": 99,
-      "type": "tool_called",
-      "agent": "manager",
-      "elapsed_s": 175.03,
-      "tool": "verify_draft",
-      "args": {
-        "draft": "## 1. Tu riesgo\nRiesgo alto de inundación; Castilla sufrió inundaciones en 2017 [HIST-2017-02] [HIST-2017-30]. ENFEN mantiene Alerta de El Niño Costero, potencialmente hasta otoño de 2027; puede cambiar [ENFEN-2026-18]. No menciona Castilla. Stock al alcance del agua: {stock_at_risk}.\n\n## 2. Qué hacer y cuándo\n- Ahora: Sube mercadería a un lugar seguro* [CAT-05], haz copias digitales* [CAT-07] y vende perecibles sin acumularlos. Ahorra para el fondo* [CAT-06].\n- Confirma con proveedores rutas, entrega o retiro alternativos; no asumas disponibilidad. Pide entregas pequeñas y frecuentes de pan* [CAT-08] [HIST-1998-08].\n- Ante avisos: consulta ENFEN, SENAMHI, INDECI y la municipalidad [ENFEN-2026-18].\n- Durante inundación: protege registros y usa WhatsApp* [CAT-14] solo si es seguro; sigue a INDECI y la municipalidad.\n- Después: revisa electricidad con personal calificado y retira agua estancada* [CAT-09] [CAT-12].\n\n## 3. Tu mercadería\nMueve {stock_to_move} a estantes altos, cajas herméticas o un lugar fuera de la zona inundable.\n\n## 4. Tu caja de emergencia\nEl cierre considerado: {weeks_closed}; fondo: {buffer_needed}. Tienes {cash_on_hand}; falta {cash_gap}. Ahorra primero y prioriza gastos esenciales si se prolonga [HIST-1998-07] [HIST-1998-10].\n\n## 5. Tus proveedores\n- Chiclayo: riesgo alto. Completa primero tu fondo; después abastécete de no perecibles.\n- Piura: riesgo alto. Completa primero tu fondo; después abastécete de no perecibles.\n- Sullana: riesgo medio. Pide entregas pequeñas y frecuentes; no acumules pan.\n\n## 6. Compras dentro de tu presupuesto\n- Sacos de arena en la puerta* ({cat_02_cost}) [CAT-02]\n- Cajas herméticas* ({cat_03_cost}) [CAT-03]\n- Copia de seguridad de tus registros* ({cat_07_cost}) [CAT-07]\n- Control de zancudos contra el dengue* ({cat_09_cost}) [CAT-09]\n- Seguro contra lluvias e inundación ({cat_10_cost}) [CAT-10]\n- Limpiar canaletas y reparar el techo* ({cat_11_cost}) [CAT-11]\n- Seguridad eléctrica ({cat_12_cost}) [CAT-12]\n- Plan para cortes de luz* ({cat_15_cost}) [CAT-15]\nTotal: {total_cost}; queda {money_left}. No incluimos estantes ni barrera porque no alcanzó el presupuesto.\n\n## 7. Lo que revisamos\nProbamos lluvias adelantadas, puente cortado, cortes de luz y cierre prolongado. Las medidas ayudan, pero no aseguran rutas alternas ni cubrir un cierre largo.",
-        "final_plan": true
-      },
-      "totals": {
-        "input_tokens": 237502,
-        "cached_input_tokens": 168950,
-        "cache_write_tokens": 68480,
-        "output_tokens": 19527,
-        "reasoning_tokens": 402,
-        "model_calls": 24,
-        "cost_usd": 0.02002,
-        "total_tokens": 257029
-      }
-    },
-    {
-      "seq": 100,
-      "type": "limit_hit",
-      "agent": "manager",
-      "elapsed_s": 175.03,
-      "limit": "max_calls_per_tool",
-      "action": "refused",
-      "detail": "verify_draft may be called at most 3 time(s)",
-      "totals": {
-        "input_tokens": 237502,
-        "cached_input_tokens": 168950,
-        "cache_write_tokens": 68480,
-        "output_tokens": 19527,
-        "reasoning_tokens": 402,
-        "model_calls": 24,
-        "cost_usd": 0.02002,
-        "total_tokens": 257029
-      }
-    },
-    {
-      "seq": 101,
-      "type": "tool_result",
-      "agent": "manager",
-      "elapsed_s": 175.03,
-      "tool": "verify_draft",
-      "result": {
-        "facts": {},
-        "sources": [],
-        "error": "Limit reached: verify_draft may be called at most 3 time(s). Finish with the results you already have."
-      },
-      "totals": {
-        "input_tokens": 237502,
-        "cached_input_tokens": 168950,
-        "cache_write_tokens": 68480,
-        "output_tokens": 19527,
-        "reasoning_tokens": 402,
-        "model_calls": 24,
-        "cost_usd": 0.02002,
-        "total_tokens": 257029
-      }
-    },
-    {
-      "seq": 102,
-      "type": "model_call",
-      "agent": "manager",
-      "elapsed_s": 181.31,
-      "call": {
-        "input_tokens": 23791,
-        "cached_input_tokens": 23003,
-        "cache_write_tokens": 785,
-        "output_tokens": 1108,
-        "reasoning_tokens": 0,
-        "model_calls": 1,
-        "cost_usd": 0.000882,
-        "total_tokens": 24899
-      },
-      "totals": {
-        "input_tokens": 261293,
-        "cached_input_tokens": 191953,
-        "cache_write_tokens": 69265,
-        "output_tokens": 20635,
-        "reasoning_tokens": 402,
-        "model_calls": 25,
-        "cost_usd": 0.020903,
-        "total_tokens": 281928
-      }
-    },
-    {
-      "seq": 103,
       "type": "agent_finished",
       "agent": "manager",
-      "elapsed_s": 181.31,
+      "elapsed_s": 87.48,
       "keys": [
         "critic_verdict",
         "decisions",
@@ -3167,61 +2911,61 @@
         "suspicious_content"
       ],
       "usage": {
-        "input_tokens": 149806,
-        "cached_input_tokens": 125988,
-        "cache_write_tokens": 23788,
-        "output_tokens": 4651,
+        "input_tokens": 98182,
+        "cached_input_tokens": 78127,
+        "cache_write_tokens": 20031,
+        "output_tokens": 2831,
         "reasoning_tokens": 0,
-        "model_calls": 10,
-        "cost_usd": 0.006562,
-        "total_tokens": 154457
+        "model_calls": 8,
+        "cost_usd": 0.004703,
+        "total_tokens": 101013
       },
       "totals": {
-        "input_tokens": 261293,
-        "cached_input_tokens": 191953,
-        "cache_write_tokens": 69265,
-        "output_tokens": 20635,
-        "reasoning_tokens": 402,
-        "model_calls": 25,
-        "cost_usd": 0.020903,
-        "total_tokens": 281928
+        "input_tokens": 200515,
+        "cached_input_tokens": 139846,
+        "cache_write_tokens": 60600,
+        "output_tokens": 14352,
+        "reasoning_tokens": 790,
+        "model_calls": 23,
+        "cost_usd": 0.016156,
+        "total_tokens": 214867
       }
     },
     {
-      "seq": 104,
+      "seq": 97,
       "type": "final_check",
       "agent": "pirca",
-      "elapsed_s": 181.31,
+      "elapsed_s": 87.49,
       "attempt": 1,
       "ok": true,
       "issue_count": 0,
       "issues": [],
       "totals": {
-        "input_tokens": 261293,
-        "cached_input_tokens": 191953,
-        "cache_write_tokens": 69265,
-        "output_tokens": 20635,
-        "reasoning_tokens": 402,
-        "model_calls": 25,
-        "cost_usd": 0.020903,
-        "total_tokens": 281928
+        "input_tokens": 200515,
+        "cached_input_tokens": 139846,
+        "cache_write_tokens": 60600,
+        "output_tokens": 14352,
+        "reasoning_tokens": 790,
+        "model_calls": 23,
+        "cost_usd": 0.016156,
+        "total_tokens": 214867
       }
     },
     {
-      "seq": 105,
+      "seq": 98,
       "type": "run_finished",
       "agent": "pirca",
-      "elapsed_s": 181.31,
+      "elapsed_s": 87.49,
       "status": "completed",
       "totals": {
-        "input_tokens": 261293,
-        "cached_input_tokens": 191953,
-        "cache_write_tokens": 69265,
-        "output_tokens": 20635,
-        "reasoning_tokens": 402,
-        "model_calls": 25,
-        "cost_usd": 0.020903,
-        "total_tokens": 281928
+        "input_tokens": 200515,
+        "cached_input_tokens": 139846,
+        "cache_write_tokens": 60600,
+        "output_tokens": 14352,
+        "reasoning_tokens": 790,
+        "model_calls": 23,
+        "cost_usd": 0.016156,
+        "total_tokens": 214867
       }
     }
   ],
@@ -3356,12 +3100,36 @@
       "phases": {
         "now": [
           {
-            "action": "Aparta dinero de forma prioritaria para el fondo de emergencia; revisa y prioriza los gastos esenciales si el cierre se prolonga. El cálculo es una guía y no garantiza cubrir toda la brecha.",
+            "action": "Mueve la mercadería de mayor valor a un espacio seguro y elevado; prioriza lo que puede dañarse con el agua y rota o vende los perecibles antes de las lluvias. La cantidad a mover es una guía aproximada, no una garantía de pérdidas. [HIST-2017-30]",
+            "who": "owner, worker",
+            "catalog_id": "CAT-05",
+            "fact_keys": [
+              "stock_to_move",
+              "stock_staying"
+            ],
+            "sources": [
+              "CAT-05",
+              "HIST-2017-30"
+            ],
+            "illustrative_estimate": true
+          },
+          {
+            "action": "Prepara ventas por WhatsApp y delivery, y comparte el canal con tus clientes. [CAT-14]",
+            "who": "owner, worker",
+            "catalog_id": "CAT-14",
+            "fact_keys": [],
+            "sources": [
+              "CAT-14"
+            ],
+            "illustrative_estimate": true
+          },
+          {
+            "action": "Aparta caja de forma gradual para cerrar la brecha del fondo de emergencia antes de comprar stock adicional. [HIST-1998-07, HIST-1998-10]",
             "who": "owner",
             "catalog_id": "CAT-06",
             "fact_keys": [
-              "buffer_needed",
-              "cash_gap"
+              "cash_gap",
+              "buffer_needed"
             ],
             "sources": [
               "CAT-06",
@@ -3371,49 +3139,31 @@
             "illustrative_estimate": true
           },
           {
-            "action": "Mueve la mercadería de mayor valor a un lugar seguro y más alto; usa cajas herméticas para proteger bienes y documentos. La cantidad recomendada es una guía ilustrativa.",
-            "who": "owner",
-            "catalog_id": "CAT-05",
-            "fact_keys": [
-              "stock_to_move",
-              "stock_staying"
-            ],
-            "sources": [
-              "CAT-05",
-              "CAT-03",
-              "HIST-2017-30"
-            ],
-            "illustrative_estimate": true
-          },
-          {
-            "action": "Compra sacos de arena para la entrada; la cantidad asociada al costo es ilustrativa.",
+            "action": "Compra sacos de arena para la entrada; la cantidad y el costo son estimaciones ilustrativas. [CAT-02]",
             "who": "owner",
             "catalog_id": "CAT-02",
             "fact_keys": [
               "cat_02_cost"
             ],
             "sources": [
-              "CAT-02",
-              "HIST-2017-02",
-              "HIST-2017-30"
+              "CAT-02"
             ],
             "illustrative_estimate": true
           },
           {
-            "action": "Compra cajas herméticas para mercadería y documentos; el beneficio de protección es una estimación ilustrativa.",
+            "action": "Consigue cajas herméticas para proteger mercadería y documentos; la protección estimada es ilustrativa. [CAT-03]",
             "who": "owner",
             "catalog_id": "CAT-03",
             "fact_keys": [
               "cat_03_cost"
             ],
             "sources": [
-              "CAT-03",
-              "HIST-2017-30"
+              "CAT-03"
             ],
             "illustrative_estimate": true
           },
           {
-            "action": "Haz copias de respaldo de los registros del negocio; la protección estimada es ilustrativa.",
+            "action": "Respalda los registros del negocio con copias digitales y fotos del inventario; el beneficio estimado es ilustrativo. [CAT-07]",
             "who": "owner",
             "catalog_id": "CAT-07",
             "fact_keys": [
@@ -3425,8 +3175,8 @@
             "illustrative_estimate": true
           },
           {
-            "action": "Retira agua estancada, tapa recipientes y aplica medidas de control de zancudos; la cantidad asociada al costo es ilustrativa. En 2017 Castilla figuró entre los distritos con casos notificados de dengue; esto es un antecedente, no una previsión actual.",
-            "who": "owner",
+            "action": "Reduce criaderos de zancudos: elimina agua estancada y tapa recipientes; la cantidad/costo de la medida es ilustrativa. [CAT-09]",
+            "who": "owner, worker",
             "catalog_id": "CAT-09",
             "fact_keys": [
               "cat_09_cost"
@@ -3438,7 +3188,7 @@
             "illustrative_estimate": true
           },
           {
-            "action": "Consulta y contrata, si las condiciones te convienen, un seguro que cubra lluvia e inundación; verifica el alcance de la póliza.",
+            "action": "Consulta y compara una póliza que cubra lluvia e inundación; revisa condiciones y exclusiones antes de contratar. [CAT-10]",
             "who": "owner",
             "catalog_id": "CAT-10",
             "fact_keys": [
@@ -3450,8 +3200,8 @@
             "illustrative_estimate": false
           },
           {
-            "action": "Coordina primero con el arrendador la limpieza de canaletas y cualquier reparación o impermeabilización del techo; el costo y la protección son estimaciones ilustrativas.",
-            "who": "owner",
+            "action": "Coordina con el arrendador antes de limpiar canaletas o reparar e impermeabilizar el techo; el costo y la protección son estimaciones ilustrativas. [CAT-11]",
+            "who": "owner, landlord",
             "catalog_id": "CAT-11",
             "fact_keys": [
               "cat_11_cost"
@@ -3463,8 +3213,8 @@
             "illustrative_estimate": true
           },
           {
-            "action": "Acuerda primero con el arrendador la seguridad eléctrica; solicita a un electricista que revise la instalación. El costo no incluye mano de obra.",
-            "who": "owner",
+            "action": "Acuerda primero con el arrendador la instalación o modificación eléctrica y pide a un electricista que revise la seguridad; no manipules instalaciones con agua presente. [CAT-12]",
+            "who": "owner, landlord",
             "catalog_id": "CAT-12",
             "fact_keys": [
               "cat_12_cost"
@@ -3475,8 +3225,8 @@
             "illustrative_estimate": false
           },
           {
-            "action": "Prepara un plan para cortes de luz y cadena de frío, incluyendo una linterna recargable; la protección estimada es ilustrativa.",
-            "who": "owner",
+            "action": "Prepara el plan para cortes de luz y cadena de frío: evita sobrecargar congeladoras, define qué productos no perecibles mantener y ten una linterna recargable; el beneficio estimado es ilustrativo. [CAT-15]",
+            "who": "owner, worker",
             "catalog_id": "CAT-15",
             "fact_keys": [
               "cat_15_cost"
@@ -3487,12 +3237,25 @@
             "illustrative_estimate": true
           },
           {
-            "action": "Acuerda con proveedores consultar rutas alternativas, opciones de entrega y puntos de retiro disponibles; confirma antes de contar con su disponibilidad. Para el pan, mantén entregas pequeñas y frecuentes, sin acumular producto perecible.",
-            "who": "owner",
+            "action": "Contacta a tus proveedores y ubica fuentes locales alternativas para abarrotes y bebidas no perecibles, sin comprar stock adicional hasta completar el fondo de emergencia. [HIST-1998-07, HIST-2017-21]",
+            "who": "owner, supplier",
+            "catalog_id": null,
+            "fact_keys": [
+              "cash_gap",
+              "supplier_1_extra_days",
+              "supplier_2_extra_days"
+            ],
+            "sources": [
+              "HIST-1998-07",
+              "HIST-2017-21"
+            ],
+            "illustrative_estimate": false
+          },
+          {
+            "action": "Controla con frecuencia los perecibles, prioriza su rotación y coordina entregas pequeñas y frecuentes para evitar que se malogren. [HIST-1998-08]",
+            "who": "owner, worker, supplier",
             "catalog_id": "CAT-08",
             "fact_keys": [
-              "supplier_1_extra_days",
-              "supplier_2_extra_days",
               "supplier_3_extra_days"
             ],
             "sources": [
@@ -3500,19 +3263,11 @@
               "HIST-1998-08"
             ],
             "illustrative_estimate": true
-          },
+          }
+        ],
+        "on_enfen_alert": [
           {
-            "action": "Define cómo recibir pedidos por WhatsApp y coordinar ventas o entregas alternativas; la protección estimada es ilustrativa.",
-            "who": "owner",
-            "catalog_id": "CAT-14",
-            "fact_keys": [],
-            "sources": [
-              "CAT-14"
-            ],
-            "illustrative_estimate": true
-          },
-          {
-            "action": "Sigue los nuevos comunicados de ENFEN, los avisos de SENAMHI y las alertas de INDECI y de la municipalidad. Las previsiones pueden cambiar y no son pronósticos a escala de distrito.",
+            "action": "Revisa cada nuevo comunicado de ENFEN, los avisos de SENAMHI y las alertas de INDECI y de la municipalidad; las previsiones pueden cambiar y no son pronósticos a escala de distrito. [ENFEN-2026-18]",
             "who": "owner",
             "catalog_id": null,
             "fact_keys": [],
@@ -3522,100 +3277,71 @@
             "illustrative_estimate": false
           },
           {
-            "action": "Vende gradualmente los perecibles antes de las lluvias, en lugar de moverlos.",
-            "who": "owner",
+            "action": "Ante aviso de lluvia para la costa norte, confirma con proveedores disponibilidad y entregas, mantén entregas pequeñas y frecuentes de perecibles y vende/rota lo que pueda malograrse. [HIST-1998-08]",
+            "who": "owner, supplier",
             "catalog_id": null,
-            "fact_keys": [],
-            "sources": [
-              "CAT-05"
-            ],
-            "illustrative_estimate": false
-          }
-        ],
-        "on_enfen_alert": [
-          {
-            "action": "Ante un nuevo aviso de lluvia o alerta para la costa norte, confirma con los proveedores rutas y opciones de entrega o retiro; no des por hecho que estarán disponibles. Mantén entregas pequeñas y frecuentes de pan.",
-            "who": "owner",
-            "catalog_id": "CAT-08",
             "fact_keys": [
               "supplier_1_extra_days",
               "supplier_2_extra_days",
               "supplier_3_extra_days"
             ],
             "sources": [
-              "CAT-08",
               "HIST-1998-08"
             ],
-            "illustrative_estimate": true
+            "illustrative_estimate": false
           }
         ],
         "during_flooding": [
           {
-            "action": "Si el agua amenaza el local, corta la energía solo si puede hacerse sin exponerte; protege los registros y usa canales alternativos de venta cuando sea posible. Para emergencias, sigue las indicaciones de INDECI y la municipalidad; Pirca no emite órdenes de evacuación.",
-            "who": "owner",
-            "catalog_id": "CAT-12",
+            "action": "Si hay agua o cortes de ruta que afecten el negocio, activa las ventas por WhatsApp y delivery si es seguro operar. Para emergencias y decisiones de protección personal, sigue a INDECI y a la municipalidad; no ingreses a zonas inundadas.",
+            "who": "owner, worker",
+            "catalog_id": "CAT-14",
             "fact_keys": [],
             "sources": [
-              "CAT-12",
-              "CAT-07",
               "CAT-14"
-            ],
-            "illustrative_estimate": false
-          }
-        ],
-        "after": [
-          {
-            "action": "Cuando baje el agua, limpia canaletas y desagües y revisa el techo con el arrendador antes de reparar; la estimación es ilustrativa.",
-            "who": "owner",
-            "catalog_id": "CAT-11",
-            "fact_keys": [
-              "cat_11_cost"
-            ],
-            "sources": [
-              "CAT-11"
             ],
             "illustrative_estimate": true
           },
           {
-            "action": "Revisa la instalación eléctrica con personal calificado antes de volver a usarla y coordina con el arrendador cualquier intervención.",
+            "action": "Protege los registros en recipientes herméticos y corta la energía solo si puede hacerse sin exponerte a agua o riesgo eléctrico; sigue las indicaciones de las autoridades.",
             "who": "owner",
-            "catalog_id": "CAT-12",
-            "fact_keys": [
-              "cat_12_cost"
-            ],
+            "catalog_id": "CAT-03",
+            "fact_keys": [],
             "sources": [
+              "CAT-03",
               "CAT-12"
             ],
-            "illustrative_estimate": false
-          },
+            "illustrative_estimate": true
+          }
+        ],
+        "after": [
           {
-            "action": "Retira agua estancada y mantén recipientes tapados para reducir criaderos de zancudos. El antecedente de dengue en Castilla no es una previsión actual.",
-            "who": "owner",
-            "catalog_id": "CAT-09",
-            "fact_keys": [
-              "cat_09_cost"
-            ],
+            "action": "Cuando baje el agua, limpia canaletas y desagües y verifica el techo; coordina los trabajos con el arrendador. Controla el agua estancada para reducir criaderos de zancudos. [CAT-11, CAT-09]",
+            "who": "owner, worker, landlord",
+            "catalog_id": "CAT-11",
+            "fact_keys": [],
             "sources": [
+              "CAT-11",
               "CAT-09",
               "HIST-2017-28"
             ],
             "illustrative_estimate": true
           },
           {
-            "action": "Documenta daños y consulta el procedimiento de reclamo de la póliza, si contrataste una.",
-            "who": "owner",
-            "catalog_id": "CAT-10",
+            "action": "Antes de reconectar equipos, pide una revisión eléctrica segura y repón gradualmente la mercadería según disponibilidad de proveedores y el estado de los productos.",
+            "who": "owner, electrician, supplier",
+            "catalog_id": "CAT-12",
             "fact_keys": [],
             "sources": [
-              "CAT-10"
+              "CAT-12"
             ],
             "illustrative_estimate": false
           }
         ]
       },
       "stock": {
-        "summary": "Mueve {stock_to_move} a un lugar seguro y deja {stock_staying} sin mover; es una guía de preparación ante inundaciones, no una garantía de evitar pérdidas.",
-        "destination": "Estantes por encima de un metro, cajas herméticas o un espacio seguro fuera de la zona inundable; vende los perecibles antes de las lluvias.",
+        "summary": "Traslada {stock_to_move} y deja {stock_staying} en su ubicación actual; son valores orientativos para organizar la mercadería. [HIST-2017-30]",
+        "destination": "Estantes por encima de 1 m, recipientes sellados o un lugar seguro fuera de la zona inundable.",
         "sources": [
           "CAT-05",
           "CAT-03",
@@ -3623,7 +3349,7 @@
         ]
       },
       "cash": {
-        "summary": "El cierre usado como escenario es de {weeks_closed}; el fondo estimado es {buffer_needed} y la brecha calculada es {cash_gap}. Prioriza el fondo y revisa los gastos esenciales si el cierre se prolonga; no se garantiza cubrir toda la brecha.",
+        "summary": "El cálculo usa un cierre posible de {weeks_closed} y un fondo objetivo de {buffer_needed}. Después de las compras planificadas, la brecha es {cash_gap}; aparta caja hasta completar el fondo antes de comprar stock adicional. Es una guía aproximada, no una garantía. [HIST-1998-07, HIST-1998-10]",
         "sources": [
           "CAT-06",
           "HIST-1998-07",
@@ -3638,14 +3364,13 @@
           "road_cut_risk": "high",
           "perishable": false,
           "advice": "stock_up",
-          "summary": "No compres stock adicional todavía: completa primero el fondo de emergencia. Coordina con el proveedor para consultar rutas alternativas y opciones de entrega o retiro, sin asumir que estarán disponibles.",
+          "summary": "No compres stock adicional todavía: completa primero el fondo de emergencia. Contacta al proveedor y ubica una fuente local alternativa; el extra permitido ahora es {supplier_1_extra_days}. [HIST-1998-07, HIST-2017-21]",
           "fact_keys": [
             "supplier_1_extra_days"
           ],
           "sources": [
             "HIST-1998-07",
-            "HIST-2017-21",
-            "CAT-08"
+            "HIST-2017-21"
           ]
         },
         {
@@ -3654,15 +3379,14 @@
           "road_cut_risk": "high",
           "perishable": false,
           "advice": "stock_up",
-          "summary": "No compres stock adicional todavía: completa primero el fondo de emergencia. Consulta con el proveedor rutas alternativas y opciones de entrega o retiro; su disponibilidad no está garantizada.",
+          "summary": "No compres stock adicional todavía: completa primero el fondo de emergencia. Contacta al proveedor y ubica una fuente local alternativa; el extra permitido ahora es {supplier_2_extra_days}. [HIST-2017-01, HIST-2017-02, HIST-2017-33]",
           "fact_keys": [
             "supplier_2_extra_days"
           ],
           "sources": [
             "HIST-2017-01",
             "HIST-2017-02",
-            "HIST-2017-33",
-            "CAT-08"
+            "HIST-2017-33"
           ]
         },
         {
@@ -3671,32 +3395,17 @@
           "road_cut_risk": "medium",
           "perishable": true,
           "advice": "small_frequent_deliveries",
-          "summary": "Mantén entregas pequeñas y frecuentes de pan y consulta con el proveedor opciones de ruta, entrega o retiro, sin asumir disponibilidad.",
+          "summary": "No acumules pan: acuerda entregas pequeñas y frecuentes y rota la venta para evitar mermas. El extra de stock es {supplier_3_extra_days}. [HIST-1998-08]",
           "fact_keys": [
             "supplier_3_extra_days"
           ],
           "sources": [
-            "HIST-1998-08",
-            "CAT-08"
+            "HIST-1998-08"
           ]
         }
       ],
       "purchases": {
         "selected": [
-          {
-            "catalog_id": "CAT-05",
-            "name_es": "Subir la mercadería a un lugar seguro",
-            "name_en": "Move stock to a safe, higher place",
-            "cost_fact_key": null,
-            "illustrative_estimate": true
-          },
-          {
-            "catalog_id": "CAT-14",
-            "name_es": "Ventas por WhatsApp y delivery",
-            "name_en": "WhatsApp and delivery sales",
-            "cost_fact_key": null,
-            "illustrative_estimate": true
-          },
           {
             "catalog_id": "CAT-02",
             "name_es": "Sacos de arena en la puerta",
@@ -3759,44 +3468,40 @@
       },
       "not_bought": [
         {
-          "catalog_id": "CAT-13",
-          "name_es": "Plan de continuidad y mochila de emergencia",
-          "name_en": "Business continuity plan and emergency backpack",
-          "reason": "Ya lo tienes."
-        },
-        {
           "catalog_id": "CAT-01",
           "name_es": "Estantes elevados",
           "name_en": "Raised shelves",
-          "reason": "El optimizador lo excluyó porque consideró que otras acciones ofrecían más valor por sol dentro del presupuesto."
+          "reason": "El optimizador los excluyó porque ofrecen menor valor por sol que las acciones seleccionadas para este presupuesto."
         },
         {
           "catalog_id": "CAT-04",
           "name_es": "Barrera contra el agua en la puerta",
           "name_en": "Door flood barrier",
-          "reason": "El optimizador la excluyó porque consideró que otras acciones ofrecían más valor por sol dentro del presupuesto."
+          "reason": "El optimizador los excluyó porque ofrecen menor valor por sol que las acciones seleccionadas para este presupuesto."
         }
       ],
       "revision_responses": [
         {
-          "note": "Añade coordinacion sin costo con proveedores para consultar rutas alternativas, entregas o puntos de retiro disponibles; no prometer disponibilidad. Conserva entregas pequenas y frecuentes para pan. [CAT-08] [HIST-1998-08]",
-          "response": "Añadí coordinación con proveedores y mantuve entregas pequeñas y frecuentes para pan; el stock adicional queda sujeto a completar primero el fondo de emergencia.",
+          "note": "Prioriza las acciones gratuitas inmediatamente ante lluvias un mes antes: mover mercadería y documentos, preparar canal alternativo de ventas y apartar caja; aplaza compras opcionales y sigue avisos oficiales.",
+          "response": "Incluí mover mercadería y preparar ventas alternativas sin costo, además de apartar caja y seguir avisos oficiales. No aplazé ni cambié las compras seleccionadas, porque las determina el optimizador.",
           "changed": true
         },
         {
-          "note": "Añade para cierre prolongado revisar y priorizar gastos esenciales y el fondo de emergencia, sin prometer cubrir toda la brecha. [CAT-06]",
-          "response": "Añadí la revisión y priorización de gastos esenciales y aclaré que el fondo no garantiza cubrir toda la brecha.",
+          "note": "Añade contingencia gratuita: contactar proveedores y ubicar fuentes locales alternativas para no perecibles si se cortan rutas, manteniendo la prioridad de completar el fondo antes de comprar stock.",
+          "response": "Añadí el contacto con proveedores y la búsqueda de fuentes locales alternativas; indiqué completar primero el fondo y no acumular stock adicional ahora.",
           "changed": true
         },
         {
-          "note": "Mantén el ahorro como prioridad inmediata y consulta canales oficiales. [ENFEN-2026-18]",
-          "response": "Mantuve el fondo de emergencia como prioridad inmediata e indiqué consultar ENFEN, SENAMHI, INDECI y la municipalidad.",
+          "note": "Mantén control frecuente de perecibles y su venta/rotación antes de que se malogren, además del plan de cadena de frío.",
+          "response": "Añadí control frecuente, rotación y entregas pequeñas de perecibles, junto con el plan de cadena de frío.",
           "changed": true
         }
       ],
       "notes": [
-        "La selección de compras sigue el resultado del optimizador. Las estimaciones ilustrativas son orientativas, no garantías.",
-        "El cálculo de cierre usa una duración ilustrativa basada en antecedentes históricos; las previsiones pueden cambiar."
+        "El orden o prioridad sugerido no modifica las compras: el optimizador seleccionó las acciones indicadas dentro del presupuesto.",
+        "El cálculo de cierre y algunas medidas catalogadas son estimaciones ilustrativas; las acciones reducen riesgo, no lo eliminan.",
+        "Las previsiones de ENFEN pueden cambiar. Sigue comunicados de ENFEN, avisos de SENAMHI, alertas de INDECI y de la municipalidad. [ENFEN-2026-18]",
+        "Los antecedentes citados son referencias históricas, no pronósticos actuales."
       ],
       "missing_facts": [],
       "suspicious_content": []
@@ -3804,162 +3509,16 @@
     "critique": {
       "verdict": "revise",
       "verify_draft": {
-        "ok": false,
+        "ok": true,
         "issue_count_fact_key": "issue_count"
       },
-      "failed_checks": [
-        {
-          "type": "raw_number",
-          "text": "02",
-          "detail": "Use a {fact_key} placeholder instead of a typed number: …AT-02\",\"fact_keys\":[\"cat_02_cost\"],\"sources\":[\"CAT-0…"
-        },
-        {
-          "type": "raw_number",
-          "text": "03",
-          "detail": "Use a {fact_key} placeholder instead of a typed number: …AT-03\",\"fact_keys\":[\"cat_03_cost\"],\"sources\":[\"CAT-0…"
-        },
-        {
-          "type": "raw_number",
-          "text": "07",
-          "detail": "Use a {fact_key} placeholder instead of a typed number: …AT-07\",\"fact_keys\":[\"cat_07_cost\"],\"sources\":[\"CAT-0…"
-        },
-        {
-          "type": "raw_number",
-          "text": "09",
-          "detail": "Use a {fact_key} placeholder instead of a typed number: …AT-09\",\"fact_keys\":[\"cat_09_cost\"],\"sources\":[\"CAT-0…"
-        },
-        {
-          "type": "raw_number",
-          "text": "10",
-          "detail": "Use a {fact_key} placeholder instead of a typed number: …AT-10\",\"fact_keys\":[\"cat_10_cost\"],\"sources\":[\"CAT-1…"
-        },
-        {
-          "type": "raw_number",
-          "text": "11",
-          "detail": "Use a {fact_key} placeholder instead of a typed number: …AT-11\",\"fact_keys\":[\"cat_11_cost\"],\"sources\":[\"CAT-1…"
-        },
-        {
-          "type": "raw_number",
-          "text": "12",
-          "detail": "Use a {fact_key} placeholder instead of a typed number: …AT-12\",\"fact_keys\":[\"cat_12_cost\"],\"sources\":[\"CAT-1…"
-        },
-        {
-          "type": "raw_number",
-          "text": "15",
-          "detail": "Use a {fact_key} placeholder instead of a typed number: …AT-15\",\"fact_keys\":[\"cat_15_cost\"],\"sources\":[\"CAT-1…"
-        },
-        {
-          "type": "raw_number",
-          "text": "1",
-          "detail": "Use a {fact_key} placeholder instead of a typed number: …\",\"fact_keys\":[\"supplier_1_extra_days\",\"supplier_2_…"
-        },
-        {
-          "type": "raw_number",
-          "text": "2",
-          "detail": "Use a {fact_key} placeholder instead of a typed number: …_1_extra_days\",\"supplier_2_extra_days\",\"supplier_3_…"
-        },
-        {
-          "type": "raw_number",
-          "text": "3",
-          "detail": "Use a {fact_key} placeholder instead of a typed number: …_2_extra_days\",\"supplier_3_extra_days\"],\"sources\":[…"
-        },
-        {
-          "type": "raw_number",
-          "text": "1",
-          "detail": "Use a {fact_key} placeholder instead of a typed number: …\",\"fact_keys\":[\"supplier_1_extra_days\",\"supplier_2_…"
-        },
-        {
-          "type": "raw_number",
-          "text": "2",
-          "detail": "Use a {fact_key} placeholder instead of a typed number: …_1_extra_days\",\"supplier_2_extra_days\",\"supplier_3_…"
-        },
-        {
-          "type": "raw_number",
-          "text": "3",
-          "detail": "Use a {fact_key} placeholder instead of a typed number: …_2_extra_days\",\"supplier_3_extra_days\"],\"sources\":[…"
-        },
-        {
-          "type": "raw_number",
-          "text": "11",
-          "detail": "Use a {fact_key} placeholder instead of a typed number: …AT-11\",\"fact_keys\":[\"cat_11_cost\"],\"sources\":[\"CAT-1…"
-        },
-        {
-          "type": "raw_number",
-          "text": "12",
-          "detail": "Use a {fact_key} placeholder instead of a typed number: …AT-12\",\"fact_keys\":[\"cat_12_cost\"],\"sources\":[\"CAT-1…"
-        },
-        {
-          "type": "raw_number",
-          "text": "09",
-          "detail": "Use a {fact_key} placeholder instead of a typed number: …AT-09\",\"fact_keys\":[\"cat_09_cost\"],\"sources\":[\"CAT-0…"
-        },
-        {
-          "type": "raw_number",
-          "text": "1",
-          "detail": "Use a {fact_key} placeholder instead of a typed number: …\",\"fact_keys\":[\"supplier_1_extra_days\"],\"sources\":[…"
-        },
-        {
-          "type": "raw_number",
-          "text": "2",
-          "detail": "Use a {fact_key} placeholder instead of a typed number: …\",\"fact_keys\":[\"supplier_2_extra_days\"],\"sources\":[…"
-        },
-        {
-          "type": "raw_number",
-          "text": "3",
-          "detail": "Use a {fact_key} placeholder instead of a typed number: …\",\"fact_keys\":[\"supplier_3_extra_days\"],\"sources\":[…"
-        },
-        {
-          "type": "raw_number",
-          "text": "02",
-          "detail": "Use a {fact_key} placeholder instead of a typed number: …or\",\"cost_fact_key\":\"cat_02_cost\",\"illustrative_esti…"
-        },
-        {
-          "type": "raw_number",
-          "text": "03",
-          "detail": "Use a {fact_key} placeholder instead of a typed number: …es\",\"cost_fact_key\":\"cat_03_cost\",\"illustrative_esti…"
-        },
-        {
-          "type": "raw_number",
-          "text": "07",
-          "detail": "Use a {fact_key} placeholder instead of a typed number: …ds\",\"cost_fact_key\":\"cat_07_cost\",\"illustrative_esti…"
-        },
-        {
-          "type": "raw_number",
-          "text": "09",
-          "detail": "Use a {fact_key} placeholder instead of a typed number: …ue\",\"cost_fact_key\":\"cat_09_cost\",\"illustrative_esti…"
-        },
-        {
-          "type": "raw_number",
-          "text": "10",
-          "detail": "Use a {fact_key} placeholder instead of a typed number: …ce\",\"cost_fact_key\":\"cat_10_cost\",\"illustrative_esti…"
-        },
-        {
-          "type": "raw_number",
-          "text": "11",
-          "detail": "Use a {fact_key} placeholder instead of a typed number: …of\",\"cost_fact_key\":\"cat_11_cost\",\"illustrative_esti…"
-        },
-        {
-          "type": "raw_number",
-          "text": "12",
-          "detail": "Use a {fact_key} placeholder instead of a typed number: …ty\",\"cost_fact_key\":\"cat_12_cost\",\"illustrative_esti…"
-        },
-        {
-          "type": "raw_number",
-          "text": "15",
-          "detail": "Use a {fact_key} placeholder instead of a typed number: …an\",\"cost_fact_key\":\"cat_15_cost\",\"illustrative_esti…"
-        },
-        {
-          "type": "forbidden_content",
-          "text": "ordenes de evacuacion",
-          "detail": "Pirca must not give evacuation orders"
-        }
-      ],
+      "failed_checks": [],
       "scenarios": [
         {
           "scenario": "rains_one_month_early",
           "holds": false,
-          "gap": "The now phase does not fit the shorter lead time: {rains_one_month_early__weeks_until_rains} versus {rains_one_month_early__baseline_weeks_until_rains}; weekly saving needed rises to {rains_one_month_early__weekly_saving_needed} from {rains_one_month_early__baseline_weekly_saving_needed}.",
-          "suggested_fix": "Treat immediate, no-cost steps as urgent: prioritize essential expenses and contact suppliers now to confirm alternate routes and delivery or pickup options; do not assume availability.",
+          "gap": "The now phase includes moving stock, preparing an alternate sales channel, and setting cash aside, but the cash instruction is gradual and does not address the shorter time available: {rains_one_month_early__weeks_until_rains} versus {rains_one_month_early__baseline_weeks_until_rains}, with weekly savings needed of {rains_one_month_early__weekly_saving_needed} versus {rains_one_month_early__baseline_weekly_saving_needed}.",
+          "suggested_fix": "Make the no-cost preparedness steps explicitly immediate; state what to do if the emergency fund cannot be completed before rain, and follow official updates.",
           "fact_keys": [
             "rains_one_month_early__weeks_until_rains",
             "rains_one_month_early__baseline_weeks_until_rains",
@@ -3970,20 +3529,19 @@
         {
           "scenario": "main_bridge_cut",
           "holds": false,
-          "gap": "The supplier plan only recommends consulting routes and options; it does not establish that alternate routes or supply are available. All suppliers are high risk, while {main_bridge_cut__extra_days_to_buy} and {main_bridge_cut__extra_stock_value} remain zero, leaving the identified stock need uncovered.",
-          "suggested_fix": "Keep the CAT-08 supplier coordination, ask each supplier to confirm a workable route or pickup point, and state what to do if none is available; avoid accumulating perishables and prioritize essential expenses before any additional stock purchase.",
+          "gap": "The draft says to contact suppliers and find local alternatives, but does not establish that alternatives cover every route being cut. All suppliers are high risk in this scenario, and the available extra stock remains {main_bridge_cut__extra_days_to_buy} with value {main_bridge_cut__extra_stock_value}.",
+          "suggested_fix": "Specify a no-cost contingency for each supplier and route: confirm local alternatives and delivery availability, prioritize essential items, and tell customers when products are unavailable. Do not imply that stock is secured.",
           "fact_keys": [
             "main_bridge_cut__high_risk_suppliers",
             "main_bridge_cut__extra_days_to_buy",
-            "main_bridge_cut__extra_stock_value",
-            "main_bridge_cut__extra_days_needed"
+            "main_bridge_cut__extra_stock_value"
           ]
         },
         {
           "scenario": "power_cut_week",
           "holds": true,
-          "gap": "The plan includes a CAT-15 power-cut and cold-chain plan and CAT-14 alternative sales, but does not specifically say how to protect or manage perishable inventory. Sales at risk are {power_cut_week__sales_at_risk}; perishable-stock value is not available in the facts.",
-          "suggested_fix": "Clarify a no-cost perishables plan, including prioritizing sale before a disruption and avoiding accumulation; add the perishable-stock value to missing_facts if a quantified assessment is needed.",
+          "gap": "The draft includes a power-cut and cold-chain plan, product rotation, and small frequent deliveries, addressing perishables and the scenario's sales exposure of {power_cut_week__sales_at_risk}. The scenario does not provide the value of perishable stock at risk.",
+          "suggested_fix": "Keep the cold-chain steps and clarify how the owner will decide which perishables to sell, transfer, or discard if refrigeration fails.",
           "fact_keys": [
             "power_cut_week__sales_at_risk",
             "power_cut_week__perishables"
@@ -3992,18 +3550,18 @@
       ],
       "material_gaps": [
         {
-          "gap": "Mechanical verification failed: typed numbers in source/catalog IDs and supplier fact-key names were flagged, along with forbidden evacuation-order wording.",
-          "suggested_fix": "Resolve every verify_draft issue exactly as returned, while preserving allowed source citations and replacing or removing the flagged evacuation wording."
+          "gap": "The early-rain scenario leaves no time before rain, while the plan only says to set cash aside gradually and does not explain what to do if the emergency fund cannot be completed in time.",
+          "suggested_fix": "Make immediate no-cost actions explicit and add a contingency for the unresolved cash gap without promising that it can be closed."
         },
         {
-          "gap": "If the main bridge is cut, three suppliers are high risk and the draft offers no confirmed alternate supply or contingency if alternatives are unavailable; the required extra stock remains unprovided.",
-          "suggested_fix": "Use CAT-08 coordination to confirm alternate routes or pickup arrangements with each supplier and give a contingency if unavailable; reconsider stock actions only within the optimizer selection and budget."
+          "gap": "With all supplier routes at high risk in the bridge-cut scenario, the plan mentions local alternatives but does not show that every affected route has a workable fallback; extra stock is not available.",
+          "suggested_fix": "Add a no-cost contingency to confirm an alternative source and delivery for each supplier, prioritize essentials, and communicate possible shortages."
         }
       ],
       "notes": [
-        "All paid actions listed are in the optimizer selection.",
-        "The draft labels its action estimates as illustrative, but does not plainly disclose that Castilla has no district-level flood history and that the district risk level is a placeholder; revise this disclosure.",
-        "Every phase has at least one action. No promises or own forecasts detected."
+        "All paid catalog actions in the draft appear in the optimizer's selected purchases.",
+        "Illustrative estimates are disclosed in the relevant actions and notes. Castilla is described as high flood risk using illustrative weighting; the draft also correctly says ENFEN does not provide district-scale forecasts.",
+        "The draft has actions in every phase, makes no evacuation order or own forecast, and contains no promise of safety."
       ],
       "missing_facts": [],
       "suspicious_content": []

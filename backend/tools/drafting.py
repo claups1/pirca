@@ -22,9 +22,9 @@ MONEY_FACTS = {
     "stock_value", "stock_at_risk", "stock_to_move", "stock_staying", "weekly_fixed_costs", "buffer_needed",
     "cash_on_hand", "cash_gap", "lost_sales", "extra_stock_value", "budget", "total_cost", "money_left",
     "expected_benefit", "weekly_saving_needed", "sales_at_risk", "prep_budget", "monthly_fixed_costs",
-    "weekly_sales",
+    "weekly_sales", "planned_purchases", "cash_after_purchases", "extra_stock_needed", "stock_up_money_available",
 }
-DAY_FACTS = {"days_of_stock", "extra_days_to_buy", "power_cut_days"}
+DAY_FACTS = {"days_of_stock", "extra_days_to_buy", "extra_days_needed", "power_cut_days"}
 WEEK_FACTS = {"weeks_closed", "weeks_until_rains", "sick_weeks"}
 UNITS = ("soles", "days", "weeks", "percent", "count")
 UNIT_WORDS = {
