@@ -79,11 +79,12 @@ WORKER_TOOLS = {
         function_schema("verify_draft", "Code checks on a draft: typed numbers, unknown placeholders, units next "
                         "to placeholders, unknown source IDs, evacuation orders, own forecasts. Set final_plan "
                         "true for the owner's plan to also check action names, asterisks, internal terms, "
-                        "grammar, length and section 7. The facts come from this run.",
+                        "grammar, length, section 7 and that section 1 starts with the shop's risk level. The facts come "
+                        "from this run.",
                         {"draft": {"type": "string"}, "final_plan": {"type": "boolean"}}, ("draft",)),
         lambda ctx, a: verify_draft(a["draft"], ctx.facts, final_plan=bool(a.get("final_plan")),
                                     district_unverified=_district_unverified(ctx),
-                                    language=ctx.language)),
+                                    risk_level=_shop_risk_level(ctx), language=ctx.language)),
     "run_scenario": ToolSpec(
         function_schema("run_scenario", "Recompute this shop's numbers under one stress scenario.",
                         {"scenario": {"type": "string", "enum": list(SCENARIOS)}}, ("scenario",)),
@@ -137,12 +138,19 @@ def _district_unverified(ctx: RunContext) -> bool:
     return district_level(ctx.profile) == "UNVERIFIED"
 
 
+def _shop_risk_level(ctx: RunContext) -> str:
+    """The shop's own risk level ("high"/"medium"/"low"), the same one the plan's gauge shows."""
+    return score_exposure(ctx.profile)["risk_level"]
+
+
 def manager_message(ctx: RunContext) -> str:
-    # The district's real hazard level comes from code, so the Manager never has to guess it.
+    # The shop's risk level and the district's hazard level both come from code, so the Manager never
+    # has to guess them; the shop fields let it explain in plain words why they differ.
     district = {"name": ctx.profile.district, "hazard_level": district_level(ctx.profile),
                 "unverified": _district_unverified(ctx)}
-    return _message(language=ctx.language, today=ctx.today.isoformat(),
-                    shop=_shop(ctx, ("business_type",)), district=district,
+    shop = _shop(ctx, ("business_type", "near_water", "flooded_before", "floor_level", "higher_storage"))
+    shop["risk_level"] = _shop_risk_level(ctx)
+    return _message(language=ctx.language, today=ctx.today.isoformat(), shop=shop, district=district,
                     profile_warnings=ctx.state["warnings"])
 
 
@@ -273,7 +281,7 @@ def run_plan(profile: dict, language: str = "es", today: date | None = None, cli
         manager = AgentSession(ctx, "manager", toolset("manager", MANAGER_TOOLS))
         final = manager.send(manager_message(ctx))
         check = verify_draft(final.get("plan_markdown", ""), ctx.facts, final_plan=True, language=language,
-                             district_unverified=_district_unverified(ctx))
+                             district_unverified=_district_unverified(ctx), risk_level=_shop_risk_level(ctx))
         ctx.emit("final_check", "pirca", attempt=1, ok=check["ok"], issue_count=len(check["issues"]),
                  issues=[i["type"] for i in check["issues"]])
         fix_attempted = False
@@ -281,7 +289,8 @@ def run_plan(profile: dict, language: str = "es", today: date | None = None, cli
             fix_attempted = True
             final = manager.send(_fix_message(check["issues"]))
             check = verify_draft(final.get("plan_markdown", ""), ctx.facts, final_plan=True, language=language,
-                                 district_unverified=_district_unverified(ctx))
+                                 district_unverified=_district_unverified(ctx),
+                                 risk_level=_shop_risk_level(ctx))
             ctx.emit("final_check", "pirca", attempt=2, ok=check["ok"], issue_count=len(check["issues"]),
                      issues=[i["type"] for i in check["issues"]])
     except LimitHit as e:

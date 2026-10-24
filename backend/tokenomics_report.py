@@ -10,7 +10,7 @@ from statistics import mean
 from backend import config
 from backend.agents import AGENT_TOOLS
 from backend.tools.data_store import exchange_rate
-from backend.tools.drafting import plan_word_count
+from backend.tools.drafting import MAX_PLAN_WORDS, plan_word_count
 
 RUN_CODES = ["PIU-CAST26", "PIU-CASTEN", "PIU-FARMES", "PIU-FARMEN", "PIU-FERRES", "PIU-FERREN"]
 AGENTS = [("manager", "Manager"), ("risk_analyst", "Risk Analyst"), ("planner", "Planner"), ("critic", "Critic")]
@@ -214,8 +214,9 @@ def main() -> None:
       f"tokens. With the limit, plans averaged {mean(r['words'] for r in runs):.0f} words "
       f"(max {max(r['words'] for r in runs)}) and the final call averaged "
       f"{n(mean(r['final_manager_output'] for r in runs))} output tokens. Other prompt changes landed at the same time, so "
-      "this is a before/after observation, not a controlled experiment. One run (PIU-FERRES, 331 words) still went "
-      "over the limit after its fix attempt and is shown with a warning.")
+      "this is a before/after observation, not a controlled experiment."
+      + "".join(f" {r['code']} ({r['words']} words) still went over the limit after its fix attempt and is shown "
+                "with a warning." for r in runs if r["words"] > MAX_PLAN_WORDS and not r["verified"]))
     a("")
 
     # 5 ---------------------------------------------------------------- scale

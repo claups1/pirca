@@ -162,8 +162,9 @@ LENGTH_ISSUES = {"too_long", "section_7_too_long"}
 
 
 def _translation_issues(template: str, record: dict, target: str, unverified: bool) -> list[dict]:
+    # The translation must keep the shop's risk level (the gauge) as the first level in section 1.
     check = verify_draft(template, record.get("facts", {}), final_plan=True, language=target,
-                         district_unverified=unverified)
+                         district_unverified=unverified, risk_level=score_exposure(record["form"])["risk_level"])
     issues = [i for i in check["issues"] if i["type"] not in LENGTH_ISSUES]
     if _placeholders(template) != _placeholders(record["plan_template"]):
         issues.append({"type": "placeholders_changed", "text": "",

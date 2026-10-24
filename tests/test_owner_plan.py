@@ -239,3 +239,59 @@ def test_asterisk_must_belong_to_the_cited_action():
     assert [i["text"] for i in found] == ["CAT-07"]
     fixed = plan.replace("respalda registros [CAT-07]", "Copia de seguridad de tus registros* [CAT-07]")
     assert "missing_asterisk" not in issues(fixed)
+
+
+# ---------------------------------------------------------------- shop risk level in section 1
+
+def risk_issues(section_1, risk_level, language="es"):
+    heading = "## 1. Tu riesgo\n" if language == "es" else "## 1. Your risk\n"
+    plan = heading + section_1 + "\n\n## 2. " + GOOD_PLAN_ES.split("## 2. ", 1)[1]
+    return [i for i in verify_draft(plan, FACTS, final_plan=True, language=language, risk_level=risk_level)["issues"]
+            if i["type"] == "risk_level_mismatch"]
+
+
+def test_plan_saying_alto_fails_when_shop_risk_is_medium():
+    # The PIU-C5TP6C bug: the district's hazard level written as if it were the shop's risk.
+    found = risk_issues("Riesgo alto de inundación en Piura. ENFEN mantiene la Alerta [ENFEN-2026-18].", "medium")
+    assert [i["text"] for i in found] == ["alto"]
+
+
+def test_plan_stating_both_levels_correctly_passes():
+    section = ("Tu riesgo: medio. Piura tiene riesgo alto de inundación, pero tu negocio está en un piso alto "
+               "y lejos del río. ENFEN mantiene la Alerta [ENFEN-2026-18].")
+    assert risk_issues(section, "medium") == []
+
+
+def test_english_plan_stating_both_levels_correctly_passes():
+    section = ("Your risk: medium. Piura has a high flood risk, but your shop is on an upper floor and far from "
+               "the river [ENFEN-2026-18].")
+    assert risk_issues(section, "medium", language="en") == []
+
+
+@pytest.mark.parametrize("section,language", [
+    ("High flood risk in Piura [ENFEN-2026-18].", "en"),
+    ("The district hazard is high; your shop's risk is medium.", "en"),        # district first
+    ("El peligro del distrito es alto; el riesgo de tu negocio es medio.", "es"),
+])
+def test_district_level_stated_first_fails(section, language):
+    assert risk_issues(section, "medium", language=language)
+
+
+def test_section_1_without_a_risk_level_fails():
+    assert risk_issues("ENFEN mantiene la Alerta [ENFEN-2026-18]. Tienes {stock_at_risk} en riesgo.", "high")
+
+
+@pytest.mark.parametrize("section,level", [
+    ("Tu riesgo es alto. Hay {stock_at_risk} en riesgo.", "high"),
+    ("**Riesgo bajo.** En Bajo Piura hubo inundaciones [HIST-2017-01].", "low"),  # a place name, not a level
+    ("Tu riesgo de inundación es medio.", "medium"),
+])
+def test_matching_level_passes(section, level):
+    assert risk_issues(section, level) == []
+
+
+def test_risk_level_is_only_checked_when_given():
+    plan = GOOD_PLAN_ES.replace("Tu riesgo es alto.", "Tu riesgo es bajo.")
+    assert "risk_level_mismatch" not in issues(plan)
+    found = verify_draft(plan, FACTS, final_plan=True, risk_level="high")["issues"]
+    assert [i["type"] for i in found] == ["risk_level_mismatch"]

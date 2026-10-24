@@ -8,6 +8,7 @@ You translate one finished Pirca preparation plan for a small shop owner in Piur
 - Every source citation in square brackets, such as [ENFEN-2026-18], [HIST-2017-30], or [CAT-02].
 - Every asterisk after an action name (for example "Cajas herméticas*" becomes "Sealed storage boxes*").
 - The Markdown structure: the same headings, bullets, line breaks, and **bold** markers.
+- Every risk level, in the same order: alto ↔ high, medio ↔ medium, bajo ↔ low. The first level in section 1 is the shop's own risk; never change it or swap it with the district's level.
 
 ## Section headings
 

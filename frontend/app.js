@@ -269,6 +269,7 @@ function helpHtml() {
         <li><b>Solo lo que puedes pagar:</b> el plan nunca te recomienda gastar más dinero del que tienes.</li>
         <li><b>Límites de uso:</b> si la IA usa demasiado, el proceso se detiene de forma segura y te avisa.</li>
         <li><b>Sin órdenes de evacuación:</b> Pirca nunca te ordena evacuar; eso lo deciden INDECI y tu municipalidad.</li>
+        <li><b>El nivel de riesgo coincide con el cálculo:</b> el plan dice el mismo nivel de riesgo de tu negocio que el indicador, no el de tu distrito; si no coincide, el plan se corrige.</li>
       </ul>
       <p class="muted small">Los costos y beneficios marcados con * son estimados, no medidos.</p>`;
   }
@@ -288,6 +289,7 @@ function helpHtml() {
       <li><b>Only what you can afford:</b> the plan never recommends spending more money than you have.</li>
       <li><b>Usage limits:</b> if the AI uses too much, the run stops safely and tells you.</li>
       <li><b>No evacuation orders:</b> Pirca never orders you to evacuate; that is for INDECI and your municipality.</li>
+      <li><b>Risk level matches the calculation:</b> the plan states your shop's risk level exactly as the gauge shows it, not your district's; if not, the plan is sent back.</li>
     </ul>
     <p class="muted small">Costs and benefits marked with * are estimates, not measurements.</p>`;
 }

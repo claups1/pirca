@@ -1,7 +1,7 @@
 """Write output/safety/summary.md from the results the safety tests saved.
 
 Run from the Final Project folder after the tests:
-    .venv\\Scripts\\python.exe -m pytest tests/test_safety.py            (offline: 2, 3, 5)
+    .venv\\Scripts\\python.exe -m pytest tests/test_safety.py            (offline: 2, 3, 5, 6)
     .venv\\Scripts\\python.exe -m pytest -m live tests/test_safety.py    (live: 1, 4)
     .venv\\Scripts\\python.exe -m backend.safety_summary
 """
@@ -17,6 +17,7 @@ TITLES = {
     "3_unaffordable_plan": ("Unaffordable plan", "offline"),
     "4_token_budget_limit": ("Token-budget limit", "live"),
     "5_no_evacuation_orders": ("No evacuation orders", "offline"),
+    "6_risk_level_matches": ("Risk level matches the calculation", "offline"),
 }
 
 
@@ -45,12 +46,19 @@ def key_evidence(name: str, e: dict) -> str:
     if name == "5_no_evacuation_orders":
         caught = {lang: [i["text"] for i in issues] for lang, issues in e["issues"].items()}
         return f"Blocked phrases: {caught}. Pointing to INDECI allowed: {e['allowed_example_ok']}."
+    if name == "6_risk_level_matches":
+        run = e["run"]
+        return (f"Shop risk `{e['shop_risk_level']}`. \"{e['wrong_section_1']}\" states `{e['wrong_stated']}` and "
+                f"fails (risk_level_mismatch); \"{e['right_section_1']}\" states `{e['right_stated']}` first and "
+                f"passes (ok: {e['right_ok']}). In a scripted run the first final check found "
+                f"{run['final_checks'][0]['issues']}, the Manager's fix step ran ({run['fix_attempted']}) and the "
+                f"run ended `{run['status']}`.")
     return ""
 
 
 def main() -> None:
     lines = ["# Pirca safety checks", "",
-             "Each test saves its evidence as JSON in this folder. Tests 2, 3 and 5 run offline with every "
+             "Each test saves its evidence as JSON in this folder. Tests 2, 3, 5 and 6 run offline with every "
              "`pytest`; tests 1 and 4 make real model calls and run with `pytest -m live`.", "",
              "| # | Test | Type | What it checks | Result | Run at (UTC) |", "|---|---|---|---|---|---|"]
     details = []

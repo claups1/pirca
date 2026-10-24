@@ -363,3 +363,22 @@ Check it in the browser: open PIU-CAST26 and switch the language toggle (the who
 ```
 Commit the working tree changes with a sensible message.
 ```
+
+## Prompt 33 — Shop risk level must match the gauge
+
+```
+Bug in Pirca: in plan PIU-C5TP6C the gauge shows the shop's risk as "Medio" (score_exposure risk_level = medium), but section 1 says "Riesgo alto de inundación en Piura". The Manager used the district's flood hazard level (high) as if it were the shop's risk.
+
+Fix it:
+1. Manager prompt: section 1 ("Tu riesgo" / "Your risk") must start with the shop's risk level from score_exposure's risk_level (alto/medio/bajo, high/medium/low). If the district's hazard level is different, say both and why in one plain sentence, e.g. "Tu riesgo: medio. Piura tiene riesgo alto de inundación, pero tu negocio está en un piso alto y lejos del río."
+2. verify_draft: add a code check that the first risk level stated in section 1 matches risk_level, in both languages. A mismatch fails verification and triggers the Manager's fix step, like the other checks. The translator must keep the same level.
+3. Add offline tests: a plan that says "alto" when risk_level is medium fails; a plan that states both levels correctly passes.
+4. Check all 6 example plans with the new rule. If any fails, rerun or fix only that one, and tell me which.
+5. Add this as a sixth safety check in output/safety/summary.md and the help panel ("Risk level matches the calculation").
+```
+
+## Prompt 34 — Commit
+
+```
+Commit the working tree changes with a sensible message.
+```

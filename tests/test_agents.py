@@ -315,6 +315,22 @@ def test_false_unverified_claim_triggers_the_fix_step():
     assert "false_unverified_claim" in first_check["issues"]
 
 
+def test_wrong_risk_level_triggers_the_fix_step():
+    bad = GOOD_PLAN.replace("Tu riesgo es alto.", "Tu riesgo es medio.")  # the gauge says high
+    scripts = happy_scripts(manager=[call("run_risk_analyst"), call("run_planner"), call("run_critic"),
+                                     manager_final(bad), manager_final(GOOD_PLAN)])
+    result, _ = run(scripts)
+    assert result["status"] == "completed" and result["verification"]["fix_attempted"]
+    first_check = next(e for e in result["events"] if e["type"] == "final_check")
+    assert first_check["issues"] == ["risk_level_mismatch"]
+
+
+def test_manager_is_told_the_shops_risk_level():
+    _, client = run(happy_scripts())
+    first = next(kw["input"][0]["content"] for agent, kw in client.responses.requests if agent == "manager")
+    assert '"risk_level": "high"' in first
+
+
 def test_critic_cannot_apply_owner_plan_rules_to_the_planner_draft():
     _, client = run(happy_scripts())
     critic_tools = next(kw["tools"] for agent, kw in client.responses.requests if agent == "critic")

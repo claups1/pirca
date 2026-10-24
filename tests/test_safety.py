@@ -1,6 +1,6 @@
 """Safety tests for the report. Each test saves its evidence to output/safety/{name}.json.
 
-Offline (default `pytest`): invented number, unaffordable plan, evacuation order.
+Offline (default `pytest`): invented number, unaffordable plan, evacuation order, risk level.
 Live, real API calls (run separately with `pytest -m live`): prompt injection, token-budget limit.
 """
 
@@ -14,9 +14,11 @@ from backend import config
 from backend.agents.pirca import _run_critic, risk_analyst_message, run_plan, toolset
 from backend.agents.runner import AgentSession, RunContext
 from backend.tools import compute_supplier_buffer, optimize_budget, search, verify_draft
-from backend.tools.drafting import check_affordability, draft_text
+from backend.tools.drafting import check_affordability, draft_text, stated_risk_level
 from backend.tools.profile import parse_profile
-from tests.test_agents import FakeClient, call, final
+from tests.test_agents import FakeClient, call, final, happy_scripts, manager_final
+from tests.test_agents import PROFILE as HIGH_RISK_PROFILE
+from tests.test_owner_plan import FACTS, GOOD_PLAN_ES
 
 SAFETY_DIR = config.OUTPUT_DIR / "safety"
 FIXTURE = Path(__file__).parent / "fixtures" / "fake_enfen_injection.txt"
@@ -121,6 +123,49 @@ def test_evacuation_orders_fail_verify_draft():
                     "issues": {lang: [i for i in r["issues"] if i["type"] == "forbidden_content"]
                                for lang, r in results.items()},
                     "allowed_example_ok": allowed["ok"]})
+    assert passed
+
+
+# ---------------------------------------------------------------- 6. risk level matches the calculation (offline)
+
+# Section 1 of plan PIU-C5TP6C: the district's flood hazard (high) written as the shop's risk (medium).
+WRONG_LEVEL = "Riesgo alto de inundación en Piura. ENFEN mantiene la Alerta de El Niño Costero [ENFEN-2026-18]."
+RIGHT_LEVEL = ("Tu riesgo: medio. Piura tiene riesgo alto de inundación, pero tu negocio está en un piso alto y "
+               "lejos del río. ENFEN mantiene la Alerta de El Niño Costero [ENFEN-2026-18].")
+
+
+def with_section_1(text: str) -> str:
+    return "## 1. Tu riesgo\n" + text + "\n\n## 2. " + GOOD_PLAN_ES.split("## 2. ", 1)[1]
+
+
+def test_risk_level_must_match_the_calculation():
+    wrong = verify_draft(with_section_1(WRONG_LEVEL), FACTS, final_plan=True, risk_level="medium")
+    right = verify_draft(with_section_1(RIGHT_LEVEL), FACTS, final_plan=True, risk_level="medium")
+    wrong_en = verify_draft(with_section_1("High flood risk in Piura [ENFEN-2026-18].").replace(
+        "## 1. Tu riesgo", "## 1. Your risk"), FACTS, final_plan=True, language="en", risk_level="medium")
+
+    # In a full (scripted) run, a plan whose level disagrees with the gauge goes back to the Manager once.
+    swapped = GOOD_PLAN_ES.replace("Tu riesgo es alto.", "Tu riesgo es bajo.")  # this shop's risk is high
+    scripts = happy_scripts(manager=[call("run_risk_analyst"), call("run_planner"), call("run_critic"),
+                                     manager_final(swapped), manager_final(GOOD_PLAN_ES)])
+    result = run_plan(HIGH_RISK_PROFILE, language="es", today=date(2026, 10, 24), client=FakeClient(scripts))
+    checks = [e for e in result["events"] if e["type"] == "final_check"]
+
+    passed = ("risk_level_mismatch" in issue_types(wrong) and "risk_level_mismatch" not in issue_types(right)
+              and "risk_level_mismatch" in issue_types(wrong_en)
+              and result["verification"]["fix_attempted"] and "risk_level_mismatch" in checks[0]["issues"]
+              and result["status"] == "completed")
+    record("6_risk_level_matches",
+           "Section 1 must first state the shop's own risk level (the gauge). 'Riesgo alto' for a shop whose "
+           "calculated risk is medium fails in Spanish and English; stating 'medio' first and the district's "
+           "'alto' after passes; in a run, a mismatch sends the plan back to the Manager to fix.",
+           passed, {"shop_risk_level": "medium",
+                    "wrong_section_1": WRONG_LEVEL, "wrong_stated": stated_risk_level(with_section_1(WRONG_LEVEL)),
+                    "wrong_issues": [i for i in wrong["issues"] if i["type"] == "risk_level_mismatch"],
+                    "right_section_1": RIGHT_LEVEL, "right_stated": stated_risk_level(with_section_1(RIGHT_LEVEL)),
+                    "right_ok": right["ok"],
+                    "run": {"final_checks": [{"attempt": e["attempt"], "issues": e["issues"]} for e in checks],
+                            "fix_attempted": result["verification"]["fix_attempted"], "status": result["status"]}})
     assert passed
 
 

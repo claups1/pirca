@@ -202,6 +202,17 @@ def test_translation_that_drops_placeholders_is_flagged(api, monkeypatch):
     assert "placeholders_changed" in [i["type"] for i in body["verification"]["issues"]]
 
 
+def test_translation_that_changes_the_risk_level_is_flagged(api, monkeypatch):
+    class Swapped:  # the shop's risk is high; the translation says low
+        def create(self, **kw):
+            return SimpleNamespace(output_text=EN_PLAN.replace("Tu riesgo es alto.", "Your risk is low."), usage=USAGE)
+    monkeypatch.setattr(plans, "make_client", lambda: SimpleNamespace(responses=Swapped()))
+    code = api.client.post("/api/plans", json={"profile": PROFILE}).json()["code"]
+    finish(api, code)
+    body = api.client.post(f"/api/plans/{code}/translate").json()
+    assert "risk_level_mismatch" in [i["type"] for i in body["verification"]["issues"]]
+
+
 def test_unfinished_or_unknown_plan_cannot_be_translated(api):
     assert api.client.post("/api/plans/PIU-ZZZZZZ/translate").status_code == 404
     api.run.status = "stopped_by_limit"

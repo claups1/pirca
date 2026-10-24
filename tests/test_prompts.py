@@ -130,3 +130,23 @@ def test_shared_rules_cover_required_topics():
 def test_unknown_agent_rejected():
     with pytest.raises(ValueError):
         load_prompt("intern")
+
+
+def test_manager_starts_section_1_with_the_shops_risk_level():
+    text = read("manager")
+    assert "shop.risk_level" in text and "Tu riesgo: medio." in text and "Never use the district's flood hazard" in text
+
+
+def test_translator_keeps_the_risk_level():
+    text = read("translator")
+    assert "alto ↔ high" in text and "medio ↔ medium" in text and "bajo ↔ low" in text
+
+
+def test_manager_message_gives_the_shops_risk_level():
+    from backend.agents.pirca import RunContext, manager_message
+    from backend.tools.profile import parse_profile
+    from tests.test_owner_plan import PROFILE
+    ctx = RunContext(profile=parse_profile(PROFILE), language="es", today=date(2026, 10, 24), client=None)
+    ctx.state["warnings"] = []
+    message = manager_message(ctx)
+    assert '"risk_level": "high"' in message and '"hazard_level"' in message

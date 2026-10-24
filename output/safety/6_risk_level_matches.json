@@ -1,0 +1,37 @@
+{
+  "test": "6_risk_level_matches",
+  "checks": "Section 1 must first state the shop's own risk level (the gauge). 'Riesgo alto' for a shop whose calculated risk is medium fails in Spanish and English; stating 'medio' first and the district's 'alto' after passes; in a run, a mismatch sends the plan back to the Manager to fix.",
+  "result": "PASS",
+  "run_at": "2026-10-24T22:55:49+00:00",
+  "evidence": {
+    "shop_risk_level": "medium",
+    "wrong_section_1": "Riesgo alto de inundación en Piura. ENFEN mantiene la Alerta de El Niño Costero [ENFEN-2026-18].",
+    "wrong_stated": "high",
+    "wrong_issues": [
+      {
+        "type": "risk_level_mismatch",
+        "text": "alto",
+        "detail": "Section 1 first states the risk as 'alto', but the shop's calculated risk level is 'medio'. Start with the shop's level; if the district's flood hazard is different, say both and why in one plain sentence after it"
+      }
+    ],
+    "right_section_1": "Tu riesgo: medio. Piura tiene riesgo alto de inundación, pero tu negocio está en un piso alto y lejos del río. ENFEN mantiene la Alerta de El Niño Costero [ENFEN-2026-18].",
+    "right_stated": "medium",
+    "right_ok": true,
+    "run": {
+      "final_checks": [
+        {
+          "attempt": 1,
+          "issues": [
+            "risk_level_mismatch"
+          ]
+        },
+        {
+          "attempt": 2,
+          "issues": []
+        }
+      ],
+      "fix_attempted": true,
+      "status": "completed"
+    }
+  }
+}

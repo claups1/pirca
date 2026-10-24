@@ -149,6 +149,20 @@ SECTIONS = {
 MAX_PLAN_WORDS = 330  # "about 300"
 MAX_SECTION_7_SENTENCES = 2
 
+# ---- risk level in section 1 (matched on accent-free, lowercase text) ----
+# The first level word tied to "riesgo/peligro/exposición" or "risk/hazard/exposure" must be the shop's
+# risk_level from score_exposure (the gauge), not the district's flood hazard level.
+RISK_WORDS = {"high": {"alto", "alta", "high"}, "medium": {"medio", "media", "moderado", "moderada", "medium", "moderate"},
+              "low": {"bajo", "baja", "low"}}
+LEVEL_WORDS = {"es": {"high": "alto", "medium": "medio", "low": "bajo"},
+               "en": {"high": "high", "medium": "medium", "low": "low"}}
+_LEVEL = r"(alto|alta|medio|media|moderado|moderada|bajo|baja|high|medium|moderate|low)"
+_SUBJECT = r"(?:riesgo|peligro|amenaza|exposicion|risk|hazard|exposure)"
+RISK_LEVEL_STATED = re.compile(
+    rf"\b{_LEVEL}\s+(?:(?:de\s+)?(?:inundacion|flood)\s+)?{_SUBJECT}\b"   # "alto riesgo", "high flood risk"
+    rf"|\b{_SUBJECT}\b[^.;!?\n]{{0,40}}?\b{_LEVEL}\b")                   # "tu riesgo: medio", "risk is high"
+NOT_A_LEVEL = re.compile(r"\bbajo piura\b|\{[^}\n]*\}")  # a place name and placeholders such as {stock_at_risk}
+
 
 def _blank(text: str, pattern: re.Pattern) -> str:
     return pattern.sub(lambda m: " " * len(m.group(0)), text)
@@ -246,6 +260,36 @@ def _name_before_citation(before: str) -> str:
     return re.sub(r"\*\*[^*]*\*\*", "", segment)
 
 
+def stated_risk_level(draft: str, language: str = "es") -> str | None:
+    """The first risk level the plan states in section 1 ("high", "medium" or "low"), or None."""
+    heading = f"## 1. {SECTIONS[language][0]}"
+    if heading not in draft:
+        return None
+    body = re.split(r"(?m)^##\s", draft.split(heading, 1)[1], maxsplit=1)[0]
+    text = NOT_A_LEVEL.sub(" ", normalize(body).replace("*", "").replace("`", ""))
+    m = RISK_LEVEL_STATED.search(text)
+    if not m:
+        return None
+    word = m.group(1) or m.group(2)
+    return next(level for level, words in RISK_WORDS.items() if word in words)
+
+
+def check_risk_level(draft: str, language: str, risk_level: str) -> list[dict]:
+    """Safety check: section 1 starts with the shop's own risk level (the gauge), not the district's."""
+    expected = LEVEL_WORDS[language][risk_level]
+    stated = stated_risk_level(draft, language)
+    if stated == risk_level:
+        return []
+    if stated is None:
+        return [{"type": "risk_level_mismatch", "text": "",
+                 "detail": f"Start section 1 with the shop's risk level: '{expected}' "
+                           f"(e.g. 'Tu riesgo: {LEVEL_WORDS['es'][risk_level]}.' / 'Your risk: {risk_level}.')"}]
+    return [{"type": "risk_level_mismatch", "text": LEVEL_WORDS[language][stated],
+             "detail": f"Section 1 first states the risk as '{LEVEL_WORDS[language][stated]}', but the shop's "
+                       f"calculated risk level is '{expected}'. Start with the shop's level; if the district's "
+                       f"flood hazard is different, say both and why in one plain sentence after it"}]
+
+
 def _owner_plan_issues(draft: str, language: str, district_unverified: bool | None) -> list[dict]:
     issues = []
     if district_unverified is False:
@@ -299,16 +343,17 @@ def _owner_plan_issues(draft: str, language: str, district_unverified: bool | No
 ISSUE_TYPES = ("raw_number", "unknown_fact_key", "invalid_placeholder", "unit_next_to_placeholder",
                "unknown_source_id", "forbidden_content", "bare_catalog_id", "missing_asterisk", "internal_term",
                "grammar", "too_long", "missing_section", "section_7_too_long", "false_unverified_claim",
-               "spending_exceeds_cash", "zero_stock_up_mentioned", "affordability_unknown")
+               "spending_exceeds_cash", "zero_stock_up_mentioned", "affordability_unknown", "risk_level_mismatch")
 
 
 def verify_draft(draft: str, facts: dict, final_plan: bool = False, language: str = "es",
-                 district_unverified: bool | None = None) -> dict:
+                 district_unverified: bool | None = None, risk_level: str | None = None) -> dict:
     """Flag raw numbers, unknown {fact_keys}, units next to placeholders, unknown source IDs and
     forbidden content. With final_plan=True, also apply the owner-plan rules (names not codes,
     asterisks for estimates, no internal terms, plain imperatives, length, section 7) and the
     affordability check (recommended spending never exceeds cash on hand). When
-    district_unverified is False, a claim that the district's data is unverified is an error."""
+    district_unverified is False, a claim that the district's data is unverified is an error. With
+    risk_level (score_exposure's "high"/"medium"/"low"), section 1 must first state that level."""
     issues = []
     for m in INVALID_PLACEHOLDER.finditer(draft):
         issues.append({"type": "invalid_placeholder", "text": m.group(0),
@@ -347,6 +392,8 @@ def verify_draft(draft: str, facts: dict, final_plan: bool = False, language: st
     if final_plan:
         issues += _owner_plan_issues(draft, language, district_unverified)
         issues += check_affordability(draft, facts)
+        if risk_level:
+            issues += check_risk_level(draft, language, risk_level)
 
     counts = {t: sum(i["type"] == t for i in issues) for t in ISSUE_TYPES}
     return {"tool": "verify_draft", "ok": not issues, "issues": issues,
