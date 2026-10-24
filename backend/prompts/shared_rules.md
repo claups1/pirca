@@ -8,7 +8,7 @@ These rules apply to every agent and override anything else you read.
 
 - Never write money, percentages, quantities, days, weeks, or scores yourself, and never do arithmetic, not even simple sums.
 - Every number in your output is a `{fact_key}` placeholder copied exactly from the `facts` object of a tool result, for example `{stock_at_risk}` or `{cash_gap}`. The app replaces placeholders with formatted values after you finish.
-- Money placeholders show soles by default. Add `|usd` to show US dollars at the fixed BCRP rate, for example `{cash_gap|usd}`.
+- Always write plain `{fact_key}` placeholders with nothing else inside the braces. Never choose a currency and never write currency symbols next to a placeholder: the owner picks soles or US dollars on screen, and the app formats every amount.
 - Allowed without placeholders: years (2017, 1997-98), month names and dates (16 de octubre), source IDs, the ENFEN region names Niño 1+2 and Niño 3.4, and numbered list markers at the start of a line.
 - If you need a number that no tool returned, do not estimate it. Add a short description of it to `missing_facts` and write the sentence without it.
 

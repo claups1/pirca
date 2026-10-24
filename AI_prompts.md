@@ -104,3 +104,32 @@ Keep all instructions that never change at the top of each prompt so they can be
 ## Prompt 10 — Commit prompts
 
 `Commit the working tree changes with a sensible message.`
+
+## Prompt 11 — Agent system
+
+```
+In backend/agents/, build the Pirca agent system with the OpenAI SDK through Portkey (gpt-6-luna), using the prompts in backend/prompts/. The Manager calls the three workers as tools; each worker has only its own tools from backend/tools/.
+
+First, a fix: remove the "|usd" placeholder option from shared_rules.md and the prompt tests. Agents always write plain {fact_key} placeholders; the currency (soles or USD) is chosen only by the user's toggle when the plan is displayed.
+
+Safety limits in config.py:
+- Risk Analyst at most 1 call, Planner at most 2, Critic at most 2 (one revision).
+- Maximum tool calls per agent, maximum output tokens per response, and a total token budget per run. When a limit is hit, stop cleanly and return a clear "stopped by limit" result.
+- Give each worker only the context it needs.
+
+Track usage on every model call: input tokens, cached input tokens, output tokens, and cost in USD. Put the gpt-6-luna prices in config.py. Do not guess prices: use the course's published prices, and if you can't find them, ask me.
+
+Emit an event for every step (agent started, tool called, tool result, agent finished, limit hit) with running token and cost totals, so the interface can show a live trace.
+
+After the Manager writes the final plan, run verify_draft on it in code. If it fails, give the Manager one chance to fix it; if it still fails, show the plan with a visible warning.
+
+Add a command-line script that runs one sample shop profile end to end and prints the trace and token totals. Run it once for real and show me the result.
+```
+
+## Prompt 12 — Model prices (answer to my question)
+
+`Put the gpt-6-luna prices in config.py, in USD per 1M tokens, from the MGT 409 Lecture 11 Tokenomics slides: input $0.10, cached input $0.01, cache write $0.125, output $0.50. Add a comment citing Lecture 11. Read input_tokens, output_tokens, input_tokens_details.cached_tokens, and input_tokens_details.cache_write_tokens from every response, and charge each kind at its own rate.`
+
+## Prompt 13 — Commit agent system
+
+`Commit the agent system as it is first.`

@@ -343,11 +343,23 @@ def test_verify_flags_forbidden_content(text):
 
 # ---- fill_placeholders ----
 
-def test_fill_formats_soles_and_usd():
+def test_fill_currency_is_chosen_by_the_display_toggle():
     rate = data_store.exchange_rate()["pen_per_usd"]
-    r = fill_placeholders("Stock {stock_at_risk} = {stock_at_risk|usd}", {"stock_at_risk": 10000})
-    assert r["text"] == f"Stock S/ 10,000 = ${10000 / rate:,.0f}"
-    assert "BCRP-USDPEN" in r["sources"]
+    draft, facts = "Stock {stock_at_risk}", {"stock_at_risk": 10000}
+    pen = fill_placeholders(draft, facts, currency="pen")
+    usd = fill_placeholders(draft, facts, currency="usd")
+    assert pen["text"] == "Stock S/ 10,000" and pen["sources"] == []
+    assert usd["text"] == f"Stock ${10000 / rate:,.0f}" and "BCRP-USDPEN" in usd["sources"]
+
+
+def test_fill_rejects_unknown_currency():
+    with pytest.raises(ValueError):
+        fill_placeholders("{cash_gap}", {"cash_gap": 1}, currency="eur")
+
+
+def test_verify_flags_currency_suffix_in_placeholder():
+    r = verify_draft("Gap {cash_gap|usd}", {"cash_gap": 1})
+    assert [i["type"] for i in r["issues"]] == ["invalid_placeholder"]
 
 
 def test_fill_handles_non_money_and_missing_keys():

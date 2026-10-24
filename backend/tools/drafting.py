@@ -2,7 +2,8 @@
 
 Agents write drafts with placeholders such as {stock_at_risk} instead of numbers.
 verify_draft checks the draft before fill_placeholders swaps in formatted values.
-Placeholders may pick a currency: {cash_gap|usd} or {cash_gap|pen}.
+Placeholders are always plain {fact_key}: the currency (soles or USD) is chosen
+only when the plan is displayed, by passing currency= to fill_placeholders.
 """
 
 import re
@@ -10,7 +11,9 @@ import re
 from backend.tools import data_store
 from backend.tools.data_store import FX_SOURCE_ID, SOURCE_ID_PATTERN, normalize
 
-PLACEHOLDER = re.compile(r"\{([A-Za-z][A-Za-z0-9_]*)(?:\|(usd|pen))?\}")
+PLACEHOLDER = re.compile(r"\{([A-Za-z][A-Za-z0-9_]*)\}")
+# Anything else in braces with a suffix, e.g. {cash_gap|usd}: agents must not pick formats or currencies.
+INVALID_PLACEHOLDER = re.compile(r"\{[A-Za-z][A-Za-z0-9_]*\|[^{}]*\}")
 
 MONEY_FACTS = {
     "stock_value", "stock_at_risk", "stock_to_move", "stock_staying", "weekly_fixed_costs", "buffer_needed",
@@ -50,6 +53,9 @@ def _blank(text: str, pattern: re.Pattern) -> str:
 def verify_draft(draft: str, facts: dict) -> dict:
     """Flag raw numbers, unknown {fact_keys}, unknown source IDs and forbidden content."""
     issues = []
+    for m in INVALID_PLACEHOLDER.finditer(draft):
+        issues.append({"type": "invalid_placeholder", "text": m.group(0),
+                       "detail": "Write a plain {fact_key}; the currency is chosen when the plan is displayed"})
     for m in PLACEHOLDER.finditer(draft):
         if m.group(1) not in facts:
             issues.append({"type": "unknown_fact_key", "text": m.group(0),
@@ -60,7 +66,7 @@ def verify_draft(draft: str, facts: dict) -> dict:
             issues.append({"type": "unknown_source_id", "text": m.group(0),
                            "detail": "Not a HIST, CAT, ENFEN or BCRP ID in Pirca's data"})
 
-    work = _blank(draft, PLACEHOLDER)
+    work = _blank(_blank(draft, PLACEHOLDER), INVALID_PLACEHOLDER)
     work = _blank(work, SOURCE_ID_PATTERN)
     work = normalize(work) if len(normalize(work)) == len(work) else work.lower()
     for pattern in ALLOWED_NUMBER_SPANS:
@@ -78,7 +84,8 @@ def verify_draft(draft: str, facts: dict) -> dict:
                            else "Pirca must not make its own forecasts; cite ENFEN instead"})
 
     counts = {t: sum(i["type"] == t for i in issues)
-              for t in ("raw_number", "unknown_fact_key", "unknown_source_id", "forbidden_content")}
+              for t in ("raw_number", "unknown_fact_key", "invalid_placeholder", "unknown_source_id",
+                        "forbidden_content")}
     return {"tool": "verify_draft", "ok": not issues, "issues": issues,
             "facts": {"issue_count": len(issues), **{f"{k}_count": v for k, v in counts.items()}},
             "sources": sorted({m.group(0) for m in SOURCE_ID_PATTERN.finditer(draft)} & known)}
@@ -109,18 +116,24 @@ def format_value(key: str, value, currency: str = "pen") -> str:
 
 
 def fill_placeholders(text: str, facts: dict, currency: str = "pen") -> dict:
-    """Replace {fact_key} (or {fact_key|usd}) with formatted values; unknown keys are left as-is."""
+    """Replace every {fact_key} with its formatted value in the chosen currency ("pen" or "usd").
+
+    Unknown keys are left as-is and reported in "missing".
+    """
+    currency = currency.lower()
+    if currency not in ("pen", "usd"):
+        raise ValueError("currency must be 'pen' or 'usd'")
     missing, used_usd, count = [], False, 0
 
     def repl(m):
         nonlocal used_usd, count
-        key, cur = m.group(1), (m.group(2) or currency).lower()
+        key = m.group(1)
         if key not in facts:
             missing.append(key)
             return m.group(0)
         count += 1
-        used_usd |= cur == "usd" and _is_money(key)
-        return format_value(key, facts[key], cur)
+        used_usd |= currency == "usd" and _is_money(key)
+        return format_value(key, facts[key], currency)
 
     filled = PLACEHOLDER.sub(repl, text)
     fx = data_store.exchange_rate()

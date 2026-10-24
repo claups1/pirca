@@ -1,0 +1,24 @@
+{
+  "business_type": "bodega",
+  "district": "Castilla",
+  "near_water": "yes",
+  "flooded_before": "yes",
+  "floor_level": "ground",
+  "higher_storage": "none",
+  "tenure": "rented",
+  "stock_value": 20000,
+  "share_stock_below_1m": 0.5,
+  "perishables": true,
+  "cash_on_hand": 3000,
+  "monthly_fixed_costs": 4000,
+  "weekly_sales": 7000,
+  "workers": 2,
+  "suppliers": [
+    {"product": "abarrotes", "city": "Chiclayo"},
+    {"product": "bebidas", "city": "Piura"},
+    {"product": "pan", "city": "Sullana"}
+  ],
+  "days_of_stock": 7,
+  "prep_budget": 500,
+  "already_have": ["CAT-13"]
+}

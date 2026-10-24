@@ -10,7 +10,7 @@ from backend.agents import AGENT_TOOLS, AGENTS, TOOLSETS
 from backend.agents.prompts import load_prompt
 from backend.tools import SCENARIOS, TOOLS, run_scenario, verify_draft
 from backend.tools.data_store import SOURCE_ID_PATTERN, known_source_ids
-from backend.tools.drafting import PLACEHOLDER
+from backend.tools.drafting import INVALID_PLACEHOLDER, PLACEHOLDER
 
 PROMPT_FILES = ["shared_rules", *AGENTS]
 KNOWN_TOOLS = set(TOOLS) | set(AGENT_TOOLS)
@@ -80,6 +80,13 @@ def test_placeholders_are_real_fact_keys(name):
     used = {m.group(1) for m in PLACEHOLDER.finditer(read(name))} - {"fact_key"}
     unknown = used - keys
     assert not unknown, f"{name}.md uses unknown fact keys: {sorted(unknown)}"
+
+
+@pytest.mark.parametrize("name", PROMPT_FILES)
+def test_prompts_use_only_plain_placeholders(name):
+    text = read(name)
+    assert not INVALID_PLACEHOLDER.search(text), f"{name}.md has a placeholder with a suffix such as |usd"
+    assert "|usd" not in text and "|pen" not in text
 
 
 @pytest.mark.parametrize("name", PROMPT_FILES)
