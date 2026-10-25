@@ -13,6 +13,7 @@ from pydantic import BaseModel
 
 from backend import config
 from backend.api import plans
+from backend.api.preview import preview_profile
 from backend.api.routes import router
 from backend.tools import data_store, validate_profile
 from backend.tools.source_info import latest_enfen
@@ -55,6 +56,13 @@ def validate(profile: dict = Body(...)) -> dict:
     """Check the intake form before running: errors block the run, warnings are shown to the owner."""
     result = validate_profile(profile)
     return {"valid": result["valid"], "errors": result["errors"], "warnings": result["warnings"]}
+
+
+@app.post("/api/preview")
+def preview(profile: dict = Body(...)) -> dict:
+    """Live risk preview while the owner fills in the wizard: code tools only (validate_profile +
+    score_exposure), never the model, so it costs 0 tokens. Accepts partial answers."""
+    return preview_profile(profile)
 
 
 @app.post("/api/plans", status_code=202)

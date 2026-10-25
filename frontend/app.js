@@ -422,33 +422,279 @@ function renderHome() {
 
 // ------------------------------------------------------------------ form
 
-function fieldHtml(f, value) {
-  const id = `f-${f.name}`;
-  const label = `<label for="${id}">${esc(L(f.label))}</label>`;
-  const hint = `<span class="hint" id="${id}-hint">${esc(L(f.hint))}</span>`;
-  const aria = `aria-describedby="${id}-hint"`;
-  let control;
-  if (f.type === "select") {
-    const opts = L(f.options);
-    control = `<select id="${id}" name="${f.name}" ${aria} required><option value="" disabled ${value == null ? "selected" : ""}>—</option>
-      ${Object.entries(opts).map(([v, txt]) => `<option value="${v}" ${String(value) === v ? "selected" : ""}>${esc(txt)}</option>`).join("")}</select>`;
-  } else if (f.type === "district") {
-    const byProvince = {};
-    state.meta.districts.forEach((d) => (byProvince[d.province] ??= []).push(d));
-    control = `<select id="${id}" name="${f.name}" ${aria} required><option value="" disabled ${value ? "" : "selected"}>—</option>
-      ${Object.entries(byProvince).map(([prov, ds]) => `<optgroup label="${esc(prov)}">${ds.map((d) =>
-        `<option value="${esc(d.name)}" ${value === d.name ? "selected" : ""}>${esc(d.name)}${esc(L(LEVEL_NOTE)[d.hazard_level] || "")}</option>`).join("")}</optgroup>`).join("")}</select>`;
-  } else if (f.type === "money") {
-    control = `<div class="input-prefix"><span aria-hidden="true">S/</span><input id="${id}" name="${f.name}" type="number" inputmode="decimal" min="0" step="any" value="${value ?? ""}" ${aria} required></div>`;
-  } else if (f.type === "percent") {
-    const pct = value == null || value === "" ? "" : Math.round(value * 1000) / 10;
-    control = `<input id="${id}" name="${f.name}" type="number" inputmode="decimal" min="0" max="100" step="any" value="${pct}" ${aria} required>`;
-  } else if (f.type === "number") {
-    control = `<input id="${id}" name="${f.name}" type="number" inputmode="numeric" min="${f.min}" step="${f.step}" value="${value ?? ""}" ${aria} required>`;
-  } else {
-    control = `<input id="${id}" name="${f.name}" type="text" ${f.list ? `list="${f.list}"` : ""} value="${esc(value ?? "")}" ${aria} required autocomplete="off">`;
+// ---- intake wizard: one group per screen, big choices, sliders, "why we ask", live risk preview (0 tokens)
+
+Object.assign(STR.es, {
+  stepOf: (i, n) => `Paso ${i} de ${n}`, back: "← Atrás", next: "Siguiente →", reviewTitle: "Revisa tus respuestas",
+  reviewIntro: "Revisa que todo esté bien. Puedes cambiar cualquier grupo antes de hacer tu plan.",
+  reviewStep: "Revisión final", edit: "Editar", makeMyPlan: "Hacer mi plan", whyAsk: "¿Por qué preguntamos esto?",
+  otherType: "Otro", otherPlaceholder: "Escribe tu tipo de negocio", searchDistrict: "Buscar distrito…",
+  noMatch: "Ningún distrito coincide.", previewTitle: "Tu riesgo hasta ahora",
+  previewWaiting: "Responde las preguntas sobre tu local para ver tu riesgo.",
+  previewDistrict: (lvl) => `Riesgo de inundación del distrito: ${lvl}`, previewStock: (m) => `Mercadería a menos de 1 m: ${m}`,
+  previewFree: "Calculado con código, sin IA: 0 tokens.", missingAnswers: "Falta responder:", stepCheck: "Revisa esto:",
+  notAnswered: "Sin responder", perishableAuto: "Detectar", levelUnverified: "sin verificar", wallLabel: "Tu pirca crece con cada paso",
+  daysUnit: "días", peopleUnit: "personas", alreadyHave: "¿Qué ya tienes? (toca lo que tengas)", noneSelected: "Nada marcado",
+});
+Object.assign(STR.en, {
+  stepOf: (i, n) => `Step ${i} of ${n}`, back: "← Back", next: "Next →", reviewTitle: "Review your answers",
+  reviewIntro: "Check that everything is right. You can change any group before making your plan.",
+  reviewStep: "Final review", edit: "Edit", makeMyPlan: "Make my plan", whyAsk: "Why we ask",
+  otherType: "Other", otherPlaceholder: "Type your kind of business", searchDistrict: "Search district…",
+  noMatch: "No district matches.", previewTitle: "Your risk so far",
+  previewWaiting: "Answer the questions about your shop to see your risk.",
+  previewDistrict: (lvl) => `District flood risk: ${lvl}`, previewStock: (m) => `Stock less than 1 m above the floor: ${m}`,
+  previewFree: "Calculated with code, no AI: 0 tokens.", missingAnswers: "Still to answer:", stepCheck: "Please check:",
+  notAnswered: "Not answered", perishableAuto: "Detect", levelUnverified: "unverified", wallLabel: "Your pirca grows with each step",
+  daysUnit: "days", peopleUnit: "people", alreadyHave: "What do you already have? (tap all that apply)", noneSelected: "Nothing ticked",
+});
+
+// One plain line under each question.
+const WHY = {
+  business_type: { es: "Cada negocio guarda y vende cosas distintas; así adaptamos las acciones.", en: "Each business stores and sells different things, so we adapt the actions." },
+  district: { es: "Usamos la historia de inundaciones de tu distrito y los avisos del ENFEN.", en: "We use your district's flood history and ENFEN alerts." },
+  near_water: { es: "Los locales cerca de ríos, drenes o quebradas se inundan más seguido.", en: "Shops near rivers, drains or ravines flood more often." },
+  flooded_before: { es: "Si tu local ya se inundó, es más probable que vuelva a pasar.", en: "If your shop flooded before, it is more likely to happen again." },
+  floor_level: { es: "El agua entra primero a los locales a nivel de la calle.", en: "Water reaches street-level shops first." },
+  higher_storage: { es: "Un lugar alto te permite subir la mercadería sin gastar.", en: "A higher place lets you move stock up at no cost." },
+  tenure: { es: "Si alquilas, algunos arreglos (techo, puerta) necesitan permiso del dueño.", en: "If you rent, some repairs (roof, door) need the landlord's permission." },
+  workers: { es: "Para planear quién ayuda y qué pasa si alguien se enferma.", en: "To plan who helps and what happens if someone gets sick." },
+  stock_value: { es: "Para saber cuánto podrías perder si el agua moja tu mercadería.", en: "To know how much you could lose if water reaches your stock." },
+  share_stock_below_1m: { es: "Lo que está a menos de 1 metro del piso es lo que el agua puede alcanzar.", en: "What sits less than 1 meter above the floor is what water can reach." },
+  perishables: { es: "Lo perecible no se puede guardar de más; para eso pedimos entregas pequeñas.", en: "Perishables can't be stocked up, so we plan small deliveries instead." },
+  days_of_stock: { es: "Si se cortan las carreteras, necesitas mercadería para más días.", en: "If roads are cut, you need stock for more days." },
+  cash_on_hand: { es: "Para que el plan nunca te pida gastar más de lo que tienes.", en: "So the plan never asks you to spend more than you have." },
+  monthly_fixed_costs: { es: "Para calcular tu fondo de emergencia si tienes que cerrar.", en: "To size your emergency fund if you have to close." },
+  weekly_sales: { es: "Para estimar cuánto dejarías de vender si cierras.", en: "To estimate the sales you would lose if you close." },
+  suppliers: { es: "Revisamos si las carreteras desde esas ciudades se cortaron en inundaciones pasadas.", en: "We check whether roads from those cities were cut in past floods." },
+  prep_budget: { es: "Las compras del plan se eligen para que entren en este monto.", en: "The plan's purchases are chosen to fit this amount." },
+  already_have: { es: "Así no te recomendamos lo que ya tienes.", en: "So we don't recommend what you already have." },
+};
+
+const BUSINESS_TYPES = [
+  ["bodega", "🏪", { es: "Bodega", en: "Corner shop (bodega)" }], ["botica", "💊", { es: "Botica", en: "Pharmacy (botica)" }],
+  ["ferretería", "🔧", { es: "Ferretería", en: "Hardware store" }], ["ropa", "👕", { es: "Ropa", en: "Clothing" }],
+  ["restaurante", "🍽️", { es: "Restaurante", en: "Restaurant" }],
+];
+const CHOICE_ICONS = { yes: "✓", no: "✕", unknown: "?", owned: "🏠", rented: "🔑" };
+const PERISHABLE_ICONS = { yes: "🥖", no: "📦" };
+// Slider ranges (soles or units); typing a bigger number widens the slider.
+const SLIDERS = {
+  stock_value: { max: 100000, step: 500 }, cash_on_hand: { max: 50000, step: 100 }, monthly_fixed_costs: { max: 30000, step: 100 },
+  weekly_sales: { max: 50000, step: 100 }, prep_budget: { max: 10000, step: 50 }, workers: { min: 1, max: 30, step: 1 },
+  days_of_stock: { max: 60, step: 1 },
+};
+
+// Small pictures for floor level and higher storage (simple shapes, theme colors).
+const STREET = '<line x1="2" x2="78" y1="50" y2="50" class="pic-street"/>';
+const WATER = '<rect x="2" y="44" width="76" height="8" class="pic-water"/>';
+const PLACE_PICS = {
+  ground: `${WATER}<rect x="22" y="22" width="36" height="28" class="pic-shop"/><path d="M18 22 L40 10 L62 22 Z" class="pic-roof"/>${STREET}`,
+  raised: `${WATER}<rect x="16" y="40" width="48" height="10" class="pic-step"/><rect x="22" y="16" width="36" height="24" class="pic-shop"/><path d="M18 16 L40 5 L62 16 Z" class="pic-roof"/>${STREET}`,
+  upper: `${WATER}<rect x="22" y="28" width="36" height="22" class="pic-wall"/><rect x="22" y="10" width="36" height="18" class="pic-shop"/><path d="M18 10 L40 2 L62 10 Z" class="pic-roof"/>${STREET}`,
+  none: `<rect x="18" y="20" width="44" height="30" class="pic-wall"/><rect x="24" y="38" width="10" height="10" class="pic-box"/><rect x="36" y="38" width="10" height="10" class="pic-box"/>${STREET}`,
+  mezzanine: `<rect x="18" y="14" width="44" height="36" class="pic-wall"/><line x1="18" x2="44" y1="30" y2="30" class="pic-floor"/><rect x="22" y="20" width="9" height="9" class="pic-box up"/><rect x="33" y="20" width="9" height="9" class="pic-box up"/>${STREET}`,
+  second_floor: `<rect x="18" y="8" width="44" height="42" class="pic-wall"/><line x1="18" x2="62" y1="29" y2="29" class="pic-floor"/><rect x="24" y="18" width="10" height="10" class="pic-box up"/><rect x="36" y="18" width="10" height="10" class="pic-box up"/>${STREET}`,
+};
+
+const wiz = {
+  get step() { return Math.min(GROUPS.length, Number(localStorage.getItem("pirca.step")) || 0); },
+  set step(v) { localStorage.setItem("pirca.step", String(v)); },
+  get visited() { return Number(localStorage.getItem("pirca.visited")) || 0; },
+  set visited(v) { localStorage.setItem("pirca.visited", String(v)); },
+  preview: null, seq: 0, timer: null,
+};
+
+const ALL_FIELDS = () => GROUPS.flatMap((g) => g.fields);
+const filled = (v) => v !== null && v !== undefined && v !== "" && !(typeof v === "number" && Number.isNaN(v));
+function draftNow() {
+  const d = store.draft || {};
+  return typeof d.perishables === "boolean" ? { ...d, perishables: d.perishables ? "yes" : "no" } : d;
+}
+function setDraft(name, value) { store.draft = { ...draftNow(), [name]: value }; }
+function collectDraft() { return draftNow(); }
+function saveDraftFromForm() { /* the wizard saves every answer as it is given */ }
+
+function stepComplete(i, d = draftNow()) {
+  const g = GROUPS[i];
+  if (g.id === "suppliers") return wiz.visited > i || (d.suppliers || []).some((s) => s.product && s.city);
+  return g.fields.every((f) => filled(d[f.name]));
+}
+
+// Answers sent to /api/preview: only what the owner gave (plus suppliers/checklist once those steps were reached).
+function previewProfile(d) {
+  const p = {};
+  ALL_FIELDS().forEach((f) => { if (filled(d[f.name])) p[f.name] = d[f.name]; });
+  if (filled(d.perishables)) p.perishables = d.perishables === "yes";
+  const sIdx = GROUPS.findIndex((g) => g.id === "suppliers");
+  const suppliers = (d.suppliers || []).filter((s) => s.product && s.city);
+  if (suppliers.length || wiz.visited > sIdx) p.suppliers = suppliers;
+  if (wiz.visited >= GROUPS.length - 1 || (d.already_have || []).length) p.already_have = d.already_have || [];
+  return p;
+}
+
+function schedulePreview() {
+  clearTimeout(wiz.timer);
+  wiz.timer = setTimeout(async () => {
+    const seq = ++wiz.seq;
+    try {
+      const res = await api("/api/preview", { method: "POST", body: JSON.stringify(previewProfile(draftNow())) });
+      if (seq !== wiz.seq) return;  // a newer answer is already on its way
+      wiz.preview = res;
+      updatePreviewPanel(); updateStepNotice();
+    } catch (e) { console.warn(e); }
+  }, 250);
+}
+
+function levelWord(level) {
+  if (!level) return "—";
+  if (level === "UNVERIFIED") return t("levelUnverified");
+  return t("risk" + level[0].toUpperCase() + level.slice(1)).toLowerCase();
+}
+
+function updatePreviewPanel() {
+  const box = document.getElementById("risk-preview");
+  const p = wiz.preview;
+  if (!box || !p) return;
+  const frac = GAUGE_FRACTION[p.risk_level];
+  const fill = box.querySelector(".fill"), needle = box.querySelector(".needle"), level = box.querySelector(".level");
+  if (fill) fill.style.strokeDashoffset = (ARC * (1 - (frac ?? 0))).toFixed(1);
+  if (needle) needle.style.transform = `rotate(${-90 + 180 * (frac ?? 0)}deg)`;
+  if (level) {
+    level.className = `level ${p.risk_level ? "risk-" + p.risk_level : ""}`;
+    level.innerHTML = `${esc(p.ready ? t("risk" + p.risk_level[0].toUpperCase() + p.risk_level.slice(1)) : "—")}<span>${esc(t("risk"))}</span>`;
   }
-  return `<div class="field" data-field="${f.name}">${label}${control}${hint}</div>`;
+  box.querySelector(".gauge")?.setAttribute("aria-label", `${t("risk")}: ${p.ready ? levelWord(p.risk_level) : "—"}`);
+  const S = STR[store.lang];
+  box.querySelector(".preview-text").innerHTML = p.ready
+    ? `<p>${esc(S.previewDistrict(levelWord(p.district_hazard_level)))}</p>${p.stock_at_risk !== undefined ? `<p>${esc(S.previewStock(money(p.stock_at_risk, "pen")))}</p>` : ""}`
+    : `<p>${esc(t("previewWaiting"))}</p>`;
+}
+
+function stepNoticeHtml(missing) {
+  const g = GROUPS[wiz.step];
+  const p = wiz.preview;
+  const errors = (p?.errors || []).filter((e) => e.step === g?.id);
+  const warnings = (p?.warnings || []).filter((w) => w.step === g?.id);
+  const parts = [];
+  if (missing?.length) parts.push(`<div class="notice error glass-read" role="alert"><b>${esc(t("missingAnswers"))}</b> ${esc(missing.join(", "))}</div>`);
+  if (errors.length) parts.push(`<div class="notice error glass-read" role="alert"><b>${esc(t("errorsTitle"))}</b><ul>${errors.map((e) => `<li>${esc(errorText(e.text))}</li>`).join("")}</ul></div>`);
+  if (warnings.length) parts.push(`<div class="notice glass-read" role="status"><b>${esc(t("stepCheck"))}</b><ul>${warnings.map((w) => `<li>${esc(warningText(w.text))}</li>`).join("")}</ul></div>`);
+  return parts.join("");
+}
+function updateStepNotice(missing) {
+  const box = document.getElementById("step-notice");
+  if (box) box.innerHTML = stepNoticeHtml(missing);
+}
+
+// The small pirca in the header: 3 stones per completed step.
+function wizardWallSvg(done) {
+  const rows = [5, 4, 3, 2, 1];
+  let k = 0;
+  const stones = rows.map((n, r) => Array.from({ length: n }, (_, i) => {
+    const x = 50 - (n * 14) / 2 + i * 14, y = 46 - (r + 1) * 8;
+    return `<rect class="stone ${k++ < done * 3 ? "placed" : ""}" x="${x}" y="${y}" width="12.5" height="7" rx="2" fill="${STONE_FILLS[(k * 7 + r) % STONE_FILLS.length]}"/>`;
+  }).join("")).join("");
+  return `<svg viewBox="0 0 100 48" class="wiz-wall" role="img" aria-label="${esc(t("wallLabel"))}">${stones}<line x1="6" x2="94" y1="46.5" y2="46.5" class="pic-street"/></svg>`;
+}
+function updateWizardChrome() {
+  const d = draftNow();
+  const done = GROUPS.filter((_, i) => stepComplete(i, d) && (i < wiz.step || wiz.step === GROUPS.length)).length;
+  const wall = document.getElementById("wiz-wall");
+  if (wall) wall.innerHTML = wizardWallSvg(done);
+  const label = document.getElementById("wiz-step-label");
+  if (label) label.textContent = wiz.step < GROUPS.length ? STR[store.lang].stepOf(wiz.step + 1, GROUPS.length) : t("reviewStep");
+  const bar = document.getElementById("wiz-bar");
+  if (bar) bar.style.width = `${(100 * Math.min(wiz.step, GROUPS.length)) / GROUPS.length}%`;
+}
+
+// ---- controls
+function why(name) { return WHY[name] ? `<p class="why"><b>${esc(t("whyAsk"))}</b> ${esc(L(WHY[name]))}</p>` : ""; }
+function question(f, control) {
+  return `<div class="q" data-field="${f.name}"><div class="q-label" id="q-${f.name}">${esc(L(f.label))}</div>
+    <div class="q-hint">${esc(L(f.hint))}</div>${control}${why(f.name)}</div>`;
+}
+function choiceCards(name, options, value, cls = "") {
+  return `<div class="choices ${cls}" role="radiogroup" aria-labelledby="q-${name}">${options.map(([v, icon, label]) =>
+    `<button type="button" class="choice" role="radio" data-name="${name}" data-value="${esc(v)}" aria-checked="${String(value) === String(v)}">
+      ${icon ? `<span class="choice-icon" aria-hidden="true">${icon}</span>` : ""}<span>${esc(label)}</span></button>`).join("")}</div>`;
+}
+function sliderControl(f, value, unit) {
+  const r = SLIDERS[f.name] || { max: 100, step: 1 };
+  const v = filled(value) ? Number(value) : "";
+  const max = Math.max(r.max, Number(v) || 0);
+  return `<div class="slider-row">
+      <div class="${f.type === "money" ? "input-prefix" : ""}">${f.type === "money" ? '<span aria-hidden="true">S/</span>' : ""}
+        <input class="num" id="f-${f.name}" data-name="${f.name}" type="number" inputmode="decimal" min="${r.min ?? 0}" step="any" value="${v}" aria-labelledby="q-${f.name}"></div>
+      <input class="range" type="range" data-name="${f.name}" min="${r.min ?? 0}" max="${max}" step="${r.step}" value="${v === "" ? (r.min ?? 0) : v}" aria-labelledby="q-${f.name}">
+    </div>
+    <div class="slider-value" id="sv-${f.name}" aria-live="polite">${esc(sliderText(f, v, unit))}</div>`;
+}
+function sliderText(f, v, unit) {
+  if (v === "" || v === null || v === undefined) return t("notAnswered");
+  return f.type === "money" ? money(Number(v), "pen") : `${num(v)} ${unit || ""}`.trim();
+}
+function shareShelfSvg(share) {
+  const s = Math.max(0, Math.min(1, Number(share) || 0));
+  const low = Math.round(8 * s);
+  const boxes = Array.from({ length: 8 }, (_, i) => {
+    const isLow = i < low;
+    const slot = isLow ? i : i - low;                            // low boxes fill the two bottom shelves
+    const row = isLow ? 3 - Math.floor(slot / 4) : Math.floor(slot / 4);
+    const x = 46 + (slot % 4) * 27;
+    return `<rect x="${x}" y="${18 + row * 30}" width="23" height="20" rx="3" class="${isLow ? "box wet" : "box"}"/>`;
+  }).join("");
+  const lineY = 78, floorY = 138, waterTop = floorY - (floorY - lineY) * s;
+  return `<svg viewBox="0 0 200 146" class="pic share-pic" aria-hidden="true">
+    <rect x="${40}" y="10" width="120" height="128" rx="4" class="shelf-frame"/>
+    ${[38, 68, 98, 128].map((y) => `<line x1="40" x2="160" y1="${y + 10}" y2="${y + 10}" class="shelf-board"/>`).join("")}
+    ${boxes}
+    <rect x="30" y="${waterTop.toFixed(1)}" width="140" height="${(floorY - waterTop).toFixed(1)}" class="water share-water"/>
+    <line x1="22" x2="178" y1="${lineY}" y2="${lineY}" class="water-line"/>
+    <text x="176" y="${lineY - 4}" text-anchor="end" class="pic-label">${esc(t("meter"))}</text>
+    <line x1="30" x2="170" y1="${floorY}" y2="${floorY}" class="floor"/></svg>`;
+}
+
+function fieldControl(f, d) {
+  const v = d[f.name];
+  if (f.name === "business_type") {
+    const known = BUSINESS_TYPES.some(([b]) => b === v);
+    const other = filled(v) && !known;
+    return question(f, `${choiceCards("business_type", [...BUSINESS_TYPES.map(([b, icon, label]) => [b, icon, L(label)]), ["__other", "✏️", t("otherType")]],
+      other ? "__other" : v, "choices-wide")}
+      <input class="other-input" id="f-business_type_other" type="text" placeholder="${esc(t("otherPlaceholder"))}" value="${other ? esc(v) : ""}" ${other ? "" : "hidden"} aria-labelledby="q-business_type">`);
+  }
+  if (f.name === "district") {
+    const byProvince = {};
+    state.meta.districts.forEach((x) => (byProvince[x.province] ??= []).push(x));
+    return question(f, `<input class="district-search" id="f-district-search" type="search" placeholder="${esc(t("searchDistrict"))}" aria-labelledby="q-district" autocomplete="off">
+      <div class="district-list" role="radiogroup" aria-labelledby="q-district">${Object.entries(byProvince).map(([prov, ds]) =>
+        `<div class="district-prov" data-prov="${esc(prov)}"><div class="prov-name">${esc(prov)}</div>${ds.map((x) =>
+          `<button type="button" class="choice district" role="radio" data-name="district" data-value="${esc(x.name)}" aria-checked="${v === x.name}">
+            ${esc(x.name)}<small>${esc(L(LEVEL_NOTE)[x.hazard_level] || "")}</small></button>`).join("")}</div>`).join("")}
+        <p class="no-match muted" hidden>${esc(t("noMatch"))}</p></div>`);
+  }
+  if (f.name === "near_water" || f.name === "flooded_before")
+    return question(f, choiceCards(f.name, Object.entries(L(YES_NO_UNKNOWN)).map(([k, label]) => [k, CHOICE_ICONS[k], label]), v, "choices-big"));
+  if (f.name === "floor_level" || f.name === "higher_storage")
+    return question(f, `<div class="choices choices-pics" role="radiogroup" aria-labelledby="q-${f.name}">${Object.entries(L(f.options)).map(([k, label]) =>
+      `<button type="button" class="choice pic-choice" role="radio" data-name="${f.name}" data-value="${k}" aria-checked="${v === k}">
+        <svg viewBox="0 0 80 56" aria-hidden="true">${PLACE_PICS[k]}</svg><span>${esc(label)}</span></button>`).join("")}</div>`);
+  if (f.name === "tenure")
+    return question(f, choiceCards(f.name, Object.entries(L(f.options)).map(([k, label]) => [k, CHOICE_ICONS[k], label]), v, "choices-big"));
+  if (f.name === "perishables")
+    return question(f, choiceCards(f.name, Object.entries(L(YES_NO)).map(([k, label]) => [k, PERISHABLE_ICONS[k], label]), v, "choices-big"));
+  if (f.name === "share_stock_below_1m") {
+    const pct = filled(v) ? Math.round(v * 1000) / 10 : "";
+    return question(f, `<div class="share-wrap"><div id="share-pic">${shareShelfSvg(v)}</div><div>
+      <div class="slider-row"><input class="num" id="f-share" data-name="share_stock_below_1m" type="number" inputmode="decimal" min="0" max="100" step="any" value="${pct}" aria-labelledby="q-share_stock_below_1m">
+        <input class="range" type="range" data-name="share_stock_below_1m" min="0" max="100" step="5" value="${pct === "" ? 0 : pct}" aria-labelledby="q-share_stock_below_1m"></div>
+      <div class="slider-value" id="sv-share_stock_below_1m" aria-live="polite">${pct === "" ? esc(t("notAnswered")) : `${pct}%`}</div></div></div>`);
+  }
+  if (f.type === "money") return question(f, sliderControl(f, v));
+  if (f.name === "workers") return question(f, sliderControl(f, v, t("peopleUnit")));
+  if (f.name === "days_of_stock") return question(f, sliderControl(f, v, t("daysUnit")));
+  return question(f, `<input id="f-${f.name}" data-name="${f.name}" type="text" value="${esc(v ?? "")}" aria-labelledby="q-${f.name}">`);
 }
 
 function supplierRowHtml(s, i) {
@@ -459,81 +705,250 @@ function supplierRowHtml(s, i) {
       <input id="sp-${i}" name="product" value="${esc(s.product || "")}" placeholder="${store.lang === "es" ? "abarrotes, pan, bebidas…" : "groceries, bread, drinks…"}"></div>
     <div class="field"><label for="sc-${i}">${store.lang === "es" ? "Ciudad" : "City"}</label>
       <input id="sc-${i}" name="city" value="${esc(s.city || "")}" placeholder="Piura, Chiclayo…"></div>
-    <div class="field"><label for="ss-${i}">${store.lang === "es" ? "¿Perecible?" : "Perishable?"}</label>
-      <select id="ss-${i}" name="perishable">${Object.entries(opts).map(([v, txt]) => `<option value="${v}" ${pv === v ? "selected" : ""}>${esc(txt)}</option>`).join("")}</select></div>
+    <div class="field"><span class="label-like">${store.lang === "es" ? "¿Perecible?" : "Perishable?"}</span>
+      <div class="chips" role="radiogroup">${Object.entries(opts).map(([k, txt]) =>
+        `<button type="button" class="chip" role="radio" data-perishable="${k}" aria-checked="${pv === k}">${esc(k === "" ? t("perishableAuto") : txt)}</button>`).join("")}</div></div>
     <button class="icon-btn" type="button" data-remove="${i}" aria-label="${esc(t("remove"))}">✕</button>
   </div>`;
 }
 
-function renderForm(draft = store.draft || {}) {
-  if (typeof draft.perishables === "boolean") draft = { ...draft, perishables: draft.perishables ? "yes" : "no" };
-  const suppliers = draft.suppliers?.length ? draft.suppliers : [{}];
-  const have = new Set(draft.already_have || []);
-  app.innerHTML = `
-    <section class="panel glass">
-      <h1 style="font-size:28px">${esc(t("formTitle"))}</h1>
-      <p class="muted">${esc(t("formIntro"))}</p>
-      <button class="btn" type="button" id="sample-btn">${esc(t("useSample"))}</button>
-    </section>
-    <div id="form-notice"></div>
-    <form id="intake" novalidate>
-      <datalist id="business-types">${["bodega", "ferretería", "botica", "librería", "restaurante", "minimarket", "panadería"].map((b) => `<option value="${b}">`).join("")}</datalist>
-      ${GROUPS.map((g, gi) => `
-        <fieldset class="form-group glass" style="margin-inline:0">
-          <h2><span class="step">${gi + 1}</span>${esc(L(g.title))}</h2>
-          <p>${esc(L(g.hint))}</p>
-          ${g.fields.length ? `<div class="grid">${g.fields.map((f) => fieldHtml(f, draft[f.name])).join("")}</div>` : ""}
-          ${g.id === "suppliers" ? `<div id="suppliers">${suppliers.map(supplierRowHtml).join("")}</div>
-            <button class="btn" type="button" id="add-supplier" ${suppliers.length >= 3 ? "disabled" : ""}>${esc(t("addSupplier"))}</button>` : ""}
-          ${g.id === "prep" ? `<h3 style="font-size:15px;margin-top:24px">${store.lang === "es" ? "¿Qué ya tienes? (marca lo que tengas)" : "What do you already have? (tick all that apply)"}</h3>
-            <div class="checklist">${state.meta.actions.map((a) => `<label><input type="checkbox" name="already_have" value="${a.id}" ${have.has(a.id) ? "checked" : ""}>
-              <span>${esc(store.lang === "es" ? a.name_es : a.name_en)}</span></label>`).join("")}</div>` : ""}
-        </fieldset>`).join("")}
-      <div class="form-actions">
-        <span class="muted small">${store.lang === "es" ? "Montos en soles (S/)." : "Amounts in soles (S/)."}</span>
-        <button class="btn btn-primary" type="submit" id="check-btn">${esc(t("checkAnswers"))}</button>
-      </div>
-    </form>`;
-
-  const form = document.getElementById("intake");
-  form.addEventListener("input", saveDraftFromForm);
-  document.getElementById("sample-btn").addEventListener("click", async () => {
-    const example = await api(`/api/plans/${state.meta.example_code}`);
-    store.draft = example.result.form; renderForm(store.draft);
-  });
-  document.getElementById("add-supplier").addEventListener("click", () => {
-    const d = collectDraft(); d.suppliers.push({}); store.draft = d; renderForm(d);
-  });
-  document.getElementById("suppliers").addEventListener("click", (e) => {
-    const i = e.target.closest("[data-remove]")?.dataset.remove;
-    if (i === undefined) return;
-    const d = collectDraft(); d.suppliers.splice(Number(i), 1); store.draft = d; renderForm(d);
-  });
-  form.addEventListener("submit", (e) => { e.preventDefault(); checkAndRun(false); });
-  state.view = { form: true };
+function stepHtml(i, d) {
+  const g = GROUPS[i];
+  const suppliers = d.suppliers?.length ? d.suppliers : [{}];
+  const have = new Set(d.already_have || []);
+  return `<fieldset class="form-group glass wizard-step" data-step="${g.id}">
+    <h2><span class="step">${i + 1}</span>${esc(L(g.title))}</h2>
+    <p>${esc(L(g.hint))}</p>
+    ${g.fields.map((f) => fieldControl(f, d)).join("")}
+    ${g.id === "suppliers" ? `<div class="q"><div id="suppliers">${suppliers.map(supplierRowHtml).join("")}</div>
+      <button class="btn" type="button" id="add-supplier" ${suppliers.length >= 3 ? "disabled" : ""}>${esc(t("addSupplier"))}</button>${why("suppliers")}</div>` : ""}
+    ${g.id === "prep" ? `<div class="q"><div class="q-label" id="q-already_have">${esc(t("alreadyHave"))}</div>
+      <div class="have-grid">${state.meta.actions.map((a) => `<button type="button" class="choice have" role="checkbox" data-have="${a.id}" aria-checked="${have.has(a.id)}">
+        <span class="choice-icon" aria-hidden="true">${CAT_ICONS[a.id] || "✅"}</span><span>${esc(store.lang === "es" ? a.name_es : a.name_en)}</span></button>`).join("")}</div>${why("already_have")}</div>` : ""}
+    <div id="step-notice"></div>
+    <div class="wiz-nav">
+      <button class="btn" type="button" id="wiz-back" ${i === 0 ? "disabled" : ""}>${esc(t("back"))}</button>
+      <button class="btn btn-primary" type="button" id="wiz-next">${esc(t("next"))}</button>
+    </div>
+  </fieldset>`;
 }
 
-function collectDraft() {
+function answerText(f, v) {
+  if (!filled(v)) return `<span class="muted">${esc(t("notAnswered"))}</span>`;
+  if (f.name === "business_type") { const b = BUSINESS_TYPES.find(([x]) => x === v); return esc(b ? L(b[2]) : v); }
+  if (f.name === "near_water" || f.name === "flooded_before") return esc(L(YES_NO_UNKNOWN)[v] || v);
+  if (f.name === "perishables") return esc(L(YES_NO)[v] || v);
+  if (f.options) return esc(L(f.options)[v] || v);
+  if (f.type === "money") return esc(money(Number(v), "pen"));
+  if (f.type === "percent") return `${Math.round(v * 1000) / 10}%`;
+  if (f.name === "days_of_stock") return esc(`${num(v)} ${t("daysUnit")}`);
+  return esc(String(v));
+}
+
+function reviewHtml(d) {
+  const sup = (d.suppliers || []).filter((s) => s.product && s.city);
+  const opts = L(SUPPLIER_PERISHABLE);
+  const names = Object.fromEntries(state.meta.actions.map((a) => [a.id, store.lang === "es" ? a.name_es : a.name_en]));
+  return `<section class="form-group glass wizard-step review">
+    <h2>${esc(t("reviewTitle"))}</h2><p>${esc(t("reviewIntro"))}</p>
+    ${GROUPS.map((g, i) => `<div class="review-group">
+      <div class="review-head"><h3><span class="step">${i + 1}</span>${esc(L(g.title))}</h3>
+        <button class="btn btn-small" type="button" data-edit="${i}">✎ ${esc(t("edit"))}</button></div>
+      <dl>${g.fields.map((f) => `<div><dt>${esc(L(f.label))}</dt><dd>${answerText(f, d[f.name])}</dd></div>`).join("")}
+      ${g.id === "suppliers" ? `<div><dt>${esc(L(g.title))}</dt><dd>${sup.length ? sup.map((s) => esc(`${s.product} — ${s.city}${s.perishable === null || s.perishable === undefined ? "" : ` (${opts[String(s.perishable)]})`}`)).join("<br>") : `<span class="muted">${esc(t("notAnswered"))}</span>`}</dd></div>` : ""}
+      ${g.id === "prep" ? `<div><dt>${esc(t("alreadyHave").replace(/\s*\(.*\)$/, ""))}</dt><dd>${(d.already_have || []).length ? d.already_have.map((id) => esc(names[id] || id)).join(", ") : `<span class="muted">${esc(t("noneSelected"))}</span>`}</dd></div>` : ""}
+      </dl></div>`).join("")}
+    <div id="form-notice"></div>
+    <div class="wiz-nav">
+      <button class="btn" type="button" id="wiz-back">${esc(t("back"))}</button>
+      <button class="btn btn-primary" type="button" id="check-btn">${esc(t("makeMyPlan"))}</button>
+    </div>
+  </section>`;
+}
+
+function renderForm() {
+  const d = draftNow();
+  const i = wiz.step;
+  app.innerHTML = `
+    <section class="panel glass wizard-head">
+      <div class="wiz-title"><h1 style="font-size:28px">${esc(t("formTitle"))}</h1><p class="muted">${esc(t("formIntro"))}</p>
+        <button class="btn" type="button" id="sample-btn">${esc(t("useSample"))}</button></div>
+      <div id="wiz-wall" class="wiz-wall-box"></div>
+      <div class="wiz-progress"><span id="wiz-step-label" class="check-count"></span><div class="progress-bar" aria-hidden="true"><span id="wiz-bar"></span></div></div>
+    </section>
+    <div class="wizard-layout">
+      <form id="intake" class="wizard-main" novalidate>${i < GROUPS.length ? stepHtml(i, d) : reviewHtml(d)}</form>
+      <aside class="risk-preview glass" id="risk-preview" aria-live="polite">
+        <h2>${esc(t("previewTitle"))}</h2>${gaugeSvg(null)}<div class="preview-text"></div>
+        <p class="muted small">${esc(t("previewFree"))}</p></aside>
+    </div>`;
+  state.view = { form: true, rerender: renderForm };
+  wireWizard();
+  updateWizardChrome();
+  updatePreviewPanel();
+  updateStepNotice();
+  schedulePreview();
+}
+
+function goStep(i) {
+  wiz.step = i;
+  wiz.visited = Math.max(wiz.visited, i);
+  renderForm();
+  document.querySelector(".wizard-main")?.scrollIntoView({ block: "start", behavior: REDUCED_MOTION.matches ? "auto" : "smooth" });
+}
+
+function onAnswer() { updateWizardChrome(); schedulePreview(); }
+
+function wireWizard() {
   const form = document.getElementById("intake");
-  if (!form) return store.draft || {};
-  const d = {};
-  GROUPS.flatMap((g) => g.fields).forEach((f) => {
-    const raw = form.elements[f.name]?.value ?? "";
-    if (raw === "") { d[f.name] = null; return; }
-    if (f.type === "money" || f.type === "number") d[f.name] = Number(raw);
-    else if (f.type === "percent") d[f.name] = Number(raw) / 100;
-    else if (f.name === "perishables") d[f.name] = raw === "yes" ? "yes" : "no";
-    else d[f.name] = raw;
+  document.getElementById("sample-btn").addEventListener("click", async () => {
+    const example = await api(`/api/plans/${state.meta.example_code}`);
+    store.draft = example.result.form;
+    wiz.visited = GROUPS.length;
+    goStep(GROUPS.length);  // straight to the review screen
   });
-  d.suppliers = [...form.querySelectorAll(".supplier-row")].map((row) => {
-    const p = row.querySelector("[name=perishable]").value;
+  form.addEventListener("submit", (e) => e.preventDefault());
+  form.addEventListener("click", (e) => {
+    const choice = e.target.closest(".choice[data-name]");
+    if (choice) {
+      const name = choice.dataset.name;
+      const q = choice.closest(".q");
+      q.querySelectorAll(`.choice[data-name="${name}"]`).forEach((c) => c.setAttribute("aria-checked", String(c === choice)));
+      q.classList.remove("invalid");
+      if (name === "business_type") {
+        const other = document.getElementById("f-business_type_other");
+        other.hidden = choice.dataset.value !== "__other";
+        if (!other.hidden) { setDraft(name, other.value.trim() || null); other.focus(); } else setDraft(name, choice.dataset.value);
+      } else setDraft(name, choice.dataset.value);
+      onAnswer(); return;
+    }
+    const have = e.target.closest("[data-have]");
+    if (have) {
+      const on = have.getAttribute("aria-checked") !== "true";
+      have.setAttribute("aria-checked", String(on));
+      const set = new Set(draftNow().already_have || []);
+      if (on) set.add(have.dataset.have); else set.delete(have.dataset.have);
+      setDraft("already_have", [...set]); onAnswer(); return;
+    }
+    const chip = e.target.closest("[data-perishable]");
+    if (chip) {
+      chip.parentElement.querySelectorAll(".chip").forEach((c) => c.setAttribute("aria-checked", String(c === chip)));
+      saveSuppliers(); return;
+    }
+    const remove = e.target.closest("[data-remove]");
+    if (remove) { const s = readSuppliers(); s.splice(Number(remove.dataset.remove), 1); setDraft("suppliers", s); renderForm(); return; }
+    if (e.target.closest("#add-supplier")) { const s = readSuppliers(); s.push({}); setDraft("suppliers", s); renderForm(); return; }
+    const edit = e.target.closest("[data-edit]");
+    if (edit) { goStep(Number(edit.dataset.edit)); return; }
+    if (e.target.closest("#wiz-back")) { goStep(Math.max(0, wiz.step - 1)); return; }
+    if (e.target.closest("#wiz-next")) { tryNext(); return; }
+    if (e.target.closest("#check-btn")) checkAndRun(false);
+  });
+  form.addEventListener("input", (e) => {
+    const el = e.target;
+    if (el.id === "f-business_type_other") { setDraft("business_type", el.value.trim() || null); onAnswer(); return; }
+    if (el.id === "f-district-search") { filterDistricts(el.value); return; }
+    if (el.closest(".supplier-row")) { saveSuppliers(); return; }
+    const name = el.dataset.name;
+    if (!name) return;
+    const row = el.closest(".q");
+    const raw = el.value;
+    if (name === "share_stock_below_1m") {
+      const pct = raw === "" ? null : Math.max(0, Math.min(100, Number(raw)));
+      row.querySelectorAll("[data-name]").forEach((x) => { if (x !== el) x.value = pct ?? 0; });
+      setDraft(name, pct === null ? null : pct / 100);
+      document.getElementById("share-pic").innerHTML = shareShelfSvg(pct === null ? 0 : pct / 100);
+      document.getElementById("sv-share_stock_below_1m").textContent = pct === null ? t("notAnswered") : `${pct}%`;
+    } else {
+      const f = ALL_FIELDS().find((x) => x.name === name);
+      const v = raw === "" ? null : Number(raw);
+      row.querySelectorAll("[data-name]").forEach((x) => {
+        if (x === el) return;
+        if (x.type === "range" && v !== null && v > Number(x.max)) x.max = String(v);  // widen the slider for big numbers
+        x.value = v ?? (x.type === "range" ? x.min : "");
+      });
+      setDraft(name, v);
+      document.getElementById(`sv-${name}`).textContent = sliderText(f, v ?? "", name === "workers" ? t("peopleUnit") : name === "days_of_stock" ? t("daysUnit") : "");
+    }
+    row.classList.remove("invalid");
+    onAnswer();
+  });
+}
+
+function filterDistricts(q) {
+  const needle = q.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase().trim();
+  let shown = 0;
+  document.querySelectorAll(".district-prov").forEach((prov) => {
+    let any = false;
+    prov.querySelectorAll(".choice.district").forEach((b) => {
+      const name = b.dataset.value.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
+      const match = !needle || name.includes(needle) || prov.dataset.prov.toLowerCase().includes(needle);
+      b.hidden = !match; any ||= match; shown += match ? 1 : 0;
+    });
+    prov.hidden = !any;
+  });
+  document.querySelector(".no-match").hidden = shown > 0;
+}
+
+function readSuppliers() {
+  return [...document.querySelectorAll(".supplier-row")].map((row) => {
+    const p = row.querySelector(".chip[aria-checked=true]")?.dataset.perishable ?? "";
     return { product: row.querySelector("[name=product]").value.trim(), city: row.querySelector("[name=city]").value.trim(),
              perishable: p === "" ? null : p === "true" };
   });
-  d.already_have = [...form.querySelectorAll("[name=already_have]:checked")].map((c) => c.value);
-  return d;
 }
-function saveDraftFromForm() { if (document.getElementById("intake")) store.draft = collectDraft(); }
+function saveSuppliers() { setDraft("suppliers", readSuppliers()); onAnswer(); }
+
+function tryNext() {
+  const i = wiz.step, g = GROUPS[i], d = draftNow();
+  const missing = g.fields.filter((f) => !filled(d[f.name]));
+  missing.forEach((f) => document.querySelector(`.q[data-field="${f.name}"]`)?.classList.add("invalid"));
+  const errors = (wiz.preview?.errors || []).filter((e) => e.step === g.id);
+  if (missing.length || errors.length) {
+    updateStepNotice(missing.map((f) => L(f.label)));
+    document.getElementById("step-notice").scrollIntoView({ block: "center", behavior: REDUCED_MOTION.matches ? "auto" : "smooth" });
+    return;
+  }
+  goStep(i + 1);
+}
+
+async function checkAndRun(confirmed) {
+  const profile = toProfile(draftNow());
+  const notice = document.getElementById("form-notice");
+  const btn = document.getElementById("check-btn");
+  btn.disabled = true; btn.textContent = t("checking");
+  const stepOfField = (field) => Math.max(0, GROUPS.findIndex((g) => g.fields.some((f) => f.name === field) || g.id === field));
+  try {
+    const v = await api("/api/validate", { method: "POST", body: JSON.stringify(profile) });
+    if (!v.valid) {
+      notice.innerHTML = `<div class="notice error glass-read" role="alert"><b>${esc(t("errorsTitle"))}</b>
+        <ul>${v.errors.map((e) => `<li>${esc(errorText(e))} <button class="btn btn-small" type="button" data-edit="${stepOfField(e.split(/[.:]/)[0])}">✎ ${esc(t("edit"))}</button></li>`).join("")}</ul></div>`;
+      notice.scrollIntoView({ behavior: "smooth" });
+      return;
+    }
+    if (v.warnings.length && !confirmed) {
+      const steps = Object.fromEntries((wiz.preview?.warnings || []).map((w) => [w.text, GROUPS.findIndex((g) => g.id === w.step)]));
+      notice.innerHTML = `<div class="notice glass-read" role="alert"><b>${esc(t("warningsTitle"))}</b>
+        <p class="muted small" style="margin:4px 0 0">${esc(t("warningsText"))}</p>
+        <ul>${v.warnings.map((w) => `<li>${esc(warningText(w))}${steps[w] >= 0 ? ` <button class="btn btn-small" type="button" data-edit="${steps[w]}">✎ ${esc(t("edit"))}</button>` : ""}</li>`).join("")}</ul>
+        <div class="btn-row"><button class="btn btn-primary" type="button" id="confirm-btn">${esc(t("confirmRun"))}</button></div></div>`;
+      notice.scrollIntoView({ behavior: "smooth" });
+      document.getElementById("confirm-btn").addEventListener("click", () => checkAndRun(true));
+      return;
+    }
+    btn.textContent = t("starting");
+    const created = await api("/api/plans", { method: "POST", body: JSON.stringify({ profile, language: store.lang }) });
+    store.plans = [{ code: created.code, label: `${profile.business_type} · ${profile.district}`, language: store.lang,
+                     created_at: new Date().toISOString() }, ...store.plans.filter((p) => p.code !== created.code)];
+    wiz.step = 0; wiz.visited = 0;
+    location.hash = `#/plan/${created.code}`;
+  } catch (e) {
+    console.warn(e);
+    notice.innerHTML = `<div class="notice error glass-read" role="alert">${esc(t("networkError"))}</div>`;
+  } finally {
+    if (document.getElementById("check-btn")) { btn.disabled = false; btn.textContent = t("makeMyPlan"); }
+  }
+}
 
 function toProfile(d) {
   const p = { ...d, perishables: d.perishables === "yes" || d.perishables === true,
@@ -546,46 +961,6 @@ function warningText(w) {
   if (store.lang !== "es") return w;
   for (const [re, fn] of WARNING_ES) { const m = w.match(re); if (m) return fn(m); }
   return w;
-}
-
-async function checkAndRun(confirmed) {
-  const draft = collectDraft(); store.draft = draft;
-  const profile = toProfile(draft);
-  const notice = document.getElementById("form-notice");
-  const btn = document.getElementById("check-btn");
-  btn.disabled = true; btn.textContent = t("checking");
-  document.querySelectorAll(".field.invalid").forEach((f) => f.classList.remove("invalid"));
-  try {
-    const v = await api("/api/validate", { method: "POST", body: JSON.stringify(profile) });
-    if (!v.valid) {
-      v.errors.forEach((e) => document.querySelector(`[data-field="${e.split(/[.:]/)[0]}"]`)?.classList.add("invalid"));
-      notice.innerHTML = `<div class="notice error glass-read" role="alert"><b>${esc(t("errorsTitle"))}</b>
-        <ul>${v.errors.map((e) => `<li>${esc(errorText(e))}</li>`).join("")}</ul></div>`;
-      notice.scrollIntoView({ behavior: "smooth" });
-      return;
-    }
-    if (v.warnings.length && !confirmed) {
-      notice.innerHTML = `<div class="notice glass-read" role="alert"><b>${esc(t("warningsTitle"))}</b>
-        <p class="muted small" style="margin:4px 0 0">${esc(t("warningsText"))}</p>
-        <ul>${v.warnings.map((w) => `<li>${esc(warningText(w))}</li>`).join("")}</ul>
-        <div class="btn-row"><button class="btn" type="button" id="fix-btn">${esc(t("fixAnswers"))}</button>
-        <button class="btn btn-primary" type="button" id="confirm-btn">${esc(t("confirmRun"))}</button></div></div>`;
-      notice.scrollIntoView({ behavior: "smooth" });
-      document.getElementById("fix-btn").addEventListener("click", () => { notice.innerHTML = ""; document.getElementById("intake").elements[0]?.focus(); });
-      document.getElementById("confirm-btn").addEventListener("click", () => checkAndRun(true));
-      return;
-    }
-    btn.textContent = t("starting");
-    const created = await api("/api/plans", { method: "POST", body: JSON.stringify({ profile, language: store.lang }) });
-    store.plans = [{ code: created.code, label: `${profile.business_type} · ${profile.district}`, language: store.lang,
-                     created_at: new Date().toISOString() }, ...store.plans.filter((p) => p.code !== created.code)];
-    location.hash = `#/plan/${created.code}`;
-  } catch (e) {
-    console.warn(e);
-    notice.innerHTML = `<div class="notice error glass-read" role="alert">${esc(t("networkError"))}</div>`;
-  } finally {
-    if (document.getElementById("check-btn")) { btn.disabled = false; btn.textContent = t("checkAnswers"); }
-  }
 }
 
 function errorText(e) {

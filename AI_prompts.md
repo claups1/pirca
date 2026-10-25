@@ -426,3 +426,26 @@ Check in the browser on PIU-CAST26 in both languages: checklist persists after r
 ```
 Commit the working tree changes with a sensible message.
 ```
+
+## Prompt 39 — Step-by-step intake wizard
+
+```
+Turn Pirca's intake form (#/new) into a friendly step-by-step wizard. Keep the same fields, validation and both languages; all amounts stay in soles.
+
+1. One group per screen with a progress bar ("Paso 2 de 5"), Back/Next buttons, and a small pirca wall that gains stones with each completed step.
+2. Replace dropdowns with big tap-able choice cards with simple icons: business type (bodega, botica, ferretería, ropa, restaurante, otro + text box), Sí / No / No sé answers as large buttons, floor level and higher storage as small pictures (ground floor, raised, upper floor; none, mezzanine, second floor). District stays a searchable list.
+3. Amounts: a number box with a matching slider and the value shown in soles as you move it. For "share of stock below 1 m", show a shelf picture with a water line at 1 m that rises with the slider.
+4. Under each question, a one-line "¿Por qué preguntamos esto? / Why we ask" explanation.
+5. A live risk preview on the side (below on phones): a small gauge that updates as the owner answers, using a new endpoint that runs only the code tools (validate_profile + score_exposure), never the model, so it costs 0 tokens.
+6. Validation warnings appear on the step where they happen, not only at the end.
+7. A final "Revisa tus respuestas / Review your answers" screen with everything summarized and an edit link per group, then "Hacer mi plan".
+8. "Fill with a sample shop" still works and jumps to the review screen.
+
+Check in the browser in both languages: full flow with the sample shop, back/next keeps answers, live gauge updates, no console errors. Add offline tests for the new preview endpoint. Save screenshots to output/screenshots/
+```
+
+## Prompt 40 — Commit
+
+```
+Commit the working tree changes with a sensible message.
+```
