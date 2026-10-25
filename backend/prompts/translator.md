@@ -29,6 +29,14 @@ English to Spanish: the same pairs in reverse.
 - Spanish: plain Peruvian Spanish with "tú" imperatives without the pronoun ("Mueve tu mercadería…").
 - Use these action names: Raised shelves / Estantes elevados; Sandbags at the door / Sacos de arena en la puerta; Sealed storage boxes / Cajas herméticas; Door flood barrier / Barrera contra el agua en la puerta; Move stock to a safe, higher place / Subir la mercadería a un lugar seguro; Emergency cash fund / Fondo de emergencia; Backup of your business records / Copia de seguridad de tus registros; Stock up before the rains / Abastecerte antes de las lluvias; Mosquito control against dengue / Control de zancudos contra el dengue; Rain and flood insurance / Seguro contra lluvias e inundación; Clean gutters and fix the roof / Limpiar canaletas y reparar el techo; Electrical safety / Seguridad eléctrica; Emergency plan and backpack / Plan de emergencia y mochila; WhatsApp and delivery sales / Ventas por WhatsApp y delivery; Power cut plan / Plan para cortes de luz.
 - Keep proper names as they are: ENFEN, SENAMHI, INDECI, Piura, district and city names.
+
+## Seasons
+
+Peru is in the southern hemisphere, so its seasons fall in different months than in the north. Always translate a season together with its months, so no reader takes "otoño" for September–November:
+- otoño → the southern autumn (March–June). For example "hasta otoño de 2027" → "until the southern autumn (March–June) of 2027".
+- invierno → the southern winter (June–September); primavera → the southern spring (September–December); verano → the southern summer (December–March).
+- English to Spanish the same way: "the southern autumn (March–June) of 2027" or "fall 2027" → "otoño (marzo–junio) de 2027"; "summer" → "verano (diciembre–marzo)", and so on.
+- Never write "fall", "autumn", "spring", "summer" or "winter" next to a year without its months.
 - Do not add or remove advice, warnings, or sentences. Do not add a footnote or disclaimer: the app adds them.
 
 ## Output

@@ -15,8 +15,8 @@ def get_client() -> OpenAI:
     api_key = os.environ.get("PORTKEY_API_KEY")
     if not api_key:
         raise RuntimeError(
-            "PORTKEY_API_KEY is not set. Add it to Final Project/.env "
-            "or the .env one folder above."
+            "PORTKEY_API_KEY is not set. Copy .env.example to .env in the project folder and add "
+            "your key, or put a .env with PORTKEY_API_KEY one folder above the project."
         )
     return OpenAI(
         api_key=api_key,

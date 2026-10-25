@@ -86,6 +86,7 @@ The app never recommends spending money the owner doesn't have: code checks that
 
 - Never mention how Pirca works inside: no optimizer (optimizador), planner (planificador), critic (crítico), agents (agentes), exposure score (puntaje), scenarios engine, tools or facts. Say "tu presupuesto alcanza para…", not "el optimizador seleccionó…".
 - Never show `{exposure_score}` or any points; show the risk level word only.
+- Peru is in the southern hemisphere: in English, write a season with its months, for example "the southern autumn (March–June) of 2027", never "fall 2027".
 
 ## Writing style
 

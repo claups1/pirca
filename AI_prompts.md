@@ -700,3 +700,32 @@ open
 ```
 Commit the working tree changes with a sensible message.
 ```
+
+## Prompt 74 — Southern seasons, example check, README and grader dry run
+
+```
+Final steps for Pirca:
+
+1. Translation fix: Peru is in the southern hemisphere, so "otoño" means roughly March–June. In the translator prompt, translate seasons with their months (e.g. "otoño de 2027" → "the southern autumn (March–June) of 2027", and the same the other way). Retranslate the example plans where this appears, and add an offline test that no English plan says "fall 2027" without months.
+
+2. Check the 6 example plans still open correctly with the latest changes (mosquito window pricing, price labels, purchase groups); if any number in a saved example no longer matches the current tools, tell me which and fix it without a full rerun if possible.
+
+3. Rewrite README.md completely, with step-by-step instructions for Windows (PowerShell) and macOS:
+   - One-line description, a screenshot of the start page, and the "not an official forecast" note at the top.
+   - Requirements (Python version only, no Node), clone, create .venv, install requirements.
+   - API key: copy .env.example to .env in the project folder, OR put a .env one folder above it; it needs only PORTKEY_API_KEY (gpt-6-luna).
+   - The exact start command and the exact URL and port to open.
+   - Quick look for 0 tokens: open the 6 example plans by code (PIU-CAST26, PIU-CASTEN, PIU-FARMES, PIU-FARMEN, PIU-FERRES, PIU-FERREN), switch language and currency, use Replay trace to watch the agent map, and try the province map.
+   - Make a new plan: the 5-step wizard, "Llenar con un negocio de ejemplo", expected time (1–3 minutes) and cost (about $0.018).
+   - Read-aloud works best in Chrome or Edge (they include Spanish voices).
+   - Tests: offline (pytest) and live (pytest -m live), with expected results.
+   - Short sections: what Pirca does, the four agents, the safety checks, where the evidence is (output/safety/, output/tokenomics.md, output/sources.md, output/screenshots/), data sources (ENFEN, INDECI, MINSA, Promart, BCRP, the map GeoJSON), and troubleshooting (missing key, port in use, Windows execution policy for .venv).
+
+4. Dry run as a grader: clone the repo into a new temporary folder outside OneDrive, put a copy of the .env one folder above the clone (delete it afterwards), follow the README exactly, time it, and confirm the app starts, an example plan opens, and the offline tests pass, all within 10 minutes. Fix anything that breaks or is unclear, and tell me how long it took.
+```
+
+## Prompt 75 — Commit
+
+```
+Commit the working tree changes with a sensible message.
+```

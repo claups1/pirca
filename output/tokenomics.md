@@ -8,13 +8,13 @@ Costs cover model tokens only. **Assumption:** hosting, storage, staff and outre
 
 | Run | Shop | Lang | Result | Model calls | Input | Cached input | Cache write | Output | Run cost | Translation | Plan cost |
 |---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|
-| PIU-CAST26 | bodega · Castilla | es | verified | 23 | 200,515 | 139,846 | 60,600 | 14,352 | $0.0162 | $0.0006 | $0.0168 |
+| PIU-CAST26 | bodega · Castilla | es | verified | 23 | 200,515 | 139,846 | 60,600 | 14,352 | $0.0162 | $0.0007 | $0.0168 |
 | PIU-CASTEN† | bodega · Castilla | en | verified | 24 | 221,968 | 163,504 | 58,392 | 15,016 | $0.0164 | $0.0007 | $0.0171 |
 | PIU-FARMES | botica · Piura | es | verified | 32 | 260,538 | 206,961 | 53,481 | 17,697 | $0.0176 | $0.0006 | $0.0182 |
 | PIU-FARMEN | botica · Piura | en | verified | 31 | 243,893 | 189,209 | 54,591 | 18,682 | $0.0181 | $0.0006 | $0.0186 |
 | PIU-FERRES | ferretería · Sullana | es | verified | 27 | 266,308 | 201,782 | 64,445 | 19,037 | $0.0196 | $0.0007 | $0.0203 |
 | PIU-FERREN | ferretería · Sullana | en | verified | 31 | 287,321 | 219,386 | 67,842 | 18,863 | $0.0201 | $0.0008 | $0.0209 |
-| **Average** | | | | 28.0 | 246,757 | 186,781 | 59,892 | 17,274 | $0.0180 | $0.0006 | $0.0186 |
+| **Average** | | | | 28.0 | 246,757 | 186,781 | 59,892 | 17,274 | $0.0180 | $0.0007 | $0.0187 |
 | Min | | | | 23.0 | 200,515 | 139,846 | 53,481 | 14,352 | $0.0162 | $0.0006 | $0.0168 |
 | Max | | | | 32.0 | 287,321 | 219,386 | 67,842 | 19,037 | $0.0201 | $0.0008 | $0.0209 |
 
@@ -24,7 +24,7 @@ PIU-CAST26 was run earlier the same day (Prompt 18), before the Critic's code ch
 
 An agent run costs **$0.0180 on average** (S/ 0.062), between $0.0162 and $0.0201 across the 6 runs. 6 of 6 runs used the one allowed Planner revision after the Critic asked for changes.
 
-Every finished plan is now also translated automatically into the other language (one model call, tokens recorded separately). Each run's translation is measured above; the average is $0.0006. **A complete bilingual plan therefore costs $0.0186 on average** (S/ 0.064), between $0.0168 and $0.0209.
+Every finished plan is now also translated automatically into the other language (one model call, tokens recorded separately). Each run's translation is measured above; the average is $0.0007. **A complete bilingual plan therefore costs $0.0187 on average** (S/ 0.064), between $0.0168 and $0.0209.
 
 ## 2. Cost by agent
 
@@ -58,9 +58,9 @@ Charging every cached token at the full input price would have cost $0.2089 inst
 ## 4. Cost-cutting measures and their evidence
 
 1. **Caching of static prompts.** Each agent's system prompt is static (shared rules + its own file) and every call sends a `prompt_cache_key` per agent; run data goes in the user message. Evidence: 76% of input tokens were cached reads, saving $0.1009 (48%) on these runs (section 3).
-2. **Numbers computed in code, not by the model.** On average each run made 26.3 deterministic tool calls that produced 121 facts (amounts, days, weeks, percentages) at zero model tokens; the model only writes `{fact_key}` placeholders, and `verify_draft` rejects typed numbers. The model never spends output tokens doing arithmetic.
+2. **Numbers computed in code, not by the model.** On average each run made 26.3 deterministic tool calls that produced 125 facts (amounts, days, weeks, percentages) at zero model tokens; the model only writes `{fact_key}` placeholders, and `verify_draft` rejects typed numbers. The model never spends output tokens doing arithmetic.
 3. **Saved plans reopen for 0 tokens.** `GET /api/plans/{code}` reads `plans/{code}.json`; no model is called (offline test `test_example_plans_open_without_running_agents` asserts zero runs). Reopening, switching currency and replaying the trace are free.
-4. **Translation instead of rerunning.** Each plan's second language comes from one translation call, not a second agent run. Measured translations: PIU-CAST26 → en: $0.0006 (1 call); PIU-CASTEN → es: $0.0007 (1 call); PIU-FARMES → en: $0.0006 (1 call); PIU-FARMEN → es: $0.0006 (1 call); PIU-FERRES → en: $0.0007 (1 call); PIU-FERREN → es: $0.0008 (1 call). Average $0.0006, which is **3.6% of an average agent run** ($0.0180) — about 28× cheaper than running the agents again in the other language. Switching language afterwards costs 0 tokens.
+4. **Translation instead of rerunning.** Each plan's second language comes from one translation call, not a second agent run. Measured translations: PIU-CAST26 → en: $0.0007 (1 call); PIU-CASTEN → es: $0.0007 (1 call); PIU-FARMES → en: $0.0006 (1 call); PIU-FARMEN → es: $0.0006 (1 call); PIU-FERRES → en: $0.0007 (1 call); PIU-FERREN → es: $0.0008 (1 call). Average $0.0007, which is **3.6% of an average agent run** ($0.0180) — about 28× cheaper than running the agents again in the other language. Switching language afterwards costs 0 tokens.
 5. **The 300-word plan limit.** Before the limit (commit `8bba882`), the final plan had 524 prose words and the Manager's final call produced 1,440 output tokens. With the limit, plans averaged 312 words (max 327) and the final call averaged 998 output tokens. Other prompt changes landed at the same time, so this is a before/after observation, not a controlled experiment.
 
 ## 5. Cost at scale
@@ -69,13 +69,13 @@ Charging every cached token at the full input price would have cost $0.2089 inst
 
 | Shops | Per month (USD) | Per month (S/) | Per year (USD) | Per year (S/) | Range per year (USD) |
 |---:|---:|---:|---:|---:|---|
-| 1 | $0.0373 | S/ 0.129 | $0.4474 | S/ 1.54 | $0.4026–$0.5016 |
-| 100 | $3.73 | S/ 12.85 | $44.74 | S/ 154.23 | $40.26–$50.16 |
-| 10,000 | $372.86 | S/ 1,285.25 | $4,474.32 | S/ 15,422.98 | $4,025.76–$5,016.48 |
+| 1 | $0.0373 | S/ 0.129 | $0.4477 | S/ 1.54 | $0.4041–$0.5016 |
+| 100 | $3.73 | S/ 12.86 | $44.77 | S/ 154.32 | $40.41–$50.16 |
+| 10,000 | $373.08 | S/ 1,286.00 | $4,476.92 | S/ 15,431.94 | $4,040.88–$5,016.48 |
 
 ## 6. Organization view
 
-A municipality or chamber of commerce offering Pirca to **10,000 shops** would pay about **$4,474 (S/ 15,423) per year in model costs**, under the assumption above (2 bilingual plans per shop per month, model tokens only — hosting, support and outreach would be extra).
+A municipality or chamber of commerce offering Pirca to **10,000 shops** would pay about **$4,477 (S/ 15,432) per year in model costs**, under the assumption above (2 bilingual plans per shop per month, model tokens only — hosting, support and outreach would be extra).
 
 Comparison with a consultant-written plan: **no sourced figure was found.** Searches on 2026-10-24 for consultant prices for a small-business continuity or contingency plan in Peru (in soles) and internationally returned only academic theses, legal guidance (Ley N° 28551, RM N° 188-2015-PCM) and one 2009 UK figure that bundles equipment, so no comparison is made.
 
