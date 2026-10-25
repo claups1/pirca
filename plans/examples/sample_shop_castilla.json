@@ -20,5 +20,7 @@
   ],
   "days_of_stock": 7,
   "prep_budget": 500,
-  "already_have": ["CAT-13"]
+  "already_have": ["CAT-13"],
+  "windows": 1,
+  "doors": 0
 }

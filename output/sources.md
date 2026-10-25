@@ -1,6 +1,6 @@
 # Pirca data sources
 
-Every number in `data/`, with its source and status. Generated 2026-10-24.
+Every number in `data/`, with its source and status. Generated 2026-10-25.
 
 **Status legend**
 - **verified**: read in an official / primary / peer-reviewed document saved in `data/raw/`, and spot-checked against that file.
@@ -191,9 +191,9 @@ Retail prices are Promart's public catalog (VTEX API) as seen on 2026-10-24; the
 | CAT-04 | Flood barrier at the door (compuerta / sealed door base) | 500.00 (per barrier (proxy)) | sourced (loose proxy) | [link](https://elbuho.pe/2023/11/trujillo-arturo-fernandez-anuncia-barreras-de-s-500-para-proteger-a-la-poblacion-de-huaicos/) | 0.29 | sourced | [link](https://nhess.copernicus.org/articles/5/117/2005/nhess-5-117-2005.pdf) |
 | CAT-05 | Move high-value stock to an upper floor or safe space | 0.00+ (owner's own labour) | illustrative estimate | — | 0.48 | sourced (proxy) | [link](https://nhess.copernicus.org/articles/5/117/2005/nhess-5-117-2005.pdf) |
 | CAT-06 | Emergency cash reserve (fondo de emergencia) | — (one month of profit) | sourced rule; no S/ figure | [link](https://www.apec.org/-/media/APEC/Publications/2013/9/Guidebook-on-SME-Business-Continuity-Planning/TOC/Guidebook-on-SME-Business-Continuity-Planning---Spanish.pdf) | 0.3 | illustrative estimate | — |
-| CAT-07 | Back up business records (cloud copy, photos of inventory, sealed paper copies) | 64.99–415.00 (per year (cloud) / one-off (external disk)) | sourced | [link](https://larepublica.pe/tecnologia/actualidad/2023/12/26/google-one-en-oferta-podras-tener-hasta-2-tb-de-espacio-en-la-nube-y-pagarlo-entre-5-personas-495014) | 0.5 | illustrative estimate | — |
+| CAT-07 | Back up business records (cloud copy, photos of inventory, sealed paper copies) | 64.99–415.00 (per year (cloud) / one-off (external disk)) | sourced (2023 price) | [link](https://larepublica.pe/tecnologia/actualidad/2023/12/26/google-one-en-oferta-podras-tener-hasta-2-tb-de-espacio-en-la-nube-y-pagarlo-entre-5-personas-495014) | 0.5 | illustrative estimate | — |
 | CAT-08 | Stock up on non-perishable basics from suppliers before roads are cut | — (working capital, shop-specific) | no sourced figure (left blank) | — | 0.3 | illustrative estimate | — |
-| CAT-09 | Mosquito control for dengue (remove standing water, cover containers, screens, repellent) | 5.90–50.90 (1 window screen up to 2 window screens + 1 door screen + 1 repellent) | sourced prices; illustrative quantity | [link](https://www.promart.pe/malla-mosquitera-para-ventana-180x150cm-orange-166130/p) | 0.78 | sourced | [link](https://journals.plos.org/plosntds/article/file?id=10.1371/journal.pntd.0004551&type=printable) |
+| CAT-09 | Mosquito control for dengue (remove standing water, cover containers, screens, repellent) | 5.90–50.90 (per window screen; door screen S/10.90; quantity from the owner's window and door count) | sourced prices; quantity from the owner | [link](https://www.promart.pe/malla-mosquitera-para-ventana-180x150cm-orange-166130/p) | 0.78 | sourced | [link](https://journals.plos.org/plosntds/article/file?id=10.1371/journal.pntd.0004551&type=printable) |
 | CAT-10 | Business insurance covering rain and flood (multirriesgo / microseguro) | 36.00–1944.00 (per year) | sourced | [link](https://www.mapfre.com.pe/media/TARIFARIO-SEGURO-MULTIRIESGO-EMPRESAS-24-HORAS.pdf) | 0.95 | sourced (derived) | [link](https://www.mapfre.com.pe/media/TARIFARIO-SEGURO-MULTIRIESGO-EMPRESAS-24-HORAS.pdf) |
 | CAT-11 | Clean gutters and drains; repair and waterproof the roof | 69.90–219.30 (one gutter up to gutter + waterproofing + one roof sheet) | sourced prices; illustrative quantity | [link](https://www.promart.pe/canaleta-pluvial-para-techos-4-100mm-4m/p) | 0.3 | illustrative estimate | — |
 | CAT-12 | Electrical safety: 30 mA residual-current breaker, raise outlets, cut power before water enters | 49.90–162.40 (breaker (+ outlet); electrician labour not included) | sourced | [link](https://www.promart.pe/interruptor-diferencial-steck-2x25a-30ma-169424/p) | 0.36 | sourced (proxy) | [link](https://nhess.copernicus.org/articles/5/117/2005/nhess-5-117-2005.pdf) |
@@ -206,8 +206,10 @@ Retail prices are Promart's public catalog (VTEX API) as seen on 2026-10-24; the
 - CAT-09's 0.78 is 1 − odds ratio 0.22 for house screening (95% CI 0.05–0.93): an odds reduction, not a risk reduction.
 - CAT-10's 0.95 is derived from Mapfre's 5% deductible (min S/500); insurance transfers loss rather than preventing it, and only up to the sum insured.
 - CAT-04's S/500 is a municipal quebrada barrier in Trujillo, not a shop-door product. No Peruvian retail flood door barrier was found.
-- CAT-07's Google One price is from Dec 2023; Google reportedly raised Peru prices in 2025 (no S/ figure found).
-- Quantities in CAT-02, CAT-09 and CAT-11 (number of sacks, screens, sheets) are illustrative; the unit prices are sourced.
+- CAT-07's Google One 100 GB price (S/64.99/year) is from Dec 2023. Re-checked 2026-10-25: no current Peru S/ price was found (one.google.com shows USD 1.99/month outside Peru; Google raised Peru prices from Feb 2025 without a published S/ figure), so the app labels it "precio de 2023 / 2023 price".
+- CAT-09 screens are priced from the owner's answer: windows x S/5.90 + doors x S/10.90 (Promart window screen 180x150 cm and door screen 90x210 cm). Re-checked 2026-10-25: both prices unchanged, shown as sale prices (regular S/7.90 and S/14.90) and 'Producto agotado' online. If the owner leaves the count empty, the plan shows S/5.90 per window and leaves screens out of the budget; removing standing water is free.
+- CAT-10 is shown as "desde S/ 36 al año (microseguro con un crédito de Caja Confianza; un seguro de negocio normal cuesta más)": S/36/year is the Confianza/Mapfre microcredit multirriesgo minimum premium (S/3/month); Mapfre's stand-alone SME multirriesgo policy is S/1,944/year incl. IGV for S/30,000 insured.
+- Quantities in CAT-02 and CAT-11 (number of sacks, sheets) are illustrative; the unit prices are sourced.
 - No sourced recommendation was found for disaster-time theft/looting protection, so it is not in the catalog.
 
 ## 6. URLs that failed during research

@@ -43,6 +43,8 @@ def action_catalog() -> list[dict]:
         r["cost_min_pen"] = float(r["cost_min_pen"]) if r["cost_min_pen"] else None
         r["cost_max_pen"] = float(r["cost_max_pen"]) if r["cost_max_pen"] else None
         r["protects"] = float(r["protects"]) if r["protects"] else None
+        # "window=5.90;door=10.90" -> {"window": 5.9, "door": 10.9}: prices per unit when the owner gives a count
+        r["unit_prices"] = {k: float(v) for k, v in (x.split("=") for x in r.get("unit_prices", "").split(";") if x)}
     return rows
 
 

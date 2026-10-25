@@ -23,6 +23,7 @@ MONEY_FACTS = {
     "cash_on_hand", "cash_gap", "lost_sales", "extra_stock_value", "budget", "total_cost", "money_left",
     "expected_benefit", "weekly_saving_needed", "sales_at_risk", "prep_budget", "monthly_fixed_costs",
     "weekly_sales", "planned_purchases", "cash_after_purchases", "extra_stock_needed", "stock_up_money_available",
+    "window_screen_price", "door_screen_price",
 }
 DAY_FACTS = {"days_of_stock", "extra_days_to_buy", "extra_days_needed", "power_cut_days"}
 WEEK_FACTS = {"weeks_closed", "weeks_until_rains", "sick_weeks"}
@@ -41,7 +42,7 @@ def base_key(key: str) -> str:
 def fact_unit(key: str) -> str:
     """Unit of a fact: soles, days, weeks, percent or count."""
     b = base_key(key)
-    if b in MONEY_FACTS or re.fullmatch(r"cat_\d{2}_cost", b):
+    if b in MONEY_FACTS or re.fullmatch(r"cat_\d{2}_(?:cost|unit_price)", b):
         return "soles"
     if b.endswith("_pct"):
         return "percent"
@@ -53,11 +54,15 @@ def fact_unit(key: str) -> str:
 
 
 def cost_unit(key: str, language: str) -> str:
-    """Catalog cost unit for a {cat_NN_cost} fact, e.g. 'al año' / 'per year'; '' for other keys."""
-    m = re.fullmatch(r"cat_(\d{2})_cost", base_key(key))
+    """Catalog cost unit for a {cat_NN_cost} or {cat_NN_unit_price} fact, e.g. 'al año' / 'per year'; '' for other
+    keys. An action priced from the owner's count (CAT-09 screens) shows its total with total_unit_* and its
+    price per unit with cost_unit_*: "S/ 28.60 en mallas para ventanas y puertas", "S/ 5.90 por ventana"."""
+    m = re.fullmatch(r"cat_(\d{2})_(cost|unit_price)", base_key(key))
     if not m:
         return ""
     row = next((a for a in data_store.action_catalog() if a["id"] == f"CAT-{m.group(1)}"), {})
+    if m.group(2) == "cost" and row.get("unit_prices"):
+        return row.get(f"total_unit_{language}", "")
     return row.get(f"cost_unit_{language}", "")
 
 
@@ -185,7 +190,7 @@ def _bracket_around(text: str, start: int, end: int) -> tuple[int, int] | None:
 
 
 # Fields of an agent's JSON that hold identifiers or labels, not prose (e.g. "cat_02_cost", "supplier_1_extra_days").
-NON_PROSE_KEYS = {"catalog_id", "fact_keys", "sources", "cost_fact_key", "total_fact_key", "money_left_fact_key",
+NON_PROSE_KEYS = {"catalog_id", "fact_keys", "sources", "cost_fact_key", "unit_price_fact_key", "total_fact_key", "money_left_fact_key",
                   "who", "road_cut_risk", "advice", "stock_up_status", "name_es", "name_en", "city", "product",
                   "communique_id", "date", "scenario", "verdict", "type", "hazard", "severity", "risk",
                   "risk_level", "district_hazard_level", "missing_facts", "suspicious_content"}

@@ -67,7 +67,10 @@ def issues(text, facts=FACTS, language="es"):
     ("cat_02_cost", 77.0, "es", "S/ 77 por 10 sacos llenos"),
     ("cat_10_cost", 36.0, "es", "S/ 36 al año"),
     ("cat_10_cost", 36.0, "en", "S/ 36 per year"),
-    ("cat_09_cost", 5.9, "en", "S/ 5.90 per window screen"),
+    ("cat_09_cost", 28.6, "es", "S/ 28.60 en mallas para ventanas y puertas"),
+    ("cat_09_unit_price", 5.9, "es", "S/ 5.90 por ventana"),
+    ("cat_09_unit_price", 5.9, "en", "S/ 5.90 per window"),
+    ("cat_07_cost", 64.99, "en", "S/ 64.99 per year, cloud storage; 2023 price"),
     ("high_risk_suppliers", 2, "es", "2"),
 ])
 def test_fill_writes_units_in_the_plan_language(key, value, lang, expected):

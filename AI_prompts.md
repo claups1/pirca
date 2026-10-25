@@ -642,3 +642,27 @@ In the "¿Qué significa?" glossary in frontend/app.js, the El Niño costero ent
 ```
 Commit the working tree changes with a sensible message.
 ```
+
+## Prompt 66 — Screen costs, insurance and backup prices
+
+```
+Mosquito screens (CAT-09): stop assuming 1 window. In wizard step 5, add an optional question "¿Cuántas ventanas y puertas tiene tu local?" / "How many windows and doors does your shop have?" (number with +/- buttons, default empty = "No sé"). In code, the screen cost = windows × window-screen price + doors × door-screen price from the catalog; if the answer is empty, show the unit price ("S/ 5.90 por ventana") and don't count screens in the budget total. In the plan, list "Elimina el agua estancada (gratis)" first under dengue, then the screens. Add an offline test for the cost calculation. 
+check this costs 
+
+Insurance (CAT-10): show "desde S/ 36 al año (microseguro con un crédito de Caja Confianza; un seguro de negocio normal cuesta más)" / "from S/ 36 per year (microinsurance with a Caja Confianza loan; regular business insurance costs more)".
+- Cloud backup (CAT-07): check the current Google One 100 GB price in Peru and update the catalog with today's source; if you can't find one, label it "precio de 2023 / 2023 price".
+- Under the purchases list, one line: "Precios de Promart (web, 24 oct 2026); no incluyen mano de obra. Las cantidades son estimadas." / the English equivalent.
+Update output/sources.md for any changed price.
+```
+
+## Prompt 67 — Commit
+
+```
+Commit the working tree changes with a sensible message.
+```
+
+## Prompt 68 — Open
+
+```
+open in browser
+```

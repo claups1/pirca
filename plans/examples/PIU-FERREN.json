@@ -34,7 +34,9 @@
     "prep_budget": 2000,
     "already_have": [
       "CAT-01"
-    ]
+    ],
+    "windows": 1,
+    "doors": 0
   },
   "language": "en",
   "status": "completed",
@@ -230,7 +232,11 @@
     "long_closure__delta_cash_gap": 7983.39,
     "long_closure__lost_sales": 156000.0,
     "long_closure__baseline_lost_sales": 48000.0,
-    "long_closure__delta_lost_sales": 108000.0
+    "long_closure__delta_lost_sales": 108000.0,
+    "screen_windows": 1,
+    "screen_doors": 0,
+    "window_screen_price": 5.9,
+    "door_screen_price": 10.9
   },
   "sources": [
     "CAT-02",

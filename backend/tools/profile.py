@@ -36,6 +36,10 @@ class ShopProfile(BaseModel):
     days_of_stock: float = Field(ge=0, le=365)
     prep_budget: float = Field(ge=0)
     already_have: list[str] = Field(default_factory=list)  # CAT IDs from the checklist
+    # Optional: windows and doors for mosquito screens (CAT-09). None = "No sé": screens are then shown at
+    # their unit price and left out of the budget.
+    windows: int | None = Field(default=None, ge=0, le=50)
+    doors: int | None = Field(default=None, ge=0, le=20)
 
 
 def parse_profile(profile: dict | ShopProfile) -> ShopProfile:

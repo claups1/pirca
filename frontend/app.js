@@ -741,6 +741,11 @@ Object.assign(STR.es, {
   previewFree: "Calculado con código, sin IA: 0 tokens.", missingAnswers: "Falta responder:", stepCheck: "Revisa esto:",
   notAnswered: "Sin responder", perishableAuto: "No sé (Pirca lo revisa)", levelUnverified: "sin verificar", wallLabel: "Tu pirca crece con cada paso",
   daysUnit: "días", peopleUnit: "personas", alreadyHave: "¿Qué ya tienes? (toca lo que tengas)", noneSelected: "Nada marcado",
+  openingsQ: "¿Cuántas ventanas y puertas tiene tu local?", optional: "(opcional)", dontKnow: "No sé",
+  windowsLabel: "Ventanas", doorsLabel: "Puertas", less: "Menos", more: "Más",
+  openingsUnknown: (w) => `Si no sabes, déjalo vacío: te mostramos el precio de una malla (${w} por ventana) y no la sumamos a tu presupuesto.`,
+  openingsCost: (parts, total) => `Mallas contra zancudos: ${parts} = ${total}`,
+  nWindows: (n) => `${n} ${n === 1 ? "ventana" : "ventanas"}`, nDoors: (n) => `${n} ${n === 1 ? "puerta" : "puertas"}`,
 });
 Object.assign(STR.en, {
   resumeText: "You have unfinished answers. Continue where you left off?", resumeContinue: "Continue", resumeReset: "Start over",
@@ -754,6 +759,11 @@ Object.assign(STR.en, {
   previewFree: "Calculated with code, no AI: 0 tokens.", missingAnswers: "Still to answer:", stepCheck: "Please check:",
   notAnswered: "Not answered", perishableAuto: "Not sure (Pirca checks)", levelUnverified: "unverified", wallLabel: "Your pirca grows with each step",
   daysUnit: "days", peopleUnit: "people", alreadyHave: "What do you already have? (tap all that apply)", noneSelected: "Nothing ticked",
+  openingsQ: "How many windows and doors does your shop have?", optional: "(optional)", dontKnow: "Not sure",
+  windowsLabel: "Windows", doorsLabel: "Doors", less: "Fewer", more: "More",
+  openingsUnknown: (w) => `If you're not sure, leave it empty: we show the price of one screen (${w} per window) and don't add it to your budget.`,
+  openingsCost: (parts, total) => `Mosquito screens: ${parts} = ${total}`,
+  nWindows: (n) => `${n} ${n === 1 ? "window" : "windows"}`, nDoors: (n) => `${n} ${n === 1 ? "door" : "doors"}`,
 });
 
 // One plain line under each question.
@@ -776,6 +786,7 @@ const WHY = {
   suppliers: { es: "Revisamos si las carreteras desde esas ciudades se cortaron en inundaciones pasadas.", en: "We check whether roads from those cities were cut in past floods." },
   prep_budget: { es: "Las compras del plan se eligen para que entren en este monto.", en: "The plan's purchases are chosen to fit this amount." },
   already_have: { es: "Así no te recomendamos lo que ya tienes.", en: "So we don't recommend what you already have." },
+  openings: { es: "Para calcular cuántas mallas contra zancudos necesitas.", en: "To work out how many mosquito screens you need." },
 };
 
 const BUSINESS_TYPES = [
@@ -1040,6 +1051,45 @@ function fieldControl(f, d) {
   return question(f, `<input id="f-${f.name}" data-name="${f.name}" type="text" value="${esc(v ?? "")}" aria-labelledby="q-${f.name}">`);
 }
 
+// Optional count for mosquito screens (CAT-09). Empty = "No sé": the plan then shows the price per window
+// and leaves screens out of the budget.
+const OPENINGS = [["windows", "windowsLabel", 50], ["doors", "doorsLabel", 20]];
+const screenPrices = () => state.meta.actions.find((a) => a.id === "CAT-09")?.unit_prices || {};
+function screenParts(windows, doors, price) {
+  const S = STR[store.lang], pr = screenPrices();
+  return [windows ? `${S.nWindows(windows)} × ${price(pr.window)}` : "", doors ? `${S.nDoors(doors)} × ${price(pr.door)}` : ""]
+    .filter(Boolean).join(" + ");
+}
+function openingsNote(d) {
+  const S = STR[store.lang], pr = screenPrices();
+  if (!filled(d.windows) && !filled(d.doors)) return S.openingsUnknown(money(pr.window, "pen"));
+  const w = Number(d.windows || 0), dr = Number(d.doors || 0);
+  const total = Math.round((w * pr.window + dr * pr.door) * 100) / 100;
+  return S.openingsCost(screenParts(w, dr, (v) => money(v, "pen")) || "0", money(total, "pen"));
+}
+function openingsHtml(d) {
+  return `<div class="q" data-field="openings"><div class="q-label" id="q-openings">${esc(t("openingsQ"))} <span class="muted">${esc(t("optional"))}</span></div>
+    <div class="steppers">${OPENINGS.map(([name, label, max]) => {
+      const v = filled(d[name]) ? Number(d[name]) : "";
+      return `<div class="stepper"><span class="stepper-label" id="lbl-${name}">${esc(t(label))}</span>
+        <div class="stepper-row">
+          <button type="button" class="btn stepper-btn" data-count-step="${name}" data-delta="-1" aria-label="${esc(`${t("less")} ${t(label).toLowerCase()}`)}">−</button>
+          <input class="num stepper-input" id="f-${name}" data-count="${name}" type="number" inputmode="numeric" min="0" max="${max}" step="1"
+            value="${v}" placeholder="${esc(t("dontKnow"))}" aria-labelledby="q-openings lbl-${name}">
+          <button type="button" class="btn stepper-btn" data-count-step="${name}" data-delta="1" aria-label="${esc(`${t("more")} ${t(label).toLowerCase()}`)}">+</button>
+        </div></div>`;
+    }).join("")}</div>
+    <p class="openings-note" id="openings-note" aria-live="polite">${esc(openingsNote(d))}</p>${why("openings")}</div>`;
+}
+function setCount(name, value) {
+  const max = OPENINGS.find(([n]) => n === name)[2];
+  const v = value === null || value === "" || Number.isNaN(value) ? null : Math.max(0, Math.min(max, Math.round(value)));
+  setDraft(name, v);
+  const input = document.getElementById(`f-${name}`);
+  if (input && document.activeElement !== input) input.value = v ?? "";
+  document.getElementById("openings-note").textContent = openingsNote(draftNow());
+}
+
 function supplierRowHtml(s, i) {
   const pv = s.perishable === true ? "true" : s.perishable === false ? "false" : "";
   const opts = L(SUPPLIER_PERISHABLE);
@@ -1065,6 +1115,7 @@ function stepHtml(i, d) {
     ${g.fields.map((f) => fieldControl(f, d)).join("")}
     ${g.id === "suppliers" ? `<div class="q"><div id="suppliers">${suppliers.map(supplierRowHtml).join("")}</div>
       <button class="btn" type="button" id="add-supplier" ${suppliers.length >= 3 ? "disabled" : ""}>${esc(t("addSupplier"))}</button>${why("suppliers")}</div>` : ""}
+    ${g.id === "prep" ? openingsHtml(d) : ""}
     ${g.id === "prep" ? `<div class="q"><div class="q-label" id="q-already_have">${esc(t("alreadyHave"))}</div>
       <div class="have-grid">${state.meta.actions.map((a) => `<button type="button" class="choice have" role="checkbox" data-have="${a.id}" aria-checked="${have.has(a.id)}">
         <span class="choice-icon" aria-hidden="true">${CAT_ICONS[a.id] || "✅"}</span><span>${esc(store.lang === "es" ? a.name_es : a.name_en)}</span></button>`).join("")}</div>${why("already_have")}</div>` : ""}
@@ -1099,6 +1150,8 @@ function reviewHtml(d) {
         <button class="btn btn-small" type="button" data-edit="${i}">✎ ${esc(t("edit"))}</button></div>
       <dl>${g.fields.map((f) => `<div><dt>${esc(L(f.label))}</dt><dd>${answerText(f, d[f.name])}</dd></div>`).join("")}
       ${g.id === "suppliers" ? `<div><dt>${esc(L(g.title))}</dt><dd>${sup.length ? sup.map((s) => esc(`${s.product} — ${s.city}${s.perishable === null || s.perishable === undefined ? "" : ` (${opts[String(s.perishable)]})`}`)).join("<br>") : `<span class="muted">${esc(t("notAnswered"))}</span>`}</dd></div>` : ""}
+      ${g.id === "prep" ? `<div><dt>${esc(t("openingsQ"))}</dt><dd>${!filled(d.windows) && !filled(d.doors) ? esc(t("dontKnow"))
+        : esc(`${STR[store.lang].nWindows(Number(d.windows || 0))}, ${STR[store.lang].nDoors(Number(d.doors || 0))}`)}</dd></div>` : ""}
       ${g.id === "prep" ? `<div><dt>${esc(t("alreadyHave").replace(/\s*\(.*\)$/, ""))}</dt><dd>${(d.already_have || []).length ? d.already_have.map((id) => esc(names[id] || id)).join(", ") : `<span class="muted">${esc(t("noneSelected"))}</span>`}</dd></div>` : ""}
       </dl></div>`).join("")}
     <div id="form-notice"></div>
@@ -1183,6 +1236,14 @@ function wireWizard() {
       if (on) set.add(have.dataset.have); else set.delete(have.dataset.have);
       setDraft("already_have", [...set]); onAnswer(); return;
     }
+    const stepBtn = e.target.closest("[data-count-step]");
+    if (stepBtn) {
+      const name = stepBtn.dataset.countStep, cur = draftNow()[name];
+      const delta = Number(stepBtn.dataset.delta);
+      // "+" from "No sé" starts at 1; "−" from 0 goes back to "No sé".
+      const next = !filled(cur) ? (delta > 0 ? 1 : null) : Number(cur) + delta < 0 ? null : Number(cur) + delta;
+      setCount(name, next); onAnswer(); return;
+    }
     const chip = e.target.closest("[data-perishable]");
     if (chip) {
       chip.parentElement.querySelectorAll(".chip").forEach((c) => c.setAttribute("aria-checked", String(c === chip)));
@@ -1202,6 +1263,7 @@ function wireWizard() {
     if (el.id === "f-business_type_other") { setDraft("business_type", el.value.trim() || null); onAnswer(); return; }
     if (el.id === "f-district-search") { filterDistricts(el.value); return; }
     if (el.closest(".supplier-row")) { saveSuppliers(); return; }
+    if (el.dataset.count) { setCount(el.dataset.count, el.value === "" ? null : Number(el.value)); onAnswer(); return; }
     const name = el.dataset.name;
     if (!name) return;
     const row = el.closest(".q");
@@ -1989,6 +2051,10 @@ Object.assign(STR.es, {
     no_more_value: (n, fmt, left) => `Quedan ${fmt(left)} sin gastar porque las demás acciones no protegerían más a tu negocio.`,
   },
   budgetToFund: "Puedes sumarlo a tu fondo de emergencia.",
+  removeWater: "Elimina el agua estancada (gratis)", screensName: "Mallas contra zancudos para ventanas y puertas",
+  perWindowNotCounted: (p) => `${p} por ventana; no está en el total`,
+  insuranceCost: (p) => `desde ${p} al año (microseguro con un crédito de Caja Confianza; un seguro de negocio normal cuesta más)`,
+  priceNote: "Precios de Promart (web, 24 oct 2026); no incluyen mano de obra. Las cantidades son estimadas.",
   waIntro: (code) => `Mi plan Pirca para El Niño costero (código ${code}). Lo más importante esta semana:`,
   waOpen: "Ver el plan completo:", printTitle: "Mi plan Pirca", meter: "1 m",
 });
@@ -2010,6 +2076,10 @@ Object.assign(STR.en, {
     no_more_value: (n, fmt, left) => `${fmt(left)} is left because the other actions would not protect your shop any further.`,
   },
   budgetToFund: "You can put it toward your emergency fund.",
+  removeWater: "Remove standing water (free)", screensName: "Mosquito screens for windows and doors",
+  perWindowNotCounted: (p) => `${p} per window; not in the total`,
+  insuranceCost: (p) => `from ${p} per year (microinsurance with a Caja Confianza loan; regular business insurance costs more)`,
+  priceNote: "Promart prices (website, Oct 24, 2026); labor not included. Quantities are estimates.",
   waIntro: (code) => `My Pirca plan for coastal El Niño (code ${code}). Most important this week:`,
   waOpen: "See the full plan:", printTitle: "My Pirca plan", meter: "1 m",
 });
@@ -2088,7 +2158,32 @@ function planActions(md, facts) {
     const name = plainText(b[1].replace(/\s*\([^)]*\)\s*(?=\[|$)/, ""));
     buys.push({ id: `buy-${cat}`, cat, name, costText, cost: facts[`cat_${cat.slice(4)}_cost`], text: name });
   });
-  return { steps, buys };
+  // Screens priced per window are not a purchase cost, but they still belong in the list.
+  if (facts.cat_09_unit_price !== undefined && !buys.some((b) => b.cat === "CAT-09"))
+    buys.push({ id: "buy-CAT-09", cat: "CAT-09", name: catalogName("CAT-09"), costText: "", cost: undefined, text: catalogName("CAT-09") });
+  return { steps, buys: buys.flatMap((b) => shapeBuy(b, facts)) };
+}
+
+const catalogRow = (cat) => state.meta.actions.find((a) => a.id === cat) || {};
+const catalogName = (cat) => catalogRow(cat)[store.lang === "es" ? "name_es" : "name_en"] || cat;
+// Cost text for a purchase, from the plan's computed cost and the catalog's current unit (so a relabelled
+// price, such as the 2023 cloud backup price, shows on older plans too).
+function shapeBuy(b, f) {
+  const S = STR[store.lang];
+  if (b.cat === "CAT-09") {  // under dengue: the free step first, then the screens
+    const counted = f.cat_09_cost !== undefined;
+    const screensText = counted
+      // Unit prices are in soles; in dollars each would be rounded on its own and not add up, so show the counts only.
+      ? `${money(f.cat_09_cost)}${f.screen_windows === undefined ? "" : store.currency === "usd"
+        ? `: ${[f.screen_windows ? S.nWindows(f.screen_windows) : "", f.screen_doors ? S.nDoors(f.screen_doors) : ""].filter(Boolean).join(", ")}`
+        : `: ${screenParts(f.screen_windows, f.screen_doors, (v) => money(v))}`}`
+      : f.cat_09_unit_price !== undefined ? S.perWindowNotCounted(money(f.cat_09_unit_price)) : b.costText;
+    return [{ id: "buy-CAT-09-water", cat: "CAT-09", sub: b.name, text: S.removeWater, costText: "", cost: 0 },
+            { ...b, sub: b.name, text: S.screensName, costText: screensText, cost: counted ? f.cat_09_cost : 0 }];
+  }
+  if (b.cat === "CAT-10" && b.cost) return [{ ...b, costText: S.insuranceCost(money(b.cost)) }];
+  const unit = catalogRow(b.cat)[`cost_unit_${store.lang}`];
+  return [{ ...b, costText: b.cost ? `${money(b.cost)}${unit ? ` ${unit}` : ""}` : b.costText }];
 }
 
 function actionIcon(a) {
@@ -2107,13 +2202,21 @@ function saveChecks(code, set) { localStorage.setItem(checksKey(code), JSON.stri
 
 function checklistHtml(actions, checks, lang) {
   const groups = [0, 1, 2, 3].map((p) => ({ title: PHASE_NAMES[lang][p], icon: PHASE_ICONS[p], items: actions.steps.filter((s) => s.phase === p) }))
-    .concat([{ title: t("purchasesGroup"), icon: "🛒", items: actions.buys }]).filter((g) => g.items.length);
+    .concat([{ title: t("purchasesGroup"), icon: "🛒", items: actions.buys, buys: true }]).filter((g) => g.items.length);
   const item = (a) => `<li><label class="check-item">
       <input type="checkbox" data-action="${esc(a.id)}" ${checks.has(a.id) ? "checked" : ""}>
       <span class="check-box" aria-hidden="true"></span>
-      <span class="check-text">${esc(a.text)}${a.costText ? ` <span class="muted">(${esc(a.costText)})</span>` : ""}</span></label></li>`;
+      <span class="check-text">${esc(a.text)}${a.costText ? ` <span class="muted">— ${esc(a.costText)}</span>` : ""}</span></label></li>`;
+  // Items that share a "sub" (the dengue steps) are listed together under that name.
+  const list = (items) => items.map((a, i) => {
+    if (!a.sub) return item(a);
+    if (items[i - 1]?.sub === a.sub) return "";
+    const kids = items.slice(i).filter((x, j, all) => all.slice(0, j + 1).every((y) => y.sub === a.sub));
+    return `<li class="check-sub"><span class="check-sub-title"><span aria-hidden="true">${CAT_ICONS[a.cat] || ""}</span> ${esc(a.sub)}</span>
+      <ul>${kids.map(item).join("")}</ul></li>`;
+  }).join("");
   return groups.map((g) => `<div class="check-group"><h4><span aria-hidden="true">${g.icon}</span> ${esc(g.title)}</h4>
-    <ul>${g.items.map(item).join("")}</ul></div>`).join("");
+    <ul>${list(g.items)}</ul>${g.buys ? `<p class="price-note muted">${esc(t("priceNote"))}</p>` : ""}</div>`).join("");
 }
 
 // ---- pictures (inline SVG, colors from the Warm Pacific theme)
@@ -2183,7 +2286,8 @@ function centsText(cents) {
 }
 
 function purchaseGroups(buys) {
-  const groups = byProtectGroup(buys).map(({ group, items }) => ({ group, soles: items.reduce((x, it) => x + Number(it.cost || 0), 0) }));
+  const groups = byProtectGroup(buys).map(({ group, items }) => ({ group, soles: items.reduce((x, it) => x + Number(it.cost || 0), 0) }))
+    .filter((g) => g.soles > 0);
   const { cents, total } = exactCents(groups.map((g) => g.soles));
   return { groups: groups.map((g, i) => ({ ...g, cents: cents[i] })), totalCents: total };
 }

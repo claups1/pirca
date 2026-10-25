@@ -36,7 +36,9 @@
     "already_have": [
       "CAT-10",
       "CAT-13"
-    ]
+    ],
+    "windows": 1,
+    "doors": 0
   },
   "language": "en",
   "status": "completed",
@@ -203,7 +205,11 @@
     "main_bridge_cut__delta_supplier_3_extra_days": 0.0,
     "power_cut_week__power_cut_days": 7,
     "power_cut_week__sales_at_risk": 9000.0,
-    "power_cut_week__perishables": 1
+    "power_cut_week__perishables": 1,
+    "screen_windows": 1,
+    "screen_doors": 0,
+    "window_screen_price": 5.9,
+    "door_screen_price": 10.9
   },
   "sources": [
     "CAT-01",

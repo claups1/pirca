@@ -28,7 +28,7 @@ enfen = json.loads((D / "enfen" / "index.json").read_text(encoding="utf-8"))
 L = []
 a = L.append
 a("# Pirca data sources\n")
-a("Every number in `data/`, with its source and status. Generated 2026-10-24.\n")
+a("Every number in `data/`, with its source and status. Generated 2026-10-25.\n")
 a("**Status legend**")
 a("- **verified**: read in an official / primary / peer-reviewed document saved in `data/raw/`, and spot-checked against that file.")
 a("- **sourced**: read in a real source, but a secondary one (press, chamber of commerce, retail listing), or used as a proxy / derived value.")
@@ -118,8 +118,10 @@ for t in [
     "CAT-09's 0.78 is 1 − odds ratio 0.22 for house screening (95% CI 0.05–0.93): an odds reduction, not a risk reduction.",
     "CAT-10's 0.95 is derived from Mapfre's 5% deductible (min S/500); insurance transfers loss rather than preventing it, and only up to the sum insured.",
     "CAT-04's S/500 is a municipal quebrada barrier in Trujillo, not a shop-door product. No Peruvian retail flood door barrier was found.",
-    "CAT-07's Google One price is from Dec 2023; Google reportedly raised Peru prices in 2025 (no S/ figure found).",
-    "Quantities in CAT-02, CAT-09 and CAT-11 (number of sacks, screens, sheets) are illustrative; the unit prices are sourced.",
+    "CAT-07's Google One 100 GB price (S/64.99/year) is from Dec 2023. Re-checked 2026-10-25: no current Peru S/ price was found (one.google.com shows USD 1.99/month outside Peru; Google raised Peru prices from Feb 2025 without a published S/ figure), so the app labels it \"precio de 2023 / 2023 price\".",
+    "CAT-09 screens are priced from the owner's answer: windows x S/5.90 + doors x S/10.90 (Promart window screen 180x150 cm and door screen 90x210 cm). Re-checked 2026-10-25: both prices unchanged, shown as sale prices (regular S/7.90 and S/14.90) and 'Producto agotado' online. If the owner leaves the count empty, the plan shows S/5.90 per window and leaves screens out of the budget; removing standing water is free.",
+    "CAT-10 is shown as \"desde S/ 36 al año (microseguro con un crédito de Caja Confianza; un seguro de negocio normal cuesta más)\": S/36/year is the Confianza/Mapfre microcredit multirriesgo minimum premium (S/3/month); Mapfre's stand-alone SME multirriesgo policy is S/1,944/year incl. IGV for S/30,000 insured.",
+    "Quantities in CAT-02 and CAT-11 (number of sacks, sheets) are illustrative; the unit prices are sourced.",
     "No sourced recommendation was found for disaster-time theft/looting protection, so it is not in the catalog.",
 ]:
     a(f"- {t}")

@@ -64,6 +64,7 @@ What goes in each section:
    - affordable or partly_affordable: each non-perishable supplier's own extra days (`{supplier_1_extra_days}`, `{supplier_2_extra_days}`, … in the order of the shop's suppliers), then `{extra_stock_value}` once. Never use `{extra_days_to_buy}` for a single supplier.
    - Never show a stock-up placeholder whose value is 0.
 6. Only actions that cost money, one bullet each: name, cost, citation. The app writes the cost unit after each price (for example "S/ 36 al año", "S/ 77 por 10 sacos llenos"), so write only the placeholder. Then `{total_cost}` and `{money_left}`. Then, in one sentence, what was left out and why in plain words (for example "no alcanzó el presupuesto").
+   - Mosquito control [CAT-09]: start with the free step, then the screens: "Control de zancudos contra el dengue: elimina el agua estancada (gratis) y pon mallas ({cat_09_cost}) [CAT-09]" / "Mosquito control against dengue: remove standing water (free) and put up screens ({cat_09_cost}) [CAT-09]". If the Planner gives CAT-09 a `unit_price_fact_key` instead of a `cost_fact_key` (the owner didn't count windows and doors), write `({cat_09_unit_price})` instead: it is a price per window and is not part of `{total_cost}`.
 7. **At most 2 sentences**, in the owner's words, naming the situations the plan was tested against (for example: lluvias un mes antes, un puente cortado, una semana sin luz, un cierre largo, un trabajador con dengue) and whether it holds.
 
 ## How to name actions

@@ -39,6 +39,8 @@ def all_fact_keys() -> set[str]:
         keys |= set(TOOLS[name](PROFILE)["facts"])
     for s in SCENARIOS:
         keys |= set(run_scenario(PROFILE, s, today=date(2026, 10, 24))["facts"])
+    # Screens: a counted shop gets {cat_09_cost}; one that didn't count gets the price per window.
+    keys |= set(TOOLS["optimize_budget"]({**PROFILE, "windows": 2, "doors": 1})["facts"])
     keys |= set(TOOLS["search_documents"]("lluvia")["facts"])
     keys |= set(TOOLS["get_historical_impacts"]()["facts"])
     keys |= set(verify_draft("x", {})["facts"])

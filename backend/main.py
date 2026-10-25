@@ -46,7 +46,8 @@ def meta() -> dict:
     the example plan code, and the fixed exchange rate for formatting amounts."""
     districts = [{"name": d["district"], "province": d["province"], "hazard_level": d["flood_hazard_level"]}
                  for d in data_store.districts().values()]
-    actions = [{"id": a["id"], "name_es": a["name_es"], "name_en": a["name_en"]} for a in data_store.action_catalog()]
+    actions = [{"id": a["id"], "name_es": a["name_es"], "name_en": a["name_en"], "cost_unit_es": a["cost_unit_es"],
+                "cost_unit_en": a["cost_unit_en"], "unit_prices": a["unit_prices"]} for a in data_store.action_catalog()]
     fx = data_store.exchange_rate()
     return {"districts": districts, "actions": actions, "example_code": EXAMPLE_CODE, "enfen": latest_enfen(),
             "pen_per_usd": fx["pen_per_usd"], "fx_date": fx["date"], "model": config.MODEL_NAME}

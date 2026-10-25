@@ -72,6 +72,24 @@ def cost_key(action_id: str) -> str:
     return action_id.lower().replace("-", "_") + "_cost"
 
 
+def unit_price_key(action_id: str) -> str:
+    """Fact key for a price per unit that is not counted in the budget: CAT-09 -> cat_09_unit_price."""
+    return action_id.lower().replace("-", "_") + "_unit_price"
+
+
+def screen_cost(profile: dict | ShopProfile) -> dict:
+    """Mosquito screens (CAT-09): windows x window-screen price + doors x door-screen price, from the catalog.
+    If the owner didn't give a count ("No sé"), cost is None: show the price per window and leave screens
+    out of the budget. One answer left empty while the other is given counts as 0."""
+    p = parse_profile(profile)
+    prices = next(a for a in data_store.action_catalog() if a["id"] == "CAT-09")["unit_prices"]
+    known = p.windows is not None or p.doors is not None
+    windows, doors = p.windows or 0, p.doors or 0
+    cost = round(windows * prices["window"] + doors * prices["door"], 2) if known else None
+    return {"known": known, "windows": windows if known else None, "doors": doors if known else None,
+            "window_price": prices["window"], "door_price": prices["door"], "cost": cost}
+
+
 def _knapsack(items: list[dict], budget: int) -> set[str]:
     """0/1 knapsack on whole soles; returns the IDs that maximize total benefit."""
     n = len(items)
@@ -100,13 +118,21 @@ def optimize_budget(profile: dict | ShopProfile, budget: float | None = None) ->
     bases = _loss_bases(p)
 
     selected, excluded, items = [], list(catalog["excluded"]), []
+    screens = screen_cost(p)
     for a in catalog["actions"]:
         cost = a["cost_min_pen"]
+        if a["id"] == "CAT-09":
+            # Screens are priced from the owner's window and door count. Without a count they are not in the
+            # budget: the action is planned as its free part (removing standing water), with the price per window.
+            cost = screens["cost"] if screens["known"] else 0.0
         benefit = round((a["protects"] or 0) * max(bases.get(h, 0.0) for h in a["hazards"]), 2)
         entry = {**a, "cost_used": cost, "expected_benefit": benefit}
         if cost is None:
             excluded.append({"id": a["id"], "action": a["action"], "name_es": a["name_es"], "name_en": a["name_en"],
                              "reason": "cost depends on the shop; sized by compute_cash_buffer / compute_supplier_buffer"})
+        elif cost == 0 and a["id"] == "CAT-09" and not screens["known"]:
+            selected.append({**entry, "why": "removing standing water is free; screens are shown per window and "
+                                             "not counted because the owner didn't give a window count"})
         elif cost == 0:
             selected.append({**entry, "why": "zero cost, always included"})
         else:
@@ -131,6 +157,14 @@ def optimize_budget(profile: dict | ShopProfile, budget: float | None = None) ->
     if any(s["id"] == "CAT-10" for s in selected):
         notes.append("CAT-10 at S/ 36/year is the minimum microcredit-linked micro-insurance premium; "
                      "a stand-alone SME multirriesgo policy costs up to S/ 1,944/year.")
+    in_plan = {s["id"] for s in selected}
+    if "CAT-09" in in_plan:
+        if screens["cost"]:
+            notes.append(f"CAT-09 screens: {screens['windows']} window(s) x S/ {screens['window_price']:.2f} + "
+                         f"{screens['doors']} door(s) x S/ {screens['door_price']:.2f} = S/ {screens['cost']:,.2f}.")
+        elif not screens["known"]:
+            notes.append("CAT-09: the owner didn't give a window count, so screens are not in the budget; "
+                         f"show {{{unit_price_key('CAT-09')}}} (the price per window) instead of a cost.")
     illustrative = [s["id"] for s in selected if s["illustrative_estimate"]]
     facts = {"budget": round(budget, 2), "total_cost": round(spent, 2), "money_left": round(budget - spent, 2),
              "selected_count": len(selected), "excluded_count": len(excluded),
@@ -143,6 +177,13 @@ def optimize_budget(profile: dict | ShopProfile, budget: float | None = None) ->
             facts[cost_key(it["id"])] = round(it["cost_used"], 2)
     for s in selected:
         s["cost_fact_key"] = cost_key(s["id"]) if s.get("cost_used") else None  # free actions have no cost fact
+    if "CAT-09" in in_plan:
+        if screens["cost"]:
+            facts.update({"screen_windows": screens["windows"], "screen_doors": screens["doors"],
+                          "window_screen_price": screens["window_price"], "door_screen_price": screens["door_price"]})
+        elif not screens["known"]:  # a price per window, never added to the total
+            facts[unit_price_key("CAT-09")] = screens["window_price"]
+            next(s for s in selected if s["id"] == "CAT-09")["unit_price_fact_key"] = unit_price_key("CAT-09")
     return {"tool": "optimize_budget", "facts": facts, "sources": [s["id"] for s in selected],
             "assumptions": A.describe("action_benefit_model"),
             "selected": selected, "excluded": excluded, "illustrative_selected": illustrative,
