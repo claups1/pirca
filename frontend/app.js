@@ -237,6 +237,11 @@ document.querySelectorAll("[data-currency]").forEach((b) => b.addEventListener("
   store.currency = b.dataset.currency; applyChrome();
   if (state.view?.rerender) state.view.rerender();  // local re-render: no server call
 }));
+// "+ Nuevo" always starts a fresh plan: any unfinished answers are deleted.
+document.getElementById("new-btn").addEventListener("click", () => {
+  startNewPlan();
+  if (location.hash === "#/new") { openWizard(); renderForm(); }  // already on the form: no hashchange
+});
 document.getElementById("my-plans-link").addEventListener("click", () => { toggleMenu(false); location.hash = "#/plans"; });
 document.getElementById("code-form").addEventListener("submit", (e) => {
   e.preventDefault();
@@ -304,7 +309,7 @@ async function route() {
   try {
     await meta();
     const m = hash.match(/^#\/plan\/([A-Za-z0-9-]+)$/);
-    if (hash === "#/new") renderForm();
+    if (hash === "#/new") { openWizard(); renderForm(); }
     else if (hash === "#/plans") renderMyPlans();
     else if (m) await renderPlanPage(m[1].toUpperCase());
     else await renderHome();
@@ -702,8 +707,7 @@ function wireProvinceCards(home, fn) {
     if (e.target.closest(".dc-close")) { close(); return; }
     const plan = e.target.closest("[data-plan-for]");
     if (plan) {
-      store.draft = { ...draftNow(), district: plan.dataset.planFor };  // the wizard opens with this district selected
-      wiz.step = 0;
+      startNewPlan({ district: plan.dataset.planFor });  // a fresh plan with this district selected
       location.hash = "#/new";
     }
   });
@@ -726,6 +730,7 @@ function wireProvinceCards(home, fn) {
 // ---- intake wizard: one group per screen, big choices, sliders, "why we ask", live risk preview (0 tokens)
 
 Object.assign(STR.es, {
+  resumeText: "Tienes respuestas sin terminar. ¿Continuar donde quedaste?", resumeContinue: "Continuar", resumeReset: "Empezar de nuevo",
   stepOf: (i, n) => `Paso ${i} de ${n}`, back: "← Atrás", next: "Siguiente →", reviewTitle: "Revisa tus respuestas",
   reviewIntro: "Revisa que todo esté bien. Puedes cambiar cualquier grupo antes de hacer tu plan.",
   reviewStep: "Revisión final", edit: "Editar", makeMyPlan: "Hacer mi plan", whyAsk: "¿Por qué preguntamos esto?",
@@ -738,6 +743,7 @@ Object.assign(STR.es, {
   daysUnit: "días", peopleUnit: "personas", alreadyHave: "¿Qué ya tienes? (toca lo que tengas)", noneSelected: "Nada marcado",
 });
 Object.assign(STR.en, {
+  resumeText: "You have unfinished answers. Continue where you left off?", resumeContinue: "Continue", resumeReset: "Start over",
   stepOf: (i, n) => `Step ${i} of ${n}`, back: "← Back", next: "Next →", reviewTitle: "Review your answers",
   reviewIntro: "Check that everything is right. You can change any group before making your plan.",
   reviewStep: "Final review", edit: "Edit", makeMyPlan: "Make my plan", whyAsk: "Why we ask",
@@ -798,21 +804,57 @@ const PLACE_PICS = {
   second_floor: `<rect x="18" y="8" width="44" height="42" class="pic-wall"/><line x1="18" x2="62" y1="29" y2="29" class="pic-floor"/><rect x="24" y="18" width="10" height="10" class="pic-box up"/><rect x="36" y="18" width="10" height="10" class="pic-box up"/>${STREET}`,
 };
 
+// Where the wizard's answers live:
+//   "saved"   – the owner's own answers, kept in this browser until the plan is submitted;
+//   "pending" – a saved draft exists but the owner has not chosen to continue it: the form starts blank (in memory);
+//   "sample"  – the sample shop, kept in memory for this visit only and never saved.
+const memory = { draft: {}, step: 0, visited: 0 };
 const wiz = {
-  get step() { return Math.min(GROUPS.length, Number(localStorage.getItem("pirca.step")) || 0); },
-  set step(v) { localStorage.setItem("pirca.step", String(v)); },
-  get visited() { return Number(localStorage.getItem("pirca.visited")) || 0; },
-  set visited(v) { localStorage.setItem("pirca.visited", String(v)); },
+  mode: "saved", fresh: false,
+  get step() { return this.mode === "saved" ? Math.min(GROUPS.length, Number(localStorage.getItem("pirca.step")) || 0) : memory.step; },
+  set step(v) { if (this.mode === "saved") localStorage.setItem("pirca.step", String(v)); else memory.step = v; },
+  get visited() { return this.mode === "saved" ? Number(localStorage.getItem("pirca.visited")) || 0 : memory.visited; },
+  set visited(v) { if (this.mode === "saved") localStorage.setItem("pirca.visited", String(v)); else memory.visited = v; },
   preview: null, seq: 0, timer: null,
 };
+function clearSavedDraft() { ["pirca.draft", "pirca.step", "pirca.visited"].forEach((k) => localStorage.removeItem(k)); }
+function resetMemory(draft = {}) { Object.assign(memory, { draft, step: 0, visited: 0 }); }
+function hasSavedDraft() {
+  const d = store.draft;
+  return Boolean(d) && Object.values(d).some((v) => (Array.isArray(v) ? v.some((x) => x && Object.values(x).some(filled)) : filled(v)));
+}
+// A brand-new plan ("+ Nuevo", or "Hacer mi plan para <district>" on the map): no old answers, no banner.
+function startNewPlan(initial = {}) {
+  clearSavedDraft();
+  resetMemory();
+  if (Object.keys(initial).length) store.draft = initial;
+  wiz.mode = "saved";
+  wiz.fresh = true;
+}
+// Each time #/new opens (not on a language re-render): start blank, and offer an unfinished draft if there is one.
+function openWizard() {
+  if (wiz.fresh) { wiz.fresh = false; wiz.mode = "saved"; return; }
+  resetMemory();
+  wiz.mode = hasSavedDraft() ? "pending" : "saved";
+}
 
 const ALL_FIELDS = () => GROUPS.flatMap((g) => g.fields);
 const filled = (v) => v !== null && v !== undefined && v !== "" && !(typeof v === "number" && Number.isNaN(v));
 function draftNow() {
-  const d = store.draft || {};
+  const d = (wiz.mode === "saved" ? store.draft : memory.draft) || {};
   return typeof d.perishables === "boolean" ? { ...d, perishables: d.perishables ? "yes" : "no" } : d;
 }
-function setDraft(name, value) { store.draft = { ...draftNow(), [name]: value }; }
+function setDraft(name, value) {
+  if (wiz.mode === "pending") {  // answering instead of choosing means starting over: the old draft goes
+    clearSavedDraft();
+    wiz.mode = "saved";
+    store.draft = { ...memory.draft };
+    wiz.step = memory.step; wiz.visited = memory.visited;
+    document.getElementById("resume-banner")?.remove();
+  }
+  const next = { ...draftNow(), [name]: value };
+  if (wiz.mode === "sample") memory.draft = next; else store.draft = next;
+}
 function collectDraft() { return draftNow(); }
 function saveDraftFromForm() { /* the wizard saves every answer as it is given */ }
 
@@ -1078,7 +1120,11 @@ function renderForm() {
       <div class="wiz-progress"><span id="wiz-step-label" class="check-count"></span><div class="progress-bar" aria-hidden="true"><span id="wiz-bar"></span></div></div>
     </section>
     <div class="wizard-layout">
-      <form id="intake" class="wizard-main" novalidate>${i < GROUPS.length ? stepHtml(i, d) : reviewHtml(d)}</form>
+      <form id="intake" class="wizard-main" novalidate>${wiz.mode === "pending" ? `<div class="notice resume-banner" id="resume-banner" role="status">
+          <span>${esc(t("resumeText"))}</span>
+          <span class="btn-row"><button class="btn btn-primary btn-small" type="button" id="resume-continue">${esc(t("resumeContinue"))}</button>
+          <button class="btn btn-small" type="button" id="resume-reset">${esc(t("resumeReset"))}</button></span></div>` : ""}
+        ${i < GROUPS.length ? stepHtml(i, d) : reviewHtml(d)}</form>
       <aside class="risk-preview glass" id="risk-preview" aria-live="polite">
         <h2>${esc(t("previewTitle"))}</h2>${gaugeSvg(null)}<div class="preview-text"></div>
         <p class="muted small">${esc(t("previewFree"))}</p></aside>
@@ -1107,10 +1153,13 @@ function wireWizard() {
   if (list && picked) list.scrollTop = picked.offsetTop - list.offsetTop - 40;
   document.getElementById("sample-btn").addEventListener("click", async () => {
     const example = await api(`/api/plans/${state.meta.example_code}`);
-    store.draft = example.result.form;
+    wiz.mode = "sample";  // in memory for this visit only: the sample answers are never saved
+    resetMemory({ ...example.result.form });
     wiz.visited = GROUPS.length;
     goStep(GROUPS.length);  // straight to the review screen
   });
+  document.getElementById("resume-continue")?.addEventListener("click", () => { wiz.mode = "saved"; renderForm(); });
+  document.getElementById("resume-reset")?.addEventListener("click", () => { clearSavedDraft(); resetMemory(); wiz.mode = "saved"; renderForm(); });
   form.addEventListener("submit", (e) => e.preventDefault());
   form.addEventListener("click", (e) => {
     const choice = e.target.closest(".choice[data-name]");
@@ -1244,7 +1293,10 @@ async function checkAndRun(confirmed) {
     const created = await api("/api/plans", { method: "POST", body: JSON.stringify({ profile, language: store.lang }) });
     store.plans = [{ code: created.code, label: `${profile.business_type} · ${profile.district}`, language: store.lang,
                      created_at: new Date().toISOString() }, ...store.plans.filter((p) => p.code !== created.code)];
-    wiz.step = 0; wiz.visited = 0;
+    // Answers are kept only until the plan is submitted (a shared computer shows the next person a blank form).
+    if (wiz.mode === "saved") clearSavedDraft();
+    resetMemory();
+    wiz.mode = "saved";
     location.hash = `#/plan/${created.code}`;
   } catch (e) {
     console.warn(e);

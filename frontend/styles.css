@@ -952,3 +952,7 @@ dialog.glass, .menu.glass { background: var(--glass-menu); }
 .timeline, .timeline-band, .how, .hero, .site-header, .facts-strip > div, .district-card, .fn-pop, dialog, .menu { background: var(--tint-calm); }
 .facts-strip > div { border-top-width: 4px; }
 .map-node rect { fill: #FFFFFF; }
+
+/* Wizard: banner offering an unfinished draft */
+.resume-banner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; padding: 12px 16px; }
+.resume-banner .btn-small { min-height: 36px; padding: 0 14px; }

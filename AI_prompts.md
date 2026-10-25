@@ -596,3 +596,31 @@ Define these as CSS variables, keep WCAG AA contrast for all text on every tint,
 ```
 Commit the working tree changes with a sensible message.
 ```
+
+## Prompt 59 — Open
+
+```
+open
+```
+
+## Prompt 60 — Question: pre-selected answers in the form
+
+```
+http://localhost:8020/#/new why when i open there are already selected answers
+```
+
+## Prompt 61 — Clear the saved form answers
+
+```
+The intake wizard reopens with old answers because the saved draft (localStorage "pirca.draft") is never cleared. Fix it:
+- Clear the draft when a plan is submitted, and when the user clicks "+ Nuevo".
+- When #/new opens and a draft exists, start blank but show a small banner: "Tienes respuestas sin terminar. ¿Continuar donde quedaste? [Continuar] [Empezar de nuevo]" (both languages). "Empezar de nuevo" deletes the draft.
+- "Llenar con un negocio de ejemplo" fills the form for that session only and never leaves the sample answers behind.
+Test all four cases in the browser and add a short note to output/safety/summary.md: answers are kept only until the plan is submitted, so the next person on a shared computer doesn't see them.
+```
+
+## Prompt 62 — Commit
+
+```
+Commit the working tree changes with a sensible message.
+```

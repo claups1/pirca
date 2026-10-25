@@ -70,7 +70,13 @@ def main() -> None:
         r = json.loads(path.read_text(encoding="utf-8"))
         lines.append(f"| {name[0]} | {title} | {kind} | {r['checks']} | **{r['result']}** | {r['run_at']} |")
         details.append(f"- **{name[0]}. {title}:** {key_evidence(name, r['evidence'])} Evidence: `{path.name}`.")
-    lines += ["", "## Key evidence", "", *details, ""]
+    lines += ["", "## Key evidence", "", *details, "",
+              "## Shared computers", "",
+              "The intake form keeps an owner's answers in the browser only until the plan is submitted; submitting, or "
+              "\"+ Nuevo\", deletes them, so the next person on a shared computer starts with a blank form. If unfinished "
+              "answers exist, the form still opens blank and asks \"¿Continuar donde quedaste?\" (Continuar / Empezar de "
+              "nuevo). The sample shop fills the form for that visit only and is never saved. Checked in the browser on "
+              "2026-10-24 (submit, \"+ Nuevo\", the resume banner and the sample shop).", ""]
     (SAFETY_DIR / "summary.md").write_text("\n".join(lines), encoding="utf-8")
     print(f"Wrote {SAFETY_DIR / 'summary.md'}")
 
