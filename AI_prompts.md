@@ -666,3 +666,19 @@ Commit the working tree changes with a sensible message.
 ```
 open in browser
 ```
+
+## Prompt 69 — Checklist alignment and sand-tint wizard controls
+
+```
+Two layout fixes in Pirca:
+
+1. Checklist: all checkboxes must line up in one column. Remove the extra indent for the dengue sub-items: show "Control de zancudos" as a normal checklist item's small label (or merge its sub-items into the Compras list) so every checkbox and its text start at the same left edge.
+
+2. Wizard: no pure white. Choice cards, district buttons, the search box and number fields use a light sand tint #F6ECDD with a 1px border #E3D3BC; hover = slightly darker #F1E2CC; selected = coral tint #FCE9E2 with a 2px coral #E8664A border. Business-type cards: icon on top, centered, label below in one or two lines, all cards the same height. Check both languages and take one screenshot of each.
+```
+
+## Prompt 70 — Commit
+
+```
+Commit the working tree changes with a sensible message.
+```

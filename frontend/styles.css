@@ -971,8 +971,38 @@ dialog.glass, .menu.glass { background: var(--glass-menu); }
 .openings-note { margin: var(--s1) 0 0; font-size: 15px; }
 
 /* Purchases: steps that belong together (the dengue steps) under one name */
-.check-sub-title { display: block; padding: 10px 6px 0; font-size: 16px; font-weight: 600; }
-.check-group .check-sub ul { padding-left: 22px; }
+.check-label { display: block; font-size: 13px; font-weight: 600; color: var(--text-muted); letter-spacing: 0.01em; }
 .price-note { margin: var(--s1) 6px 0; font-size: 13.5px; }
-html.printing .check-sub-title { padding: 2px 0 0; font-size: 10.5px; }
+html.printing .check-label { font-size: 9px; color: #555; }
 html.printing .price-note { font-size: 9.5px; color: #555; }
+
+/* ================= Wizard controls: sand tint, never pure white ================= */
+.wizard-main {
+  --ctl-bg: #F6ECDD; --ctl-border: #E3D3BC; --ctl-hover: #F1E2CC; --ctl-on: #FCE9E2; --ctl-on-border: #E8664A;
+}
+.wizard-main .choice, .wizard-main .chip, .wizard-main .segmented-3,
+.wizard-main .district-search, .wizard-main .other-input, .wizard-main input.num, .wizard-main .stepper-input,
+.wizard-main .supplier-row input, .wizard-main .btn:not(.btn-primary), .wizard-main .icon-btn {
+  background: var(--ctl-bg); border: 1px solid var(--ctl-border); box-shadow: none;
+}
+.wizard-main .segmented-3 .chip { border: 0; }
+.wizard-main .segmented-3 .chip + .chip { border-left: 1px solid var(--ctl-border); }
+.wizard-main input.range { background: transparent; }
+.wizard-main .choice:hover, .wizard-main .chip:hover, .wizard-main .btn:not(.btn-primary):hover, .wizard-main .icon-btn:hover { background: var(--ctl-hover); border-color: var(--ctl-border); }
+.wizard-main .segmented-3 .chip:hover { border-color: var(--ctl-border); }
+/* Selected: coral tint with a 2px coral border (1px border + 1px inset ring, so nothing shifts). */
+.wizard-main .choice[aria-checked="true"], .wizard-main .chip[aria-checked="true"] {
+  background: var(--ctl-on); border-color: var(--ctl-on-border); box-shadow: inset 0 0 0 1px var(--ctl-on-border);
+}
+.wizard-main .segmented-3 .chip[aria-checked="true"] { box-shadow: inset 0 0 0 2px var(--ctl-on-border); }
+.wizard-main .district-search:focus, .wizard-main .other-input:focus, .wizard-main input.num:focus,
+.wizard-main .stepper-input:focus, .wizard-main .supplier-row input:focus {
+  border-color: var(--ctl-on-border); box-shadow: inset 0 0 0 1px var(--ctl-on-border); outline: none;
+}
+
+/* Business type: icon on top, label below (one or two lines), every card the same height. */
+.choices-wide { grid-template-columns: repeat(auto-fill, minmax(124px, 1fr)); grid-auto-rows: 1fr; }
+.choices-wide .choice { flex-direction: column; justify-content: center; align-items: center; gap: 6px; text-align: center;
+  min-height: 104px; padding: 12px 8px; line-height: 1.25; }
+.choices-wide .choice-icon { font-size: 28px; }
+.choices-wide .choice > span:last-child { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }

@@ -2203,18 +2203,13 @@ function saveChecks(code, set) { localStorage.setItem(checksKey(code), JSON.stri
 function checklistHtml(actions, checks, lang) {
   const groups = [0, 1, 2, 3].map((p) => ({ title: PHASE_NAMES[lang][p], icon: PHASE_ICONS[p], items: actions.steps.filter((s) => s.phase === p) }))
     .concat([{ title: t("purchasesGroup"), icon: "🛒", items: actions.buys, buys: true }]).filter((g) => g.items.length);
-  const item = (a) => `<li><label class="check-item">
+  const item = (a, label = "") => `<li><label class="check-item">
       <input type="checkbox" data-action="${esc(a.id)}" ${checks.has(a.id) ? "checked" : ""}>
       <span class="check-box" aria-hidden="true"></span>
-      <span class="check-text">${esc(a.text)}${a.costText ? ` <span class="muted">— ${esc(a.costText)}</span>` : ""}</span></label></li>`;
-  // Items that share a "sub" (the dengue steps) are listed together under that name.
-  const list = (items) => items.map((a, i) => {
-    if (!a.sub) return item(a);
-    if (items[i - 1]?.sub === a.sub) return "";
-    const kids = items.slice(i).filter((x, j, all) => all.slice(0, j + 1).every((y) => y.sub === a.sub));
-    return `<li class="check-sub"><span class="check-sub-title"><span aria-hidden="true">${CAT_ICONS[a.cat] || ""}</span> ${esc(a.sub)}</span>
-      <ul>${kids.map(item).join("")}</ul></li>`;
-  }).join("");
+      <span class="check-text">${label ? `<span class="check-label">${esc(label)}</span>` : ""}${esc(a.text)}${a.costText ? ` <span class="muted">— ${esc(a.costText)}</span>` : ""}</span></label></li>`;
+  // Steps that share a "sub" (the dengue steps) stay in the same column; the first one shows the shared name
+  // as a small label, so every checkbox starts at the same left edge.
+  const list = (items) => items.map((a, i) => item(a, a.sub && items[i - 1]?.sub !== a.sub ? a.sub : "")).join("");
   return groups.map((g) => `<div class="check-group"><h4><span aria-hidden="true">${g.icon}</span> ${esc(g.title)}</h4>
     <ul>${list(g.items)}</ul>${g.buys ? `<p class="price-note muted">${esc(t("priceNote"))}</p>` : ""}</div>`).join("");
 }
