@@ -214,7 +214,7 @@ python3 -m venv .venv
     <tr><td>Numbers computed by</td><td>Official studies</td><td>—</td><td>The consultant</td><td>The language model</td><td class="pirca">Python tools; the model never types a number</td></tr>
     <tr><td>Fits the owner's cash</td><td>—</td><td>—</td><td>Depends</td><td>No built-in check</td><td class="pirca">Checked in code; a plan that spends more than the cash fails</td></tr>
     <tr><td>Sources cited</td><td>Yes (official)</td><td>Official guidance</td><td>Depends</td><td>Not guaranteed</td><td class="pirca">Every fact has an ID that code checks exists</td></tr>
-    <tr><td>Format for the owner</td><td>GIS viewer</td><td>Workbook, app</td><td>Document</td><td>Chat text</td><td class="pirca">Spanish or English, pictures, checklist, read-aloud, WhatsApp share</td></tr>
+    <tr><td>Format for the owner</td><td>GIS viewer</td><td>Workbook, app</td><td>Document</td><td>Chat text</td><td class="pirca">Spanish or English, pictures, checklist, read-aloud in Spanish or English, WhatsApp share</td></tr>
     <tr><td>Time and cost</td><td>Free</td><td>Free</td><td>No sourced figure</td><td>Not tested</td><td class="pirca">70–122 s; $0.0187 (S/ 0.064) per bilingual plan</td></tr>
   </table>
   <h3>What Pirca does differently</h3>
@@ -226,7 +226,7 @@ python3 -m venv .venv
       whose spending exceeds the owner's cash fails.</li>
     <li><b>Sourced citations.</b> Every claim cites a HIST, CAT, ENFEN or BCRP ID; an unknown ID fails the plan.</li>
     <li><b>For owners of any background.</b> Plain Spanish (or English), a risk gauge, pictures of the shelf, the cash jar and the budget bar,
-      a checklist, larger text, a Listen button that reads the plan aloud with the browser's Spanish voice, and a WhatsApp share button.</li>
+      a checklist, larger text, a Listen button that reads the plan aloud in Spanish or English (whichever language the plan is shown in, with the browser's voice for that language), and a WhatsApp share button.</li>
   </ul>
 </section>
 
@@ -466,8 +466,8 @@ python3 -m venv .venv
     <li><b>The Critic asks for a revision on every run</b> (6 of 6), so the one allowed revision is always spent and its cost is always paid.</li>
     <li><b>Data snapshots.</b> ENFEN communiqués retrieved 24 Oct 2026 (next one due 30 Oct 2026); exchange rate 22 Oct 2026; dengue data
       through 2023; 15 districts. A saved plan does not update itself.</li>
-    <li><b>Read-aloud depends on the browser's voices</b>: best in Chrome or Edge, which include Spanish voices; the button is hidden when no
-      voice exists for the plan's language.</li>
+    <li><b>Read-aloud depends on the browser's voices</b>: it works in Spanish and English and is best in Chrome or Edge, which include Spanish voices; the button is
+      hidden when the browser has no voice for the plan's language.</li>
     <li><b>Not hosted yet.</b> Pirca runs on one computer with a Portkey key; plans are saved as files on that machine. Hosting would add a
       server cost that the tokenomics above exclude.</li>
     <li><b>No real user yet</b>, and only six measured runs.</li>

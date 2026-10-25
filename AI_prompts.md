@@ -771,3 +771,27 @@ Keep the writing plain and specific. When done, tell me the page count, list eve
 ```
 Commit the report and its screenshots, and push to GitHub.
 ```
+
+## Prompt 81 — Open the report
+
+```
+please open the report
+```
+
+## Prompt 82 — Bilingual audio in the report?
+
+```
+in the report are we stating that is has the option english spanish audio
+```
+
+## Prompt 83 — Read-aloud in both languages
+
+```
+Yes, update the report so the read-aloud is described as working in both Spanish and English, rebuild report.html, and check the page count again.
+```
+
+## Prompt 84 — Commit and push the report update
+
+```
+Commit the report update and push it to GitHub.
+```
