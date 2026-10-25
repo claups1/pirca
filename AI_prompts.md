@@ -682,3 +682,21 @@ Two layout fixes in Pirca:
 ```
 Commit the working tree changes with a sensible message.
 ```
+
+## Prompt 71 — Open
+
+```
+open
+```
+
+## Prompt 72 — Trace graph too white
+
+```
+[screenshot of the live trace: Manager, Code checks, Plan, Risk Analyst, Planner and Critic boxes on a light blue background] also here too white
+```
+
+## Prompt 73 — Commit
+
+```
+Commit the working tree changes with a sensible message.
+```

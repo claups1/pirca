@@ -375,13 +375,13 @@ dialog ol, dialog ul { padding-left: var(--s3); }
 .agent-map::before { content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: var(--day, 0.15);
   background: linear-gradient(180deg, #A9776A 0%, #D99A72 35%, #F2C08A 70%, #FBDDAE 100%); transition: opacity 1.4s ease; }
 .agent-map svg { position: relative; z-index: 1; width: 100%; height: auto; display: block; max-height: 520px; }
-.map-node rect { fill: rgba(36, 32, 28, 0.95); stroke: rgba(43, 38, 34, 0.15); stroke-width: 1.2; transition: stroke 0.3s, stroke-width 0.3s; }
-.map-node.working rect { stroke: var(--coral); stroke-width: 2.4; }
-.map-node.done rect { stroke: var(--algarrobo); stroke-width: 1.8; }
-.map-node.plan-ok rect { stroke: var(--algarrobo); stroke-width: 2.4; }
-.map-node.plan-warn rect { stroke: var(--amber); stroke-width: 2.2; }
-.map-node.plan-stop rect { stroke: var(--coral); stroke-width: 2.2; }
-.map-node.flash rect { stroke: var(--sunset); }
+.map-node .node-box { fill: rgba(36, 32, 28, 0.95); stroke: rgba(43, 38, 34, 0.15); stroke-width: 1.2; transition: stroke 0.3s, stroke-width 0.3s; }
+.map-node.working .node-box { stroke: var(--coral); stroke-width: 2.4; }
+.map-node.done .node-box { stroke: var(--algarrobo); stroke-width: 1.8; }
+.map-node.plan-ok .node-box { stroke: var(--algarrobo); stroke-width: 2.4; }
+.map-node.plan-warn .node-box { stroke: var(--amber); stroke-width: 2.2; }
+.map-node.plan-stop .node-box { stroke: var(--coral); stroke-width: 2.2; }
+.map-node.flash .node-box { stroke: var(--sunset); }
 .map-node .node-name { fill: #2B2622; font: 600 13px var(--font); }
 .map-node .node-status { fill: #5E554D; font: 11px var(--mono); }
 .map-node.working .node-status { fill: var(--sunset); }
@@ -438,7 +438,7 @@ dialog ol, dialog ul { padding-left: var(--s3); }
 
 @media (prefers-reduced-motion: reduce) {
   .rain { display: none; }
-  .map-node rect, .map-link, .map-rev, .rev-badge { transition: none !important; }
+  .map-node .node-box, .map-link, .map-rev, .rev-badge { transition: none !important; }
   .wave { animation: none; }
   .stone, .scene-sun { transition: none !important; }
 }
@@ -861,10 +861,10 @@ dialog::backdrop { background: rgba(43, 38, 34, 0.35); }
 /* ================= Agent map: a bright, sunny Piura afternoon ================= */
 .agent-map { background: linear-gradient(180deg, #F7D7B2 0%, #FAE3C4 40%, #FCEFD9 75%, #FDF4E4 100%); border-color: rgba(200, 100, 59, 0.2); }
 .agent-map::before { background: linear-gradient(180deg, #FFF0D2 0%, #FFF6E3 45%, #FFFBF2 100%); opacity: var(--day, 0.15); }
-.map-node rect { fill: rgba(255, 255, 255, 0.97); stroke: rgba(43, 38, 34, 0.16); }
-.map-node.done rect, .map-node.plan-ok rect { stroke: var(--algarrobo); }
-.map-node.working rect, .map-node.plan-stop rect { stroke: var(--coral); }
-.map-node.plan-warn rect { stroke: var(--sand); }
+.map-node .node-box { fill: rgba(255, 255, 255, 0.97); stroke: rgba(43, 38, 34, 0.16); }
+.map-node.done .node-box, .map-node.plan-ok .node-box { stroke: var(--algarrobo); }
+.map-node.working .node-box, .map-node.plan-stop .node-box { stroke: var(--coral); }
+.map-node.plan-warn .node-box { stroke: var(--sand); }
 .map-node .node-name { fill: var(--text); }
 .map-node .node-status, .map-node .check { fill: #5E554D; }
 .map-node .node-tokens { fill: var(--text-muted); }
@@ -951,7 +951,13 @@ dialog.glass, .menu.glass { background: var(--glass-menu); }
 .plan-body, .sources, .usage, .summary, .wizard-step, .form-group, .wizard-head, .review, .glossary, .easy-tools,
 .timeline, .timeline-band, .how, .hero, .site-header, .facts-strip > div, .district-card, .fn-pop, dialog, .menu { background: var(--tint-calm); }
 .facts-strip > div { border-top-width: 4px; }
-.map-node rect { fill: #FFFFFF; }
+/* Live agent map: sand boxes like the wizard's answers; the agent at work gets the coral tint. */
+.map-node .node-box { fill: #F6ECDD; stroke: #E3D3BC; stroke-width: 1; }
+.map-node.working .node-box { fill: #FCE9E2; stroke: #E8664A; stroke-width: 2; }
+.map-node.done .node-box, .map-node.plan-ok .node-box { stroke: var(--algarrobo); stroke-width: 1.8; }
+.map-node.plan-warn .node-box { stroke: var(--sand); stroke-width: 2; }
+.map-node.plan-stop .node-box { stroke: var(--coral); stroke-width: 2; }
+.map-node .bar-track { fill: rgba(43, 38, 34, 0.10); }
 
 /* Wizard: banner offering an unfinished draft */
 .resume-banner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; padding: 12px 16px; }

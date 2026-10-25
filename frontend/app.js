@@ -1508,7 +1508,7 @@ function linkPath(L, id) {
 function agentMapHtml() {
   const L = mapLayout();
   const names = STR[store.lang].agents;
-  const box = (n) => `<rect x="${n.x - n.w / 2}" y="${n.y - n.h / 2}" width="${n.w}" height="${n.h}" rx="10"/>`;
+  const box = (n) => `<rect class="node-box" x="${n.x - n.w / 2}" y="${n.y - n.h / 2}" width="${n.w}" height="${n.h}" rx="10"/>`;
   const agentNode = (id) => {
     const n = L.nodes[id], top = n.y - n.h / 2, left = n.x - n.w / 2 + 14, bw = n.w - 28;
     return `<g class="map-node" id="node-${id}">${box(n)}
