@@ -729,3 +729,15 @@ Final steps for Pirca:
 ```
 Commit the working tree changes with a sensible message.
 ```
+
+## Prompt 76 — GitHub URL
+
+```
+its on github
+```
+
+## Prompt 77 — Commit and push
+
+```
+Commit the README clone URL fix and push it to GitHub.
+```

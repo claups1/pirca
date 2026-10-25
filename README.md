@@ -31,11 +31,12 @@ installer's `py` launcher is enough.
 ## 1. Get the code
 
 ```
-git clone <repository-url> pirca
+git clone https://github.com/claups1/pirca.git
 cd pirca
 ```
 
-If you received a .zip instead, unzip it and open PowerShell or Terminal in the folder that contains this README.
+The repository is public at [github.com/claups1/pirca](https://github.com/claups1/pirca). If you received a .zip
+instead, unzip it and open PowerShell or Terminal in the folder that contains this README.
 Every command below runs from that folder.
 
 ## 2. Create the virtual environment and install
