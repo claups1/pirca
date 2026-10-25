@@ -795,3 +795,35 @@ Yes, update the report so the read-aloud is described as working in both Spanish
 ```
 Commit the report update and push it to GitHub.
 ```
+
+## Prompt 85 — Open
+
+```
+open
+```
+
+## Prompt 86 — Slide deck (slides.html)
+
+```
+Create Pirca's slide deck as slides.html in the project root for MGT 409: maximum 10 slides, built with reveal.js loaded from a CDN, in one HTML file. All images embedded as base64 so it works by double-click (only reveal.js comes from the CDN). Same look as the app: light sand background, terracotta and coral accents, the app's font. Few words per slide, big numbers, one idea per slide. Use only facts and numbers from the repo (report.html, output/, data/, plans/examples/); never invent anything.
+
+Slides, in this order:
+1. Title: "Pirca", one-sentence description, my name (Claudia Palacios Surco), MGT 409 · Yale SOM, repo link https://github.com/claups1/pirca, and the finished pirca-wall screenshot from the agent map. One line: "Pirca (Quechua pirqa): a dry-stone wall that protects."
+2. The problem: small shop owners in Piura and El Niño costero, with 2–3 big sourced numbers (2023 business losses from closures HIST-2023-32, transport cost rise HIST-2023-33, dengue 2023 HIST-2023-36) and the current ENFEN alert.
+3. What is new: a compact comparison table (SIGRID, INDECI guidance, consultant plan, ChatGPT vs Pirca) on 4–5 rows: shop-specific numbers, fits the owner's budget, cites sources, Spanish read-aloud and pictures, cost.
+4. The agents: the agent map screenshot with the revision arrow, plus one line per agent (Manager, Risk Analyst, Planner, Critic) and "numbers come from code, not the model".
+5. Demo: 2–3 screenshots side by side (wizard with live gauge, plan page with top-3 actions and pictures, checklist), short captions.
+6. Cost: cost per plan (USD and soles), 10,000 shops per year, caching savings, cost by agent as a small bar chart; measured, not estimated.
+7. Safety: the defenses as a short list with PASS (prompt injection, invented numbers, unaffordable advice, evacuation orders, token limit, risk-level check), and one screenshot of a defense working (the Critic approved an invented number and the code overruled it).
+8. Impact: the measured numbers (time per plan, cost per plan, money flagged at risk in the examples) 
+9. Limits and next steps: 3 honest limits and 3 next steps (WhatsApp access, district view for a municipality, live ENFEN updates), matching the report.
+10. Closing: "Cada agente agrega piedras a tu pirca", repo link, and how to run it (one line).
+
+Test navigation with arrow keys, F for fullscreen  check that every slide fits a 16:9 screen without scrolling, and that it opens by double-click with no missing images. Save screenshots of every slide to output/screenshots/slides/. Commit and push when done, and list the numbers used with their source files.
+```
+
+## Prompt 87 — Open the slides when done
+
+```
+when finish, please open the slides
+```
