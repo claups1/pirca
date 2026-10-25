@@ -2,24 +2,30 @@
    Every color, blur, radius and spacing value lives here so the look can be tuned in one place. */
 :root {
   /* Light, clear theme: warm off-white page, white cards, charcoal text. Blue only for water. */
-  --bg: #FBF7F0;
+  --bg: #EBDDC6;                      /* sand page */
+  /* Card tints by type, each with its colored top strip */
+  --tint-risk: #FCE9E2;  --strip-risk: #E8664A;    /* stock at risk, risk gauge, flood map, warnings */
+  --tint-money: #FBF1D6; --strip-money: #E9B949;   /* emergency fund, purchases and budget */
+  --tint-safe: #EAF2E4;  --strip-safe: #6E9E5C;    /* checklist, safety badges, most important this week */
+  --tint-water: #E6F2F7; --strip-water: #4BA3C7;   /* sea on the map, agent map sky */
+  --tint-calm: #FFF8EE;                            /* long text: plan details, wizard, menus, help, review */
   --surface: #FFFFFF;
   --surface-2: #F6F0E6;               /* inset fields, hovers */
   --navy-900: #2B2622;                /* kept name: dark ink for strokes and small marks */
   --navy-700: #C8643B;
   --sea-teal: #4BA3C7;
-  --ocean-gradient: linear-gradient(180deg, #FBF7F0 0%, #F9F3E9 60%, #F5ECDD 100%);
+  --ocean-gradient: linear-gradient(180deg, #EFE3CF 0%, #EBDDC6 55%, #E6D6BC 100%);
   /* Accents (fills, borders, dots); the *-text variants are for words (WCAG AA on white) */
   --coral: #E8664A;
-  --coral-text: #B4432B;
+  --coral-text: #A53A23;
   --sunset: #E9B949;                  /* kept name: sand */
   --sand: #E9B949;
-  --sand-text: #8A6414;
+  --sand-text: #785510;
   --algarrobo: #6E9E5C;
-  --green-text: #4A7A3B;
+  --green-text: #3F6B32;
   --terracotta: #C8643B;
   --water: #4BA3C7;
-  --water-text: #2B7398;
+  --water-text: #225F7E;
   --plum: #7A3B6E;
   --warm-gradient: linear-gradient(90deg, var(--coral), var(--sand));
   --coral-strong: #D9553A;            /* hover */
@@ -31,15 +37,15 @@
   --warm-speed: 9s;
   /* Text */
   --text: #2B2622;
-  --text-muted: #6B625A;
+  --text-muted: #5C534B;
   /* Cards: white with a soft shadow and a subtle frosted edge */
-  --glass-frame: rgba(255, 255, 255, 0.82);
-  --glass-read: rgba(255, 255, 255, 0.96);
+  --glass-frame: var(--tint-calm);
+  --glass-read: var(--tint-calm);
   --glass-solid: #FFFFFF;
-  --glass-menu: rgba(255, 255, 255, 0.98);
-  --glass-border: rgba(43, 38, 34, 0.10);
+  --glass-menu: var(--tint-calm);
+  --glass-border: rgba(110, 80, 45, 0.14);
   --glass-blur: 14px;
-  --shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 8px 24px rgba(43, 38, 34, 0.08);
+  --shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75), 0 6px 22px rgba(120, 84, 40, 0.14);  /* soft warm shadow, frosted top edge */
   --radius: 14px;
   --radius-small: 8px;
   /* Spacing on an 8px grid */
@@ -922,3 +928,27 @@ html.printing .budget-key { font-size: 10px; }
 .district-card { width: min(340px, 100%); }
 @media (prefers-reduced-motion: reduce) { .province-shape { transition: none; } }
 dialog.glass, .menu.glass { background: var(--glass-menu); }
+
+
+/* ================= Card tints by type (top strip = card type) ================= */
+/* Risk: stock at risk, risk gauge, flood map card, warnings */
+.plan-top, .key-pictures figure:nth-child(1), .map-section, .notice, .risk-preview {
+  background: var(--tint-risk); border-top: 4px solid var(--strip-risk); }
+.notice { border-left-width: 1px; border-left-color: var(--glass-border); }
+/* Money: emergency fund, purchases and budget */
+.key-pictures figure:nth-child(2), .key-pictures figure:nth-child(3), .why-band, .counter {
+  background: var(--tint-money); border-top: 4px solid var(--strip-money); }
+.why-band { border-left: 1px solid rgba(200, 100, 59, 0.25); }
+/* Done / safe: checklist, safety badges, most important this week */
+.action-list, .top-card, .all-done { background: var(--tint-safe); border-top: 4px solid var(--strip-safe); }
+.top-card { border-left: 1px solid var(--glass-border); }
+.plan-top .badges { padding: 10px 12px; border-radius: var(--radius-small); background: var(--tint-safe); border-top: 3px solid var(--strip-safe); }
+/* Water / sky: the sea on the map, the agent map sky */
+.province-map .sea { fill: var(--tint-water); }
+.agent-map { background: linear-gradient(180deg, #D8EAF3 0%, var(--tint-water) 55%, #F3F2EA 100%); border-top: 4px solid var(--strip-water); }
+.agent-map::before { background: linear-gradient(180deg, #EEF7FB 0%, #F6FAFC 55%, #FBF8F0 100%); }
+/* Calm ivory for long text (default card): plan details, wizard, menus, help, review */
+.plan-body, .sources, .usage, .summary, .wizard-step, .form-group, .wizard-head, .review, .glossary, .easy-tools,
+.timeline, .timeline-band, .how, .hero, .site-header, .facts-strip > div, .district-card, .fn-pop, dialog, .menu { background: var(--tint-calm); }
+.facts-strip > div { border-top-width: 4px; }
+.map-node rect { fill: #FFFFFF; }

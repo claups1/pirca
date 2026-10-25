@@ -572,3 +572,27 @@ Keep WCAG AA contrast, both languages and both currencies. Check every page in t
 ```
 Commit the working tree changes with a sensible message.
 ```
+
+## Prompt 56 — Open
+
+```
+open
+```
+
+## Prompt 57 — Card tints by type
+
+```
+Cards: use soft tints by card type instead of white, on the sand #EBDDC6 background, keeping the colored top strips and a soft warm shadow:
+- Risk (stock at risk, risk gauge, flood map card, warnings): coral tint #FCE9E2, strip #E8664A.
+- Money (emergency fund, purchases/budget): sand tint #FBF1D6, strip #E9B949.
+- Done/safe (checklist, safety badges area, "most important this week"): green tint #EAF2E4, strip #6E9E5C.
+- Water/sky (map sea area, agent map panel): blue tint #E6F2F7, strip #4BA3C7.
+- Everything else with lots of text (full plan details, wizard form, menus, help panel, review screen): neutral warm ivory #FFF8EE, so long text stays calm and readable.
+Define these as CSS variables, keep WCAG AA contrast for all text on every tint, and save one screenshot each of the start page, plan, wizard and agent map.
+```
+
+## Prompt 58 — Commit
+
+```
+Commit the working tree changes with a sensible message.
+```
