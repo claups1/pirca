@@ -1225,8 +1225,340 @@ function usageRow(label, u) {
     <td>${num(u.output_tokens)}</td><td>$${Number(u.cost_usd || 0).toFixed(4)}</td></tr>`;
 }
 
+// ------------------------------------------------------------------ plan view for every owner
+// Big cards, checklist, pictures, glossary, read-aloud, text size, share and print. Everything comes
+// from the saved plan (its filled text, facts and source details): nothing here calls the model.
+
+Object.assign(STR.es, {
+  topTitle: "Lo más importante esta semana", noCost: "Sin costo", costLabel: "Costo",
+  checklistTitle: "Tu lista de acciones", progress: (d, n) => `${d} de ${n} hechas`,
+  allDone: "¡Listo! Hiciste todas las acciones de tu plan. Tu negocio está mejor preparado.",
+  purchasesGroup: "Compras", listen: "Escuchar el plan", pauseListen: "Pausar", resumeListen: "Seguir", stopListen: "Detener",
+  speedLabel: "Velocidad", textSmaller: "Letra más pequeña", textBigger: "Letra más grande",
+  shareWhatsApp: "Compartir por WhatsApp", print: "Imprimir", fullDetails: "Ver todo el detalle",
+  numbersTitle: "Tus números en dibujos", glossaryTitle: "¿Qué significa?",
+  shelfCaption: (a, b) => `${a} de ${b} de tu mercadería está a menos de 1 metro del piso.`,
+  jarCaption: (a, b, w) => `Después de tus compras tienes ${a}. Tu fondo para ${w} debe llegar a ${b}.`,
+  jarFull: "Tu fondo de emergencia está completo.", gapLabel: "Faltan", goalLabel: "Meta",
+  budgetCaption: (a, b, c) => `Gastas ${a} de tu presupuesto de ${b}; te quedan ${c}.`, leftLabel: "Queda",
+  waIntro: (code) => `Mi plan Pirca para El Niño costero (código ${code}). Lo más importante esta semana:`,
+  waOpen: "Ver el plan completo:", printTitle: "Mi plan Pirca", meter: "1 m",
+});
+Object.assign(STR.en, {
+  topTitle: "Most important this week", noCost: "No cost", costLabel: "Cost",
+  checklistTitle: "Your action checklist", progress: (d, n) => `${d} of ${n} done`,
+  allDone: "Done! You completed every action in your plan. Your shop is better prepared.",
+  purchasesGroup: "Purchases", listen: "Listen to the plan", pauseListen: "Pause", resumeListen: "Resume", stopListen: "Stop",
+  speedLabel: "Speed", textSmaller: "Smaller text", textBigger: "Bigger text",
+  shareWhatsApp: "Share on WhatsApp", print: "Print", fullDetails: "See full details",
+  numbersTitle: "Your numbers in pictures", glossaryTitle: "What does it mean?",
+  shelfCaption: (a, b) => `${a} of your ${b} of stock is less than 1 meter above the floor.`,
+  jarCaption: (a, b, w) => `After your purchases you have ${a}. Your fund for ${w} should reach ${b}.`,
+  jarFull: "Your emergency fund is complete.", gapLabel: "Gap", goalLabel: "Goal",
+  budgetCaption: (a, b, c) => `You spend ${a} of your ${b} budget; ${c} is left.`, leftLabel: "Left",
+  waIntro: (code) => `My Pirca plan for coastal El Niño (code ${code}). Most important this week:`,
+  waOpen: "See the full plan:", printTitle: "My Pirca plan", meter: "1 m",
+});
+
+// Plain-words explanations (no figures), tap to open.
+const GLOSSARY = {
+  es: [
+    ["ENFEN", "El comité oficial del Perú que vigila El Niño y La Niña en el mar. Publica comunicados con el estado de alerta."],
+    ["El Niño costero", "Cuando el mar frente a la costa norte del Perú se calienta. Puede traer lluvias fuertes, ríos desbordados e inundaciones en Piura, como pasó en 1998 y 2017."],
+    ["SENAMHI", "El servicio oficial del clima del Perú. Da los avisos de lluvias fuertes y del nivel de los ríos."],
+    ["INDECI", "El Instituto Nacional de Defensa Civil. Coordina la ayuda en emergencias. Si hay que evacuar, lo indican INDECI y tu municipalidad."],
+    ["Fondo de emergencia", "Dinero que separas para pagar tus gastos fijos (alquiler, sueldos, servicios) si tienes que cerrar unas semanas por una inundación."],
+    ["Mercadería en riesgo", "El valor de los productos que guardas a menos de 1 metro del piso. Es lo que el agua podría mojar si entra a tu tienda."],
+  ],
+  en: [
+    ["ENFEN", "Peru's official committee that watches El Niño and La Niña in the ocean. It publishes statements with the current alert level."],
+    ["Coastal El Niño", "When the sea off Peru's northern coast gets warmer. It can bring heavy rain, overflowing rivers and floods in Piura, as in 1998 and 2017."],
+    ["SENAMHI", "Peru's official weather service. It issues warnings about heavy rain and river levels."],
+    ["INDECI", "Peru's National Civil Defense Institute. It coordinates help in emergencies. If people must evacuate, INDECI and your municipality say so."],
+    ["Emergency fund", "Money you set aside to pay your fixed costs (rent, wages, utilities) if you have to close for a few weeks because of a flood."],
+    ["Stock at risk", "The value of the goods you keep less than 1 meter above the floor. It is what water could reach if it enters your shop."],
+  ],
+};
+
+const CAT_ICONS = { "CAT-01": "🗄️", "CAT-02": "🧱", "CAT-03": "📦", "CAT-04": "🚪", "CAT-05": "⬆️", "CAT-06": "💰", "CAT-07": "💾",
+  "CAT-08": "🛒", "CAT-09": "🦟", "CAT-10": "🛡️", "CAT-11": "🏠", "CAT-12": "⚡", "CAT-13": "🎒", "CAT-14": "📱", "CAT-15": "🔦" };
+const WORD_ICONS = [[/proveedor|supplier|entrega|deliver/i, "🚚"], [/caja|cash|fondo|fund|ahorra|save/i, "💰"],
+  [/indeci|senamhi|enfen|alerta|alert|aviso|municipal/i, "📢"], [/agua|water|inund|flood/i, "💧"], [/luz|power|el[eé]ctric/i, "⚡"],
+  [/mercader|stock/i, "📦"]];
+const PHASE_ICONS = ["⏰", "📢", "🌧️", "🧹"];
+const CAT_RE = /CAT-\d{2}/g;
+const SENTENCE_SPLIT = /(?<=[.!?](?:\s*\[[^\]]*\])?)\s+(?=[\p{Lu}¿¡])/u;
+
+function plainText(text) {
+  return text.replace(/\s*\[[^\]]*\]/g, "").replace(/\*/g, "").replace(/\s+/g, " ").trim();
+}
+
+function planSections(md) {
+  const secs = {};
+  let cur = null;
+  md.replace(/\r/g, "").split("\n").forEach((line) => {
+    const h = line.match(/^##\s+(\d+)[.)]\s*(.*)$/);
+    if (h) { cur = h[1]; secs[cur] = { title: h[2].trim(), lines: [] }; return; }
+    if (cur && !/^\\\*|^_.*_$/.test(line.trim())) secs[cur].lines.push(line);  // not the footnote/disclaimer
+  });
+  return secs;
+}
+
+// Actions from the filled plan: section 2 sentences (grouped by moment) and section 6 purchases.
+// IDs are positions (s<phase>-<n>) or catalog IDs, the same in both languages, so the checklist survives a language switch.
+function planActions(md, facts) {
+  const secs = planSections(md);
+  const steps = [];
+  const counters = {};
+  let phase = 0;
+  (secs["2"]?.lines || []).forEach((line) => {
+    const b = line.match(/^\s*[-+*]\s+(.*)$/);
+    if (!b) return;
+    const raw = b[1].replace(/^\*\*(.+?)\*\*/, "$1");
+    const m = raw.match(/^([^:]{2,60}):\s*([\s\S]*)$/);
+    const p = m ? phaseOf(m[1].replace(/\*/g, "")) : -1;
+    if (p >= 0) phase = p;
+    (p >= 0 ? m[2] : raw).split(SENTENCE_SPLIT).forEach((s) => {
+      const text = plainText(s);
+      if (!text.replace(/[.\s]/g, "")) return;
+      counters[phase] = (counters[phase] || 0) + 1;
+      steps.push({ id: `s${phase}-${counters[phase]}`, phase, text: asSentence(text), cats: [...new Set(s.match(CAT_RE) || [])] });
+    });
+  });
+  const buys = [];
+  (secs["6"]?.lines || []).forEach((line) => {
+    const b = line.match(/^\s*[-+*]\s+(.*)$/);
+    const cat = b && (b[1].match(CAT_RE) || [])[0];
+    if (!cat) return;
+    const costText = (b[1].match(/\(([^)]*)\)\s*(?:\[|$)/) || [])[1] || "";
+    const name = plainText(b[1].replace(/\s*\([^)]*\)\s*(?=\[|$)/, ""));
+    buys.push({ id: `buy-${cat}`, cat, name, costText, cost: facts[`cat_${cat.slice(4)}_cost`], text: name });
+  });
+  return { steps, buys };
+}
+
+function actionIcon(a) {
+  for (const c of a.cats || [a.cat]) if (CAT_ICONS[c]) return CAT_ICONS[c];
+  return (WORD_ICONS.find(([re]) => re.test(a.text)) || [null, "✅"])[1];
+}
+
+// The cost a card shows: catalog actions it cites that have a price in the plan's facts.
+function actionCost(a, buys, facts, details) {
+  const priced = (a.cats || [a.cat]).filter((c) => facts[`cat_${c.slice(4)}_cost`] !== undefined);
+  if (!priced.length) return t("noCost");
+  const total = priced.reduce((sum, c) => sum + Number(facts[`cat_${c.slice(4)}_cost`]), 0);
+  const names = priced.map((c) => buys.find((b) => b.cat === c)?.name || sourceTitle(details[c] || { title: c }));
+  return a.cat ? (a.costText || money(total)) : `${money(total)} · ${names.join(", ")}`;
+}
+
+function topActions(actions) {
+  const now = actions.steps.filter((s) => s.phase === 0);
+  return [...now, ...actions.buys].slice(0, 3);
+}
+
+const checksKey = (code) => `pirca.checks.${code}`;
+function loadChecks(code) { try { return new Set(JSON.parse(localStorage.getItem(checksKey(code))) || []); } catch { return new Set(); } }
+function saveChecks(code, set) { localStorage.setItem(checksKey(code), JSON.stringify([...set])); }
+
+function checklistHtml(actions, checks, lang) {
+  const groups = [0, 1, 2, 3].map((p) => ({ title: PHASE_NAMES[lang][p], icon: PHASE_ICONS[p], items: actions.steps.filter((s) => s.phase === p) }))
+    .concat([{ title: t("purchasesGroup"), icon: "🛒", items: actions.buys }]).filter((g) => g.items.length);
+  const item = (a) => `<li><label class="check-item">
+      <input type="checkbox" data-action="${esc(a.id)}" ${checks.has(a.id) ? "checked" : ""}>
+      <span class="check-box" aria-hidden="true"></span>
+      <span class="check-text">${esc(a.text)}${a.costText ? ` <span class="muted">(${esc(a.costText)})</span>` : ""}</span></label></li>`;
+  return groups.map((g) => `<div class="check-group"><h4><span aria-hidden="true">${g.icon}</span> ${esc(g.title)}</h4>
+    <ul>${g.items.map(item).join("")}</ul></div>`).join("");
+}
+
+// ---- pictures (inline SVG, colors from the Warm Pacific theme)
+function shelfSvg(f) {
+  const total = Number(f.stock_value || 0), risk = Number(f.stock_at_risk || 0);
+  const below = total ? Math.round(8 * Math.min(1, risk / total)) : 0;
+  const boxes = Array.from({ length: 8 }, (_, i) => {
+    const row = 3 - Math.floor(i / 2), x = 52 + (i % 2) * 46, y = 22 + row * 30;
+    const wet = i < below;   // boxes are numbered from the floor up
+    return `<rect x="${x}" y="${y}" width="38" height="22" rx="3" class="${wet ? "box wet" : "box"}"/>`;
+  }).join("");
+  return `<svg viewBox="0 0 200 150" class="pic" role="img" aria-label="${esc(STR[store.lang].shelfCaption(money(risk), money(total)))}">
+    <rect x="40" y="10" width="110" height="128" rx="4" class="shelf-frame"/>
+    ${[44, 74, 104, 134].map((y) => `<line x1="40" x2="150" y1="${y}" y2="${y}" class="shelf-board"/>`).join("")}
+    ${boxes}
+    <rect x="30" y="82" width="140" height="56" class="water"/>
+    <line x1="22" x2="178" y1="82" y2="82" class="water-line"/>
+    <text x="176" y="78" text-anchor="end" class="pic-label">${esc(t("meter"))}</text>
+    <line x1="30" x2="170" y1="138" y2="138" class="floor"/>
+  </svg>`;
+}
+
+function jarSvg(f) {
+  const goal = Number(f.buffer_needed || 0), have = Math.max(0, Number(f.cash_after_purchases ?? f.cash_on_hand ?? 0));
+  const frac = goal ? Math.min(1, have / goal) : 1;
+  const top = 30, bottom = 136, h = bottom - top, fillY = bottom - h * frac;
+  return `<svg viewBox="0 0 200 150" class="pic" role="img" aria-label="${esc(t("fundGap"))}">
+    <defs><clipPath id="jar-clip"><path d="M62 30 H138 Q150 30 150 44 V128 Q150 136 140 136 H60 Q50 136 50 128 V44 Q50 30 62 30 Z"/></clipPath></defs>
+    <g clip-path="url(#jar-clip)">
+      ${frac < 1 ? `<rect x="50" y="${top}" width="100" height="${(fillY - top).toFixed(1)}" class="jar-gap"/>` : ""}
+      <rect x="50" y="${fillY.toFixed(1)}" width="100" height="${(bottom - fillY).toFixed(1)}" class="jar-fill"/>
+    </g>
+    <path d="M62 30 H138 Q150 30 150 44 V128 Q150 136 140 136 H60 Q50 136 50 128 V44 Q50 30 62 30 Z" class="jar"/>
+    <rect x="66" y="18" width="68" height="12" rx="3" class="jar-lid"/>
+    <line x1="44" x2="156" y1="${top}" y2="${top}" class="goal-line"/>
+    <text x="158" y="${top + 4}" class="pic-label">${esc(t("goalLabel"))}</text>
+    ${frac < 1 ? `<text x="100" y="${((top + fillY) / 2 + 4).toFixed(1)}" text-anchor="middle" class="pic-label gap-text">${esc(t("gapLabel"))} ${esc(money(Number(f.cash_gap || 0)))}</text>` : ""}
+  </svg>`;
+}
+
+function budgetSvg(f, buys) {
+  const budget = Number(f.budget || 0) || buys.reduce((s, b) => s + Number(b.cost || 0), 0) + Number(f.money_left || 0);
+  const W = 180;
+  let x = 10;
+  const parts = buys.map((b, i) => {
+    const w = budget ? (W * Number(b.cost || 0)) / budget : 0;
+    const seg = `<rect x="${x.toFixed(1)}" y="52" width="${Math.max(0, w - 1).toFixed(1)}" height="40" rx="3" class="buy buy-${i % 4}"><title>${esc(b.name)}: ${esc(money(Number(b.cost || 0)))}</title></rect>`;
+    x += w;
+    return seg;
+  }).join("");
+  return `<svg viewBox="0 0 200 150" class="pic" role="img" aria-label="${esc(t("purchases"))}">
+    <rect x="10" y="52" width="${W}" height="40" rx="4" class="budget-track"/>
+    ${parts}
+    <text x="10" y="40" class="pic-label">0</text>
+    <text x="190" y="40" text-anchor="end" class="pic-label">${esc(money(budget))}</text>
+    ${Number(f.money_left || 0) > 0 ? `<line x1="${x.toFixed(1)}" x2="${x.toFixed(1)}" y1="94" y2="104" class="goal-line"/>
+      <text x="190" y="116" text-anchor="end" class="pic-label">${esc(t("leftLabel"))} ${esc(money(Number(f.money_left)))}</text>` : ""}
+  </svg>`;
+}
+
+// ---- read aloud with the browser's own voices (speechSynthesis); hidden when there is no voice for the language
+const speech = { queue: [], index: 0, playing: false, paused: false, rate: 1, token: 0 };
+
+function voiceFor(lang) {
+  const voices = window.speechSynthesis?.getVoices() || [];
+  const mine = voices.filter((v) => v.lang?.toLowerCase().startsWith(lang));
+  const prefer = lang === "es" ? ["es-pe", "es-419", "es-us", "es-mx", "es-es"] : ["en-us", "en-gb"];
+  return prefer.map((p) => mine.find((v) => v.lang.toLowerCase() === p)).find(Boolean) || mine[0] || null;
+}
+
+// What is read: the displayed plan, without footnote IDs, asterisks or Markdown marks; amounts read as words.
+// One sentence per utterance, so pausing and resuming loses little and long lines are never cut off.
+const AMOUNT = "(\\d[\\d,]*(?:\\.\\d+)?)";
+function speechChunks(md, lang) {
+  const currencyWords = lang === "es" ? ["soles", "dólares"] : ["soles", "dollars"];
+  return md.replace(/\r/g, "").split("\n")
+    .map((line) => line.replace(/^>\s?/, "").replace(/^#{1,6}\s+\d+[.)]\s*/, "").replace(/^#{1,6}\s+/, "").replace(/^\s*[-+*]\s+/, ""))
+    .map((line) => line.replace(/\\\*/g, "").replace(/\s*\[[^\]]*\]/g, "").replace(/\*\*|\*|_/g, "")
+      .replace(new RegExp(`S/\\s?${AMOUNT}`, "g"), `$1 ${currencyWords[0]}`)
+      .replace(new RegExp(`(?:US)?\\$\\s?${AMOUNT}`, "g"), `$1 ${currencyWords[1]}`).trim())
+    .flatMap((line) => line.split(/(?<=[.!?])\s+/))
+    .filter((line) => line.replace(/[—\-–\s.]/g, ""));
+}
+
+function stopSpeech() {
+  speech.playing = false; speech.paused = false; speech.token += 1;
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
+  updateListenUi();
+}
+
+function speakFrom(i) {
+  const synth = window.speechSynthesis;
+  if (!synth || i >= speech.queue.length) { stopSpeech(); return; }
+  speech.index = i;
+  const token = speech.token;  // a cancel (stop, new speed) fires "end" on the old sentence; ignore it
+  const u = new SpeechSynthesisUtterance(speech.queue[i]);
+  u.voice = speech.voice; u.lang = speech.voice?.lang || speech.lang; u.rate = speech.rate;
+  u.onend = () => { if (token === speech.token && speech.playing) speakFrom(i + 1); };
+  synth.speak(u);
+}
+
+function updateListenUi() {
+  const btn = document.getElementById("listen-btn");
+  if (!btn) return;
+  btn.textContent = speech.playing ? (speech.paused ? `▶ ${t("resumeListen")}` : `⏸ ${t("pauseListen")}`) : `🔊 ${t("listen")}`;
+  btn.setAttribute("aria-pressed", String(speech.playing && !speech.paused));
+  const stop = document.getElementById("listen-stop");
+  if (stop) stop.hidden = !speech.playing;
+}
+
+function setupListen(md, lang) {
+  const wrap = document.getElementById("listen-wrap");
+  if (!wrap || !window.speechSynthesis) return;
+  const ready = () => {
+    const voice = voiceFor(lang);
+    wrap.hidden = !voice;
+    Object.assign(speech, { voice, lang, queue: speechChunks(md, lang) });
+  };
+  ready();
+  window.speechSynthesis.addEventListener("voiceschanged", ready, { once: true });
+  document.getElementById("listen-btn").addEventListener("click", () => {
+    const synth = window.speechSynthesis;
+    if (!speech.playing) { speech.token += 1; synth.cancel(); speech.playing = true; speech.paused = false; speakFrom(0); }
+    // Pause = stop after remembering the sentence; resume = say that sentence again (pause() is unreliable in some browsers).
+    else if (speech.paused) { speech.paused = false; speakFrom(speech.index); }
+    else { speech.paused = true; speech.token += 1; synth.cancel(); }
+    updateListenUi();
+  });
+  document.getElementById("listen-stop").addEventListener("click", stopSpeech);
+  document.getElementById("listen-rate").addEventListener("change", (e) => {
+    speech.rate = Number(e.target.value);
+    if (speech.playing && !speech.paused) { const i = speech.index; speech.token += 1; window.speechSynthesis.cancel(); speakFrom(i); }
+  });
+  updateListenUi();
+}
+window.addEventListener("hashchange", () => stopSpeech());
+
+// ---- text size (zoom on the plan view), remembered
+const TEXT_SIZES = [0.9, 1, 1.15, 1.3, 1.5];
+function textSize() { const v = Number(localStorage.getItem("pirca.textSize")); return TEXT_SIZES.includes(v) ? v : 1; }
+function applyTextSize() { const el = document.getElementById("plan-easy"); if (el) el.style.zoom = String(textSize()); }
+
+function updateProgress(actions, checks, celebrate) {
+  const all = [...actions.steps, ...actions.buys];
+  const done = all.filter((a) => checks.has(a.id)).length;
+  const label = document.getElementById("check-progress");
+  if (label) label.textContent = STR[store.lang].progress(done, all.length);
+  const bar = document.getElementById("check-bar");
+  if (bar) bar.style.width = `${all.length ? (100 * done) / all.length : 0}%`;
+  const box = document.getElementById("all-done");
+  if (box) {
+    const finished = all.length > 0 && done === all.length;
+    box.hidden = !finished;
+    box.classList.toggle("celebrate", finished && celebrate && !REDUCED_MOTION.matches);
+  }
+}
+
+function wirePlanEasy(code, actions, top, checks, planText, lang) {
+  updateProgress(actions, checks, false);
+  app.querySelectorAll(".action-list input[type=checkbox]").forEach((box) => box.addEventListener("change", () => {
+    if (box.checked) checks.add(box.dataset.action); else checks.delete(box.dataset.action);
+    saveChecks(code, checks);
+    updateProgress(actions, checks, true);
+  }));
+  const step = (dir) => {
+    const i = TEXT_SIZES.indexOf(textSize());
+    localStorage.setItem("pirca.textSize", String(TEXT_SIZES[Math.max(0, Math.min(TEXT_SIZES.length - 1, i + dir))]));
+    applyTextSize();
+  };
+  document.getElementById("text-smaller").addEventListener("click", () => step(-1));
+  document.getElementById("text-bigger").addEventListener("click", () => step(1));
+  // WhatsApp opens only on tap: a wa.me link with the plan code and the top 3 actions.
+  document.getElementById("wa-btn").addEventListener("click", () => {
+    window.open(`https://wa.me/?text=${encodeURIComponent(whatsappText(code, top))}`, "_blank", "noopener");
+  });
+  document.getElementById("print-btn").addEventListener("click", () => window.print());
+  setupListen(planText, lang);
+}
+
+// ---- share and print
+function whatsappText(code, top) {
+  const lines = top.map((a, i) => `${i + 1}. ${a.text}`);
+  return [STR[store.lang].waIntro(code), ...lines, "", `${t("waOpen")} ${location.origin}${location.pathname}#/plan/${code}`].join("\n");
+}
+window.addEventListener("beforeprint", () => document.documentElement.classList.add("printing"));
+window.addEventListener("afterprint", () => document.documentElement.classList.remove("printing"));
+
 function renderPlanView(code, data) {
   clearTimers();
+  stopSpeech();
   hideFootnote();
   const r = data.result;
   const original = r.language || "es";
@@ -1246,8 +1578,13 @@ function renderPlanView(code, data) {
   const toggleLabel = STR[store.lang].viewIn;
   const fn = { order: [], details: view.sourceDetails };
   const body = renderMarkdown(planText, fn, showing);
+  const actions = planActions(planText, f);
+  const top = topActions(actions);
+  const checks = loadChecks(code);
+  const S = STR[store.lang];
+  const weeks = (planSections(planText)["4"]?.lines.join(" ").match(/\d+\s+(?:semanas?|weeks?)/) || [`${f.weeks_closed}`])[0];
 
-  app.innerHTML = `
+  app.innerHTML = `<div id="plan-easy" class="plan-easy">
     <section class="plan-top glass">
       <div>
         <span class="muted small">${esc(t("planCode"))}</span><div class="plan-code">${esc(code)}</div>
@@ -1261,11 +1598,50 @@ function renderPlanView(code, data) {
         <button class="btn" type="button" id="replay-btn">${esc(t("replay"))}</button>
       </div>
     </section>
-    <div class="key-numbers">
-      <div class="glass accent"><span>${esc(t("stockAtRisk"))}</span><b data-count="${Number(f.stock_at_risk || 0)}">${esc(money(0))}</b></div>
-      <div class="glass accent"><span>${esc(t("fundGap"))}</span><b data-count="${Number(f.cash_gap || 0)}">${esc(money(0))}</b></div>
-      <div class="glass"><span>${esc(t("purchases"))}</span><b data-count="${Number(f.total_cost || 0)}">${esc(money(0))}</b></div>
+    <div class="easy-tools glass no-print" role="toolbar" aria-label="${esc(t("listen"))}">
+      <span id="listen-wrap" class="tool-group" hidden>
+        <button class="btn" type="button" id="listen-btn" aria-pressed="false">🔊 ${esc(t("listen"))}</button>
+        <button class="btn" type="button" id="listen-stop" hidden>■ ${esc(t("stopListen"))}</button>
+        <label class="small">${esc(t("speedLabel"))}
+          <select id="listen-rate">${[0.8, 1, 1.2].map((v) => `<option value="${v}" ${v === speech.rate ? "selected" : ""}>${v}×</option>`).join("")}</select></label>
+      </span>
+      <span class="tool-group">
+        <button class="btn" type="button" id="text-smaller" aria-label="${esc(t("textSmaller"))}" title="${esc(t("textSmaller"))}">A−</button>
+        <button class="btn" type="button" id="text-bigger" aria-label="${esc(t("textBigger"))}" title="${esc(t("textBigger"))}">A+</button>
+      </span>
+      <span class="tool-group">
+        <button class="btn" type="button" id="wa-btn">💬 ${esc(t("shareWhatsApp"))}</button>
+        <button class="btn" type="button" id="print-btn">🖨️ ${esc(t("print"))}</button>
+      </span>
     </div>
+    <div class="print-head">${esc(t("printTitle"))} · <span class="plan-code">${esc(code)}</span></div>
+    <section class="top-actions" aria-labelledby="top-title">
+      <h2 id="top-title">${esc(t("topTitle"))}</h2>
+      <ol class="top-cards">${top.map((a, i) => `<li class="top-card glass-read">
+        <span class="top-icon" aria-hidden="true">${actionIcon(a)}</span>
+        <div><span class="top-num">${i + 1}</span><p>${esc(a.text)}</p>
+        <span class="top-cost">${esc(t("costLabel"))}: <b>${esc(actionCost(a, actions.buys, f, view.sourceDetails))}</b></span></div></li>`).join("")}</ol>
+    </section>
+    <section class="key-pictures" aria-label="${esc(t("numbersTitle"))}">
+      <figure class="glass accent"><figcaption><span>${esc(t("stockAtRisk"))}</span><b data-count="${Number(f.stock_at_risk || 0)}">${esc(money(0))}</b></figcaption>
+        ${shelfSvg(f)}<p class="pic-caption">${esc(S.shelfCaption(money(Number(f.stock_at_risk || 0)), money(Number(f.stock_value || 0))))}</p></figure>
+      <figure class="glass accent"><figcaption><span>${esc(t("fundGap"))}</span><b data-count="${Number(f.cash_gap || 0)}">${esc(money(0))}</b></figcaption>
+        ${jarSvg(f)}<p class="pic-caption">${esc(Number(f.cash_gap || 0) > 0 ? S.jarCaption(money(Number(f.cash_after_purchases ?? f.cash_on_hand ?? 0)), money(Number(f.buffer_needed || 0)), weeks) : t("jarFull"))}</p></figure>
+      <figure class="glass"><figcaption><span>${esc(t("purchases"))}</span><b data-count="${Number(f.total_cost || 0)}">${esc(money(0))}</b></figcaption>
+        ${budgetSvg(f, actions.buys)}<p class="pic-caption">${esc(S.budgetCaption(money(Number(f.total_cost || 0)), money(Number(f.budget || 0)), money(Number(f.money_left || 0))))}</p></figure>
+    </section>
+    <section class="action-list glass-read" aria-labelledby="check-title">
+      <div class="check-head"><h2 id="check-title">${esc(t("checklistTitle"))}</h2><span id="check-progress" class="check-count" aria-live="polite"></span></div>
+      <div class="progress-bar" aria-hidden="true"><span id="check-bar"></span></div>
+      ${checklistHtml(actions, checks, showing)}
+      <div id="all-done" class="all-done" role="status" hidden>🎉 ${esc(t("allDone"))}</div>
+    </section>
+    <section class="glossary glass no-print" aria-labelledby="glossary-title">
+      <h2 id="glossary-title">${esc(t("glossaryTitle"))}</h2>
+      ${GLOSSARY[store.lang].map(([term, text]) => `<details><summary>${esc(term)}</summary><p>${esc(text)}</p></details>`).join("")}
+    </section>
+    <details class="plan-details no-print" id="plan-details" ${MAP_NARROW.matches ? "" : "open"}>
+    <summary>${esc(t("fullDetails"))}</summary>
     ${store.lang === "en" && showing === "es" && r.summary_en ? `<section class="summary glass" lang="en"><h4>${esc(t("summaryTitle"))}</h4><p style="margin:0">${esc(r.summary_en)}</p></section>` : ""}
     ${translation && !translation.verification?.ok ? `<div class="notice glass-read" role="note">${esc(t("translationWarn"))}</div>` : ""}
     <article class="plan-body glass-read" lang="${showing}">${body}</article>
@@ -1275,7 +1651,11 @@ function renderPlanView(code, data) {
       <table><thead><tr><th>${esc(t("row"))}</th><th>${esc(t("calls"))}</th><th>${esc(t("input"))}</th><th>${esc(t("cached"))}</th><th>${esc(t("output"))}</th><th>USD</th></tr></thead>
       <tbody>${r.usage ? usageRow(t("runRow"), r.usage) : ""}${Object.entries(tr).map(([lang, x]) => usageRow(`${t("trRow")} (${lang})`, x.usage)).join("")}</tbody></table>
       ${store.currency === "usd" ? `<p class="small" style="margin:8px 0 0">${esc(STR[store.lang].fxNote(state.meta.pen_per_usd, state.meta.fx_date))}</p>` : ""}
-    </section>`;
+    </section>
+    </details></div>`;
+
+  applyTextSize();
+  wirePlanEasy(code, actions, top, checks, planText, showing);
 
   countUp(!view.counted);
   view.counted = true;

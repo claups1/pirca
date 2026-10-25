@@ -403,3 +403,26 @@ Check with Replay trace on PIU-CAST26 (desktop, plus one quick phone screenshot)
 ```
 Commit the working tree changes with a sensible message.
 ```
+
+## Prompt 37 — Plan view for every shop owner
+
+```
+Make Pirca's plan view easy to understand and use for shop owners of any background (older owners, people who read slowly, people who prefer pictures or listening), without losing any information. Keep the current style, both languages and both currencies. Nothing here may call the model: it all uses data already in the saved plan.
+
+1. "Lo más importante esta semana / Most important this week": at the top, the 3 most urgent actions as big cards with a simple icon, one short sentence each, and its cost.
+2. Interactive checklist: every action in the plan gets a checkbox. Show progress ("3 de 8 hechas"), save it in localStorage per plan code, and celebrate gently when all are done.
+3. "🔊 Escuchar el plan / Listen to the plan": read the plan aloud with the browser's built-in speech synthesis in the plan's language (Spanish voice for Spanish), with play/pause and a speed control. Skip footnote numbers when reading. Hide the button if the browser has no voice.
+4. Pictures for the key numbers: stock at risk as a shelf with a water line at 1 m; the emergency fund as a jar filling up to the target with the gap marked; purchases as stacked items within the budget bar.
+5. "A+ / A-" text size buttons, remembered in localStorage.
+6. "¿Qué significa? / What does it mean?": small tap-to-open explanations for ENFEN, El Niño costero, SENAMHI, INDECI, fondo de emergencia, and mercadería en riesgo, in plain words.
+7. Share: "Compartir por WhatsApp" (a wa.me link with the plan code and the top 3 actions, opened only when the user taps it) and "Imprimir" (a clean one-page print layout with the top actions, checklist and key numbers).
+8. Below all that, the full plan stays as it is today, under "Ver todo el detalle / See full details" (open by default on desktop).
+
+Check in the browser on PIU-CAST26 in both languages: checklist persists after reload, read-aloud works, print preview fits one page, no console errors. Save screenshots to output/screenshots/.
+```
+
+## Prompt 38 — Commit
+
+```
+Commit the working tree changes with a sensible message.
+```
