@@ -15,7 +15,7 @@ const STR = {
     fact1: "Official sources", fact1b: "ENFEN, INDECI, BCRP and Piura's flood records, with every number cited.",
     fact2: "Four AI agents", fact2b: "An analyst, a planner and a critic check each other before you see the plan.",
     fact3: "Within your means", fact3b: "Pirca never recommends spending money you don't have.",
-    mapAria: "Live map of the four agents, the code checks and the plan", revisionLabel: "1 revision", gateTitle: "Code checks",
+    mapAria: "Live map of the four agents, the code checks and the plan", revisionLabel: "1 revision", gateTitle: "Code checks", sceneCaption: "Each agent adds stones to your pirca",
     check_draft: "Draft", check_plan: "Final plan", check_budget: "Budget", planNode: "Plan", team: "Team",
     howTitle: "How it works", how: ["Answer 5 short sections", "Four agents check the facts", "Get your plan"],
     communique: "Communiqué", mapTitle: "Map of the eastern Pacific and Peru's coast with Piura marked",
@@ -67,7 +67,7 @@ const STR = {
     fact1: "Fuentes oficiales", fact1b: "ENFEN, INDECI, BCRP y los registros de inundaciones de Piura, con cada número citado.",
     fact2: "Cuatro agentes de IA", fact2b: "Un analista, un planificador y un revisor se controlan entre sí antes de que veas el plan.",
     fact3: "Según tu dinero", fact3b: "Pirca nunca te recomienda gastar dinero que no tienes.",
-    mapAria: "Mapa en vivo de los cuatro agentes, los controles en código y el plan", revisionLabel: "1 revisión", gateTitle: "Controles en código",
+    mapAria: "Mapa en vivo de los cuatro agentes, los controles en código y el plan", revisionLabel: "1 revisión", gateTitle: "Controles en código", sceneCaption: "Cada agente agrega piedras a tu pirca",
     check_draft: "Borrador", check_plan: "Plan final", check_budget: "Presupuesto", planNode: "Plan", team: "Equipo",
     howTitle: "Cómo funciona", how: ["Responde 5 secciones cortas", "Cuatro agentes revisan los datos", "Recibe tu plan"],
     communique: "Comunicado", mapTitle: "Mapa del Pacífico oriental y la costa del Perú con Piura marcada",
@@ -633,6 +633,79 @@ function rebuildMap(ts) {
   Object.assign(ts, fresh, { animate: ts.animate, seen: ts.seen });
 }
 
+// ---- Piura scene behind the map (decoration only): Río Piura, a shop on the bank, and a dry-stone
+// wall (pirca) that builds itself as the run goes. Driven by the same events as the map.
+const PIRCA_ROWS = [8, 7, 6, 5, 4];                      // 30 stones, bottom row first
+const PIRCA_STONES = PIRCA_ROWS.reduce((a, b) => a + b, 0);
+const STONES_PER_STEP = 3;                               // an agent finishes or a code check passes
+const SCENES = {
+  wide: { w: 680, bankX: 410, wallX: 496, stoneW: 13, shopX: 604 },
+  narrow: { w: 360, bankX: 170, wallX: 228, stoneW: 10, shopX: 312 },
+};
+const STONE_FILLS = ["#7C8DA3", "#5E6F86", "#94A3B5", "#6B7C92"];
+
+function riverWavePath(w, y, amp, period) {
+  let d = `M${-period} ${y}`;
+  for (let x = -period; x < w + period; x += period) d += ` q${period / 4} ${-amp} ${period / 2} 0 t${period / 2} 0`;
+  return `${d} V90 H${-period} Z`;
+}
+
+function sceneHtml(narrow) {
+  const S = narrow ? SCENES.narrow : SCENES.wide;
+  const base = 56, h = 7;
+  let k = 0;
+  const stones = PIRCA_ROWS.map((count, r) => Array.from({ length: count }, (_, i) => {
+    const x = S.wallX - (count * S.stoneW) / 2 + i * S.stoneW;
+    const fill = STONE_FILLS[(k * 7 + r) % STONE_FILLS.length];
+    return `<rect class="stone" data-k="${k++}" x="${x.toFixed(1)}" y="${base - (r + 1) * h}" width="${S.stoneW - 1.5}" height="${h - 1}" rx="2" fill="${fill}"/>`;
+  }).join("")).join("");
+  const s = S.shopX;
+  const waves = [[66, 2.5, 60, "a"], [74, 2, 80, "b"], [82, 1.8, 50, "c"]]
+    .map(([y, amp, p, c]) => `<path class="wave wave-${c}" style="--p:${-p}px" d="${riverWavePath(S.w, y, amp, p)}"/>`).join("");
+  return `<div class="scene-sun" aria-hidden="true"></div>
+    <svg class="scene-ground" viewBox="0 0 ${S.w} 90" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+      ${waves}
+      <path class="bank" d="M${S.bankX - 40} 90 C${S.bankX - 10} 90, ${S.bankX - 12} ${base}, ${S.bankX + 20} ${base} H${S.w} V90 Z"/>
+      <g class="shop">
+        <rect x="${s - 26}" y="${base - 28}" width="52" height="28" class="shop-body"/>
+        <path d="M${s - 32} ${base - 28} L${s} ${base - 44} L${s + 32} ${base - 28} Z" class="shop-roof"/>
+        <rect x="${s - 22}" y="${base - 23}" width="44" height="5" class="shop-awning"/>
+        <rect x="${s - 6}" y="${base - 15}" width="12" height="15" class="shop-door"/>
+        <rect x="${s - 19}" y="${base - 14}" width="9" height="7" class="shop-window"/>
+      </g>
+      <g class="pirca">${stones}</g>
+    </svg>`;
+}
+
+// Stones, sun height and rain follow ts.stones (0..30); a stopped run keeps the wall unfinished and the sun low.
+function sceneApply(ts, e, map) {
+  const ok = (e.type === "agent_finished")
+    || (e.type === "tool_result" && e.tool === "verify_draft" && e.result?.ok === true)
+    || ((e.type === "code_check" || e.type === "final_check") && e.ok === true);
+  if (ok && !ts.sceneEnd) ts.stones = Math.min(PIRCA_STONES - STONES_PER_STEP, ts.stones + STONES_PER_STEP);
+  if (e.type === "run_finished") {
+    ts.sceneEnd = e.status === "completed" ? "done" : e.status === "completed_with_warning" ? "warn" : "stopped";
+    if (ts.sceneEnd !== "stopped") ts.stones = PIRCA_STONES;
+  }
+  if (e.type === "limit_hit" && e.action === "stopped") ts.sceneEnd = "stopped";
+  map.classList.toggle("scene-instant", !ts.animate || REDUCED_MOTION.matches);
+  let batch = 0;
+  map.querySelectorAll(".stone").forEach((stone) => {
+    const placed = Number(stone.dataset.k) < ts.stones;
+    if (placed && !stone.classList.contains("placed")) stone.style.transitionDelay = `${(batch++) * 90}ms`;
+    stone.classList.toggle("placed", placed);
+  });
+  let p = ts.stones / PIRCA_STONES;
+  if (ts.sceneEnd === "stopped") p = Math.min(p, 0.12);
+  // Sun arc (percent of the panel): up the free left margin, then along the top toward the middle.
+  const q = (a, b, c) => (1 - p) ** 2 * a + 2 * (1 - p) * p * b + p ** 2 * c;
+  map.style.setProperty("--sun-x", `${q(5, 5, 48).toFixed(1)}%`);
+  map.style.setProperty("--sun-y", `${q(46, -2, 5).toFixed(1)}%`);
+  map.style.setProperty("--rain", Math.max(0, Math.min(1, 1 - (p - 0.55) / 0.4)).toFixed(2));
+  map.classList.toggle("scene-done", ts.sceneEnd === "done");
+  map.classList.toggle("scene-stopped", ts.sceneEnd === "stopped");
+}
+
 function linkPath(L, id) {
   const m = L.nodes.manager, a = L.nodes[id];
   return `M${m.x} ${m.y + m.h / 2} L${a.x} ${a.y - a.h / 2}`;
@@ -654,6 +727,7 @@ function agentMapHtml() {
   const g = L.nodes.gate, gt = g.y - g.h / 2, p = L.nodes.plan, pt = p.y - p.h / 2;
   const checks = ["draft", "plan", "budget"];
   return `<div class="agent-map glass" id="agent-map" data-layout="${L === MAP_LAYOUTS.narrow ? "narrow" : "wide"}">
+    ${sceneHtml(L === MAP_LAYOUTS.narrow)}
     <div class="rain" aria-hidden="true">${Array.from({ length: 14 }, (_, i) =>
       `<span style="left:${((i * 7.3) + 3) % 100}%;animation-delay:${((i * 0.37) % 2.4).toFixed(2)}s;animation-duration:${(1.6 + (i % 5) * 0.25).toFixed(2)}s"></span>`).join("")}</div>
     <svg viewBox="${L.view}" role="img" aria-label="${esc(t("mapAria"))}">
@@ -770,6 +844,7 @@ function mapApply(ts, e) {
   }
   if (e.type === "translation" && !e.error) status("plan", "✓ ES + EN");
   if (e.type === "limit_hit" && e.action === "stopped") { map.classList.remove("raining"); node("plan")?.classList.add("plan-stop"); status("plan", "⛔"); }
+  sceneApply(ts, e, map);
   // node states
   const current = ts.stack[ts.stack.length - 1];
   AGENTS.forEach((id) => {
@@ -804,6 +879,7 @@ function traceHtml(code, mode) {
     </div>`}
     ${mode === "live" ? `<p class="muted">${esc(t("traceText"))}</p>` : ""}
     ${agentMapHtml()}
+    <p class="map-caption">${esc(t("sceneCaption"))}</p>
     <div class="counter glass">
       <div><span>${esc(t("inTok"))}</span><b id="c-in">0</b></div>
       <div><span>${esc(t("cachedTok"))}</span><b id="c-cached">0</b></div>
@@ -814,7 +890,7 @@ function traceHtml(code, mode) {
 }
 
 function newTraceState(animate = true) {
-  return { stack: [], done: new Set(), animate, toolShown: {}, seen: [],
+  return { stack: [], done: new Set(), animate, toolShown: {}, seen: [], stones: 0, sceneEnd: null,
            usage: Object.fromEntries(AGENTS.map((a) => [a, { tokens: 0, cost: 0 }])) };
 }
 

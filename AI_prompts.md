@@ -382,3 +382,24 @@ Fix it:
 ```
 Commit the working tree changes with a sensible message.
 ```
+
+## Prompt 35 — Animated Piura scene behind the agent map
+
+```
+Add a small animated Piura scene behind Pirca's live agent map, to make the run fun while staying professional. It is decoration only: low opacity, behind the nodes, never covering text, same Warm Pacific colors (navy, teal, coral/sunset), lightweight, and all motion off when prefers-reduced-motion is set.
+
+1. Bottom of the panel: a stylized Río Piura with 2–3 slow layered waves, and a small simple shop on the riverbank.
+2. "Building the pirca": between the river and the shop, a dry-stone wall (pirca) builds itself as the run progresses. Each time an agent finishes or a code check passes, a few stones drop into place with a short ease. When the plan is ready, the wall is complete. Drive it from the same events as the map, so it also works in Replay trace.
+3. A sun that rises along an arc across the top of the panel as the run progresses (from low at the start to high when the plan is done), with a soft warm glow.
+4. The existing faint rain fades out as the wall nears completion.
+5. If the run is stopped by a limit or errors, the wall stays unfinished and the sun stays low (no celebration).
+6. Add a one-line caption under the panel: "Cada agente agrega piedras a tu pirca" / "Each agent adds stones to your pirca".
+
+Check with Replay trace on PIU-CAST26 (desktop, plus one quick phone screenshot): text stays readable, no console errors, and save screenshots at the start, mid-run, and with the finished wall to output/screenshots/.
+```
+
+## Prompt 36 — Commit
+
+```
+Commit the working tree changes with a sensible message.
+```
