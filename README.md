@@ -44,14 +44,14 @@ Every plan is saved in both languages; the language switch shows the other one w
 - `data/` holds every input the tools use. Each figure's source, status (verified, sourced, illustrative estimate,
   UNVERIFIED) and link is listed in [`output/sources.md`](output/sources.md); raw downloads stay in `data/raw/`
   (not committed).
-- **District boundaries** on the start-screen map: `data/geo/piura_districts.geojson`, Piura region's 65 districts,
+- **Province boundaries** on the start-screen map: `data/geo/piura_provinces.geojson`, Piura region's 8 provinces,
   built by `backend/build_piura_geo.py` from [pe-atlas 0.0.1](https://www.npmjs.com/package/pe-atlas)
   (`districts-100k.json`, MIT license, [github.com/ccalobeto/pe-atlas](https://github.com/ccalobeto/pe-atlas)), a TopoJSON
   redistribution of the 2022 edition of Peru's district boundary shapefiles published by
-  [GeoGPS Perú](https://www.geogpsperu.com/) from INEI's limits. The script keeps Piura region (UBIGEO 20…), fixes a
-  double-encoded name (PARIÑAS), adds province names from the UBIGEO codes and lightly simplifies the shapes.
-- Flood-risk colors come from `data/districts.csv`; dengue 2023 cases per district come from the HIST-2023 rows of
-  `data/historical_impacts.csv` (DIRESA Piura).
+  [GeoGPS Perú](https://www.geogpsperu.com/) from INEI's limits. The script keeps Piura region (UBIGEO 20…), merges the
+  districts into provinces along their shared borders, and lightly simplifies the shapes.
+- Each province's flood color is the highest level among its districts in `data/districts.csv`; its dengue 2023
+  total sums the HIST-2023 rows of `data/historical_impacts.csv` (DIRESA Piura) for the districts Pirca has.
 - Token use and cost per plan: [`output/tokenomics.md`](output/tokenomics.md). Safety tests:
   [`output/safety/summary.md`](output/safety/summary.md). Every prompt given to the coding assistant:
   [`AI_prompts.md`](AI_prompts.md).

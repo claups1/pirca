@@ -536,3 +536,39 @@ Keep text contrast WCAG AA and take one screenshot mid-run and one finished.
 ```
 Commit the working tree changes with a sensible message.
 ```
+
+## Prompt 53 — Open
+
+```
+opeb
+```
+
+## Prompt 54 — Light theme, purchase groups, province map
+
+```
+Apply these changes to Pirca:
+
+1. Light, clear theme everywhere (no dark blue anywhere): page background warm off-white #FBF7F0, cards white with a soft shadow and a subtle frosted-glass edge, text dark charcoal #2B2622, muted text #6B625A. Accents: coral #E8664A (main), sand #E9B949, algarrobo green #6E9E5C (done/safe/✓), terracotta #C8643B. Blue only for water (sea, rivers, flood lines), in a light clear blue #4BA3C7. Apply it through the CSS variables so every page changes: start, map, wizard, plan, help, menus, print.
+   - Agent map scene: a bright sunny Piura afternoon. Warm light sky that brightens as the run progresses, a larger brighter sun, sandy ground, only the river blue, pirca stones in beige/ochre/terracotta, the shop with a terracotta roof. Agent cards white with dark text; working = coral outline, done = green outline.
+
+2. Purchases card in the plan: under the bar, show only the groups with their totals (e.g. "● Shop building $53.06", "● Power and records $37.65", "● Health $1.71"), computed in code so they add up exactly to the amount spent. No individual items there; they stay in the checklist. When part of the budget is unspent, add one plain sentence explaining why (no more useful actions, or kept for the emergency fund), based on optimize_budget's result.
+
+3. Start-screen map: show only Piura region with its 8 provinces (Piura, Sullana, Paita, Talara, Sechura, Morropón, Ayabaca, Huancabamba), from the same GeoJSON merged to province boundaries. Remove the district shapes, the Piura city inset and the neighboring regions.
+   - Flood layer: color each province by the highest flood level among its districts in data/districts.csv (high = coral, medium = sand, no data = light gray), and state that rule in the legend.
+   - Dengue 2023 layer (keep the toggle): by province, summing only the district cases Pirca has, labeled "cases in districts with data", in its own light-to-dark plum scale (not coral or sand).
+   - Warm water: don't reuse the risk colors. Draw it as a thin, soft wavy-line pattern in light blue-violet #9DA7E0 along the coast, gently moving, with a direct label "Mar más caliente de lo normal / Warmer than normal sea".
+   - Separate legends: "Flood risk" (color squares) and "Sea temperature" (wavy-line swatch); the dengue legend shows when that layer is on.
+   - Tapping a province opens a card listing its districts with their levels and a "Hacer mi plan para <district>" button for each. Clear province labels.
+
+4. If not already done:
+   - Wizard step 4: the "Perishable?" options as a horizontal row of three equal buttons under Product and City; rename "Detect" to "Not sure (Pirca checks)" / "No sé (Pirca lo revisa)".
+   - "Most important this week" cards: no cost line or item list.
+
+Keep WCAG AA contrast, both languages and both currencies. Check every page in the browser with no console errors, and save one screenshot of each page (and of both map layers) to output/screenshots/.
+```
+
+## Prompt 55 — Commit
+
+```
+Commit the working tree changes with a sensible message.
+```

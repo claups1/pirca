@@ -1,7 +1,7 @@
-"""Data for the start screen: district map, "why it matters" numbers and the El Niño timeline.
+"""Data for the start screen: province map, "why it matters" numbers and the El Niño timeline.
 
 Everything is read from data/districts.csv, data/historical_impacts.csv, data/enfen/index.json and
-data/geo/piura_districts.geojson (built by backend/build_piura_geo.py); no number is typed here.
+data/geo/piura_provinces.geojson (built by backend/build_piura_geo.py); no number is typed here.
 Only the choice of which rows to feature lives in this file.
 """
 
@@ -21,23 +21,29 @@ IMPACT_IDS = {"business_losses": "HIST-2023-32", "transport_cost": "HIST-2023-33
 TIMELINE_IDS = {"1997-98": "HIST-1998-01", "2017": "HIST-2017-01", "2023": "HIST-2023-09"}
 
 
-# Boundary names that differ from Pirca's district names (INEI spelling; Talara city is Pariñas district).
-BOUNDARY_ALIASES = {"PARIÑAS": "Talara", "TAMBO GRANDE": "Tambogrande"}
+LEVEL_ORDER = {"low": 1, "medium": 2, "high": 3}
 
 
 @lru_cache
-def district_boundaries() -> dict:
-    return json.loads((config.DATA_DIR / "geo" / "piura_districts.geojson").read_text(encoding="utf-8"))
+def province_boundaries() -> dict:
+    return json.loads((config.DATA_DIR / "geo" / "piura_provinces.geojson").read_text(encoding="utf-8"))
 
 
-def map_features() -> list[dict]:
-    """Every Piura district boundary, with the Pirca district it matches (or None: no data in Pirca)."""
+def map_provinces(dengue: dict[str, dict]) -> list[dict]:
+    """Each province with Pirca's districts in it, the highest flood level among them (None: no data),
+    and dengue 2023 summed over only the districts Pirca has cases for."""
+    rows = list(data_store.districts().values())
     out = []
-    for f in district_boundaries()["features"]:
+    for f in province_boundaries()["features"]:
         name = f["properties"]["name"]
-        row = data_store.find_district(BOUNDARY_ALIASES.get(name, name))
-        out.append({"ubigeo": f["properties"]["ubigeo"], "name": name, "province": f["properties"]["province"],
-                    "district": row["district"] if row else None, "coordinates": f["geometry"]["coordinates"]})
+        mine = [r for r in rows if data_store.normalize(r["province"]) == data_store.normalize(name)]
+        levels = [r["flood_hazard_level"] for r in mine if r["flood_hazard_level"] in LEVEL_ORDER]
+        with_cases = [r["district"] for r in mine if r["district"] in dengue]
+        out.append({"ubigeo": f["properties"]["ubigeo"], "name": name, "coordinates": f["geometry"]["coordinates"],
+                    "districts": [{"name": r["district"], "hazard_level": r["flood_hazard_level"]} for r in mine],
+                    "flood_level": max(levels, key=LEVEL_ORDER.get) if levels else None,
+                    "dengue": {"cases": sum(int(dengue[d]["value"]) for d in with_cases), "districts": with_cases,
+                               "ids": [dengue[d]["id"] for d in with_cases]} if with_cases else None})
     return out
 
 
@@ -78,7 +84,7 @@ def home_data() -> dict:
     dengue = dengue_2023(hist)
     cited = [f["id"] for d in districts for f in d["facts"]] + list(IMPACT_IDS.values()) + list(TIMELINE_IDS.values())
     cited += [v["id"] for v in dengue.values()] + [enfen["id"]]
-    geo = district_boundaries()
+    geo = province_boundaries()
     return {"districts": districts, "impacts": impacts, "timeline": timeline, "enfen": enfen, "dengue": dengue,
-            "map": {"features": map_features(), "source": geo["source"], "source_url": geo["source_url"]},
+            "map": {"provinces": map_provinces(dengue), "source": geo["source"], "source_url": geo["source_url"]},
             "source_details": describe_sources(dict.fromkeys(cited))}

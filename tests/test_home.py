@@ -66,25 +66,51 @@ def test_every_cited_id_has_source_details():
         assert body["source_details"][i]["url"].startswith("http")
 
 
-# ---------------------------------------------------------------- district map
+# ---------------------------------------------------------------- province map
 
-def test_map_has_every_piura_district_and_matches_each_pirca_district_once():
+PROVINCES = {"Piura", "Sullana", "Paita", "Talara", "Sechura", "Morropón", "Ayabaca", "Huancabamba"}
+ORDER = {"low": 1, "medium": 2, "high": 3}
+
+
+def test_map_has_the_eight_provinces_of_piura_region():
     body = home()
-    features = body["map"]["features"]
-    assert len(features) == 65 and all(f["ubigeo"].startswith("20") for f in features)
-    matched = [f["district"] for f in features if f["district"]]
-    assert sorted(matched) == sorted(DISTRICTS)  # each of the 15 districts exactly once
-    by_name = {f["district"]: f for f in features if f["district"]}
-    assert by_name["Talara"]["name"] == "PARIÑAS" and by_name["Bellavista"]["province"] == "Sullana"
-    assert "pe-atlas" in body["map"]["source"]
+    provinces = body["map"]["provinces"]
+    assert {p["name"] for p in provinces} == PROVINCES and all(p["ubigeo"].startswith("20") for p in provinces)
+    assert "pe-atlas" in body["map"]["source"] and "provinces" in body["map"]["source"]
 
 
-def test_boundaries_are_inside_piura_region():
-    for f in home()["map"]["features"]:
-        for poly in f["coordinates"]:
+def test_every_pirca_district_is_listed_in_exactly_one_province():
+    listed = [d["name"] for p in home()["map"]["provinces"] for d in p["districts"]]
+    assert sorted(listed) == sorted(DISTRICTS)
+    for p in home()["map"]["provinces"]:
+        for d in p["districts"]:
+            assert DISTRICTS[d["name"]]["province"] == p["name"] and DISTRICTS[d["name"]]["flood_hazard_level"] == d["hazard_level"]
+
+
+def test_province_flood_level_is_the_highest_among_its_districts():
+    for p in home()["map"]["provinces"]:
+        levels = [DISTRICTS[d["name"]]["flood_hazard_level"] for d in p["districts"]]
+        levels = [lv for lv in levels if lv in ORDER]
+        assert p["flood_level"] == (max(levels, key=ORDER.get) if levels else None)
+    by = {p["name"]: p["flood_level"] for p in home()["map"]["provinces"]}
+    assert by["Ayabaca"] is None and by["Huancabamba"] is None  # no Pirca data
+
+
+def test_province_dengue_sums_only_the_districts_with_data():
+    dengue = {r["district"]: int(r["value"]) for r in HIST.values() if r["event"] == "2023" and r["topic"] == "dengue" and r["unit"] == "cases"}
+    for p in home()["map"]["provinces"]:
+        names = [d["name"] for d in p["districts"] if d["name"] in dengue]
+        if not names:
+            assert p["dengue"] is None
+            continue
+        assert p["dengue"]["cases"] == sum(dengue[n] for n in names) and sorted(p["dengue"]["districts"]) == sorted(names)
+
+
+def test_province_boundaries_are_inside_piura_region():
+    for p in home()["map"]["provinces"]:
+        for poly in p["coordinates"]:
             for ring in poly:
-                assert len(ring) >= 4
-                assert all(-81.5 < x < -79.0 and -6.5 < y < -3.9 for x, y in ring)
+                assert len(ring) >= 4 and all(-81.5 < x < -79.0 and -6.5 < y < -3.9 for x, y in ring)
 
 
 def test_dengue_2023_values_match_the_csv():

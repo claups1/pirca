@@ -17,7 +17,7 @@ from pathlib import Path
 from backend import config
 from backend.agents.pirca import _with_footer, run_plan
 from backend.agents.usage import usage_from_response
-from backend.tools import fill_placeholders, score_exposure, verify_draft
+from backend.tools import data_store, fill_placeholders, optimize_budget, score_exposure, verify_draft
 from backend.tools.drafting import PLACEHOLDER
 from backend.tools.profile import district_level, parse_profile
 from backend.tools.source_info import cited_ids, describe_sources
@@ -148,7 +148,34 @@ def plan_status(code: str, after: int = 0) -> dict | None:
             result["risk_level"] = score_exposure(record["form"])["risk_level"]
         except ValueError:
             result["risk_level"] = None
+        result["budget_note"] = budget_note(record)
     return {"code": code, "status": status_of(record), "events": events, "result": result}
+
+
+def budget_note(record: dict) -> dict | None:
+    """Why part of the prep budget is unspent, from optimize_budget's own result (re-run on the plan's form;
+    code only, no model). None when nothing is left or the re-run no longer matches the saved plan."""
+    facts = record.get("facts", {})
+    left = facts.get("money_left") or 0
+    if left <= 0.005 or not record.get("form"):
+        return None
+    try:
+        run = optimize_budget(record["form"])
+    except ValueError:
+        return None
+    if abs(run["facts"]["total_cost"] - facts.get("total_cost", -1)) > 0.005:
+        return None  # the data changed since the plan was made: don't explain with different numbers
+    costs = {a["id"]: a["cost_min_pen"] for a in data_store.action_catalog()}
+    # Only actions the budget step weighed and left out (not ones the owner already has or that are sized elsewhere).
+    remaining = [costs[e["id"]] for e in run["excluded"]
+                 if costs.get(e["id"]) and e["reason"].startswith(("costs S/", "lower value"))]
+    fits = [c for c in remaining if c <= left + 0.005]
+    note = {"money_left": round(left, 2), "cash_gap": facts.get("cash_gap", 0) or 0}
+    if not remaining:
+        return {**note, "reason": "nothing_left"}  # every useful action is already in the plan or owned
+    if fits:
+        return {**note, "reason": "no_more_value"}  # actions that fit would not protect this shop any further
+    return {**note, "reason": "nothing_fits", "cheapest_left": min(remaining)}
 
 
 # ------------------------------------------------------------------ translation

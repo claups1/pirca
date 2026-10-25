@@ -352,7 +352,7 @@ function wavePath(amplitude, base) {
 }
 
 function wavesSvg() {
-  const layers = [["w3", 10, 40, "#2EC4B6"], ["w2", 8, 48, "#1E3A5F"], ["w1", 6, 56, "#2EC4B6"]];
+  const layers = [["w3", 10, 40, "#8CC8E0"], ["w2", 8, 48, "#4BA3C7"], ["w1", 6, 56, "#8CC8E0"]];  // water: light clear blues
   return `<div class="waves" aria-hidden="true">${layers.map(([cls, amp, base, color]) =>
     `<svg class="${cls}" viewBox="0 0 2880 80" preserveAspectRatio="none"><path d="${wavePath(amp, base)}" fill="${color}"/></svg>`).join("")}</div>`;
 }
@@ -385,37 +385,43 @@ Object.assign(STR.en, {
                    people_affected: (v) => `${v} people affected by the rains in the region.` },
 });
 
-// ---- start-screen map: Piura region's real district boundaries (data/geo/piura_districts.geojson via /api/home),
-// colored by flood risk or by dengue cases in 2023, with a zoom inset for Piura city and the warm sea as a coastal band.
+// ---- start-screen map: Piura region's 8 provinces (data/geo/piura_provinces.geojson via /api/home).
+// Flood layer: each province takes the highest flood level among its districts in data/districts.csv.
+// Dengue layer: 2023 cases summed over only the districts Pirca has data for. The warmer sea is a wavy-line pattern.
 
 Object.assign(STR.es, {
-  mapRisk: "Riesgo de inundación", mapDengue: "Casos de dengue 2023", noDataLegend: "Sin datos en Pirca",
-  noDataCard: "Pirca todavía no tiene datos de inundación de este distrito.", insetTitle: "Ciudad de Piura",
-  boundaryNote: "Límites distritales: INEI, edición 2022 (GeoGPS Perú, vía pe-atlas).", dengueLine: (n) => `${n} casos`,
-  mapTitleReal: "Mapa de los distritos de la región Piura", tapDistrict: "Toca un distrito para ver qué pasó allí.",
-  casesWord: "casos", mapModeLabel: "Qué muestra el mapa", warmBand: "Franja cálida: mar más caliente frente a la costa.",
+  mapTitleProv: "Mapa de las provincias de la región Piura", mapRisk: "Riesgo de inundación", mapDengue: "Casos de dengue 2023",
+  floodLegendTitle: "Riesgo de inundación", floodRule: "Cada provincia toma el nivel más alto de sus distritos con datos en Pirca.",
+  dengueLegendTitle: "Casos de dengue 2023", dengueRule: "casos en distritos con datos", noDataLegend: "Sin datos en Pirca",
+  seaLegendTitle: "Temperatura del mar", warmSea: "Mar más caliente de lo normal", casesWord: "casos",
+  tapProvince: "Toca una provincia para ver sus distritos.", mapModeLabel: "Qué muestra el mapa",
+  boundaryNote: "Límites: INEI, edición 2022 (GeoGPS Perú, vía pe-atlas), distritos unidos por provincia.",
+  provinceNone: "Pirca todavía no tiene datos de los distritos de esta provincia.",
+  provinceDengue: (n) => `Dengue 2023: ${n} casos en distritos con datos.`, provinceLevel: "Nivel de la provincia", noDataShort: "sin datos",
 });
 Object.assign(STR.en, {
-  mapRisk: "Flood risk", mapDengue: "Dengue cases 2023", noDataLegend: "No data in Pirca",
-  noDataCard: "Pirca has no flood data for this district yet.", insetTitle: "Piura city",
-  boundaryNote: "District boundaries: INEI, 2022 edition (GeoGPS Perú, via pe-atlas).", dengueLine: (n) => `${n} cases`,
-  mapTitleReal: "Map of the districts of Piura region", tapDistrict: "Tap a district to see what happened there.",
-  casesWord: "cases", mapModeLabel: "What the map shows", warmBand: "Warm band: warmer sea along the coast.",
+  mapTitleProv: "Map of the provinces of Piura region", mapRisk: "Flood risk", mapDengue: "Dengue cases 2023",
+  floodLegendTitle: "Flood risk", floodRule: "Each province takes the highest level among its districts with data in Pirca.",
+  dengueLegendTitle: "Dengue cases 2023", dengueRule: "cases in districts with data", noDataLegend: "No data in Pirca",
+  seaLegendTitle: "Sea temperature", warmSea: "Warmer than normal sea", casesWord: "cases",
+  tapProvince: "Tap a province to see its districts.", mapModeLabel: "What the map shows",
+  boundaryNote: "Boundaries: INEI, 2022 edition (GeoGPS Perú, via pe-atlas), districts merged by province.",
+  provinceNone: "Pirca has no data for this province's districts yet.",
+  provinceDengue: (n) => `Dengue 2023: ${n} cases in districts with data.`, provinceLevel: "Province level", noDataShort: "no data",
 });
 
-const PIURA_CITY = ["Piura", "Castilla", "Veintiséis de Octubre", "Catacaos", "Cura Mori", "La Arena", "La Unión", "El Tallán"];
-const MAIN_LABELS = ["Sullana", "Paita", "Talara", "Chulucanas", "Tambogrande", "Sechura"];
-const RISK_FILL = { high: "#F2785C", medium: "#F2B84B" };
-const NO_DATA_FILL = "#4A535E";
-const DENGUE_LIGHT = [253, 231, 204], DENGUE_DARK = [168, 45, 38];
-const MAP_W = 560, SEA_DEG = 1.32;  // open sea west of the coast for the warm band and the inset
+const LEVEL_FILL = { high: "#E8664A", medium: "#E9B949" };
+const NO_DATA_FILL = "#E4DED5";
+const PLUM_LIGHT = [243, 230, 241], PLUM_DARK = [107, 45, 92];
+const WARM_SEA = "#9DA7E0";
+const MAP_W = 560, SEA_DEG = 1.05;  // open sea west of the coast for the warm band and its label
 
-function mapFrame(features) {
+function mapFrame(provinces) {
   let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-  features.forEach((f) => f.coordinates.forEach((p) => p.forEach((r) => r.forEach(([x, y]) => {
+  provinces.forEach((f) => f.coordinates.forEach((p) => p.forEach((r) => r.forEach(([x, y]) => {
     minX = Math.min(minX, x); maxX = Math.max(maxX, x); minY = Math.min(minY, y); maxY = Math.max(maxY, y);
   }))));
-  const pad = 0.05, lon0 = minX - SEA_DEG, lat0 = maxY + pad;
+  const pad = 0.06, lon0 = minX - SEA_DEG, lat0 = maxY + pad;
   const k = MAP_W / (maxX + pad - lon0);  // about 5°S, so one degree of longitude ≈ one of latitude
   return { k, H: Math.round((lat0 - (minY - pad)) * k), project: ([x, y]) => [(x - lon0) * k, (lat0 - y) * k] };
 }
@@ -427,7 +433,7 @@ function shapePath(coords, project) {
   }).join("") + "Z").join("")).join("");
 }
 
-// Label point: area-weighted centroid of the district's largest polygon.
+// Label point: area-weighted centroid of the largest polygon.
 function shapeCentroid(coords, project) {
   let best = null, bestArea = 0;
   coords.forEach((poly) => {
@@ -443,144 +449,99 @@ function shapeCentroid(coords, project) {
 }
 
 // Coastline: the westernmost boundary point in each thin band of latitude, smoothed seaward.
-function coastPoints(features, project) {
+function coastPoints(provinces, project) {
   const bins = new Map();
-  features.forEach((f) => f.coordinates.forEach((p) => p[0].forEach(([x, y]) => {
-    const b = Math.round(y / 0.025);
+  provinces.forEach((f) => f.coordinates.forEach((p) => p[0].forEach(([x, y]) => {
+    const b = Math.round(y / 0.03);
     if (!bins.has(b) || x < bins.get(b)[0]) bins.set(b, [x, y]);
   })));
   const pts = [...bins.values()].sort((a, b) => b[1] - a[1]);
   return pts.map((p, i) => [Math.min(p[0], pts[i - 1]?.[0] ?? Infinity, pts[i + 1]?.[0] ?? Infinity), p[1]]).map(project);
 }
 
-function titleCaseName(name) {
-  const small = new Set(["de", "la", "el", "del", "los", "las", "y"]);
-  return name.toLowerCase().split(" ").map((w, i) => (i && small.has(w) ? w : w.charAt(0).toUpperCase() + w.slice(1))).join(" ");
-}
-
-function districtShape(f, project, cls = "") {
-  const label = f.district || titleCaseName(f.name);
-  const data = f.district ? `data-district="${esc(f.district)}"` : `data-boundary="${esc(f.ubigeo)}"`;
-  return `<path class="district-shape ${cls}" d="${shapePath(f.coordinates, project)}" ${data} tabindex="0" role="button"
-    aria-label="${esc(label)}, ${esc(f.province)}"/>`;
-}
-
 function homeMapSvg(home) {
-  const feats = home.map.features;
-  const F = mapFrame(feats), P = F.project;
-  const coast = coastPoints(feats, P);
+  const provs = home.map.provinces;
+  const F = mapFrame(provs), P = F.project;
+  const coast = coastPoints(provs, P);
   const line = coast.map(([x, y], i) => `${i ? "L" : "M"}${x.toFixed(1)} ${y.toFixed(1)}`).join("");
-  const [x0] = coast[0], [x1] = coast[coast.length - 1];
-  const sea = `${line}L${x1.toFixed(1)} ${F.H}L0 ${F.H}L0 0L${x0.toFixed(1)} 0Z`;
-
-  // Inset: the Piura city districts, zoomed into a box over the sea.
-  const city = feats.filter((f) => PIURA_CITY.includes(f.district));
-  let a = Infinity, b = -Infinity, c = Infinity, d = -Infinity;
-  city.forEach((f) => f.coordinates.forEach((p) => p[0].forEach(([x, y]) => { a = Math.min(a, x); b = Math.max(b, x); c = Math.min(c, y); d = Math.max(d, y); })));
-  const box = { x: 8, w: Math.min(200, coast.reduce((m, p) => Math.min(m, p[0]), Infinity) - 18) };
-  box.h = Math.min(F.H - 120, box.w * 1.35); box.y = F.H - box.h - 8;
-  const ik = Math.min((box.w - 16) / (b - a), (box.h - 34) / (d - c));
-  const IP = ([x, y]) => [box.x + 8 + (x - a) * ik + ((box.w - 16) - (b - a) * ik) / 2, box.y + 26 + (d - y) * ik + ((box.h - 34) - (d - c) * ik) / 2];
-  const [lx0, ly0] = P([a, d]), [lx1, ly1] = P([b, c]);
-  const labels = (list, project, cls) => list.map((f) => {
-    const [x, y] = shapeCentroid(f.coordinates, project);
-    const words = f.district.split(" ");
-    const lines = f.district.length > 12 && words.length > 1 ? [words[0], words.slice(1).join(" ")] : [f.district];
-    return `<text class="map-label strong ${cls}" x="${x.toFixed(1)}" y="${(y + 3 - (lines.length - 1) * 5).toFixed(1)}" text-anchor="middle">${
-      lines.map((l, i) => `<tspan x="${x.toFixed(1)}" dy="${i ? "1.1em" : 0}">${esc(l)}</tspan>`).join("")}</text>`;
-  }).join("");
-  const ocean = store.lang === "es" ? "Océano Pacífico" : "Pacific Ocean";
-  return `<svg viewBox="0 0 ${MAP_W} ${F.H}" role="img" aria-labelledby="map-title" class="real-map">
-    <title id="map-title">${esc(t("mapTitleReal"))}</title>
+  const sea = `${line}L${coast[coast.length - 1][0].toFixed(1)} ${F.H}L0 ${F.H}L0 0L${coast[0][0].toFixed(1)} 0Z`;
+  // Direct label for the warm band, in the open sea at the lower left (where the coast sits furthest east).
+  const ly = F.H * 0.8;
+  const at = coast.reduce((best, p) => (Math.abs(p[1] - ly) < Math.abs(best[1] - ly) ? p : best), coast[0]);
+  const words = t("warmSea").split(" "), half = Math.ceil(words.length / 2);
+  const move = REDUCED_MOTION.matches ? ""
+    : '<animateTransform attributeName="patternTransform" type="translate" from="0 0" to="28 0" dur="7s" repeatCount="indefinite"/>';
+  return `<svg viewBox="0 0 ${MAP_W} ${F.H}" role="img" aria-labelledby="map-title" class="real-map province-map">
+    <title id="map-title">${esc(t("mapTitleProv"))}</title>
     <defs>
-      <linearGradient id="sea-g2" x1="0" x2="1"><stop offset="0%" stop-color="#123A5A"/><stop offset="100%" stop-color="#1D5A72"/></linearGradient>
-      <linearGradient id="legend-g" x1="0" x2="1"><stop offset="0%" stop-color="#2A6F97"/><stop offset="55%" stop-color="#FFB347"/><stop offset="100%" stop-color="#F2785C"/></linearGradient>
       <clipPath id="sea-clip"><path d="${sea}"/></clipPath>
-      <filter id="band-blur" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="7"/></filter>
-      <clipPath id="inset-clip"><rect x="${box.x}" y="${box.y}" width="${box.w}" height="${box.h}" rx="8"/></clipPath>
+      <pattern id="warm-waves" width="28" height="9" patternUnits="userSpaceOnUse">
+        <path d="M0 4.5 Q7 1.5 14 4.5 T28 4.5" fill="none" stroke="${WARM_SEA}" stroke-width="1.3" stroke-linecap="round"/>${move}
+      </pattern>
     </defs>
-    <rect width="${MAP_W}" height="${F.H}" class="other-land"/>
-    <path d="${sea}" fill="url(#sea-g2)"/>
-    <g clip-path="url(#sea-clip)" class="coast-band-group"><g filter="url(#band-blur)">
-      <path d="${line}" class="coast-band outer"/><path d="${line}" class="coast-band inner"/>
-    </g></g>
-    <text class="map-label sea-label" x="14" y="${Math.round(box.y - 14)}">${esc(ocean)}</text>
-    <g class="sea-legend" transform="translate(12 16)"><rect x="0" y="0" width="140" height="8" rx="4" fill="url(#legend-g)"/>
-      <text class="map-label" x="0" y="22">${esc(t("seaLegend"))}</text></g>
-    <g class="main-shapes">${feats.map((f) => districtShape(f, P)).join("")}</g>
-    ${labels(feats.filter((f) => MAIN_LABELS.includes(f.district)), P, "main-label")}
-    <rect class="locator" x="${lx0.toFixed(1)}" y="${ly0.toFixed(1)}" width="${(lx1 - lx0).toFixed(1)}" height="${(ly1 - ly0).toFixed(1)}"/>
-    <line class="locator-line" x1="${lx0.toFixed(1)}" y1="${ly1.toFixed(1)}" x2="${box.x + box.w}" y2="${box.y}"/>
-    <g class="inset">
-      <rect class="inset-frame" x="${box.x}" y="${box.y}" width="${box.w}" height="${box.h}" rx="8"/>
-      <g clip-path="url(#inset-clip)">${feats.map((f) => districtShape(f, IP, PIURA_CITY.includes(f.district) ? "in-city" : "context")).join("")}
-        ${labels(city, IP, "inset-label")}</g>
-      <text class="map-label strong inset-title" x="${box.x + 10}" y="${box.y + 16}">${esc(t("insetTitle"))}</text>
-    </g>
+    <path d="${sea}" class="sea"/>
+    <g clip-path="url(#sea-clip)"><path d="${line}" class="warm-sea-band"/></g>
+    <g class="province-shapes">${provs.map((f) => `<path class="province-shape" d="${shapePath(f.coordinates, P)}" data-province="${esc(f.ubigeo)}"
+      tabindex="0" role="button" aria-label="${esc(f.name)}"/>`).join("")}</g>
+    ${provs.map((f) => { const [x, y] = shapeCentroid(f.coordinates, P);
+      return `<text class="province-label" data-province="${esc(f.ubigeo)}" x="${x.toFixed(1)}" y="${(y + 4).toFixed(1)}" text-anchor="middle">${esc(f.name)}</text>`; }).join("")}
+    <line class="warm-sea-leader" x1="104" y1="${(at[1] - 4).toFixed(1)}" x2="${(at[0] - 26).toFixed(1)}" y2="${(at[1] - 4).toFixed(1)}"/>
+    <text class="warm-sea-label" x="12" y="${(at[1] - 8).toFixed(1)}"><tspan x="12">${esc(words.slice(0, half).join(" "))}</tspan><tspan x="12" dy="1.25em">${esc(words.slice(half).join(" "))}</tspan></text>
   </svg>`;
 }
 
-function separateLabels(selector) {
-  const els = [...app.querySelectorAll(selector)];
-  for (let pass = 0; pass < 12; pass += 1) {
-    let moved = false;
-    for (let i = 0; i < els.length; i += 1) {
-      for (let j = i + 1; j < els.length; j += 1) {
-        let a, b;
-        try { a = els[i].getBBox(); b = els[j].getBBox(); } catch { return; }
-        const overlapX = Math.min(a.x + a.width, b.x + b.width) - Math.max(a.x, b.x);
-        const overlapY = Math.min(a.y + a.height, b.y + b.height) - Math.max(a.y, b.y);
-        if (overlapX > 1 && overlapY > 0) {
-          const lower = a.y > b.y ? els[i] : els[j], dy = (overlapY / 2) + 1;
-          [lower, lower === els[i] ? els[j] : els[i]].forEach((el, k) => {
-            const shift = k ? -dy : dy;
-            el.setAttribute("y", (Number(el.getAttribute("y")) + shift).toFixed(1));
-          });
-          moved = true;
-        }
-      }
-    }
-    if (!moved) break;
-  }
-}
+const plumFill = (cases, max) => {
+  const s = Math.sqrt(cases / max);  // square root so smaller totals still show a difference
+  return `rgb(${PLUM_LIGHT.map((v, i) => Math.round(v + (PLUM_DARK[i] - v) * s)).join(",")})`;
+};
+const wavySwatch = () => `<svg class="wave-swatch" viewBox="0 0 28 14" aria-hidden="true"><path d="M1 5 Q7.5 2 14 5 T27 5 M1 10 Q7.5 7 14 10 T27 10"
+  fill="none" stroke="${WARM_SEA}" stroke-width="1.6" stroke-linecap="round"/></svg>`;
 
-function mapLegendHtml(home, mode) {
-  if (mode === "risk") {
-    return `<span class="lg"><span class="sw" style="background:${RISK_FILL.high}"></span>${esc(t("riskHigh"))}</span>
-      <span class="lg"><span class="sw" style="background:${RISK_FILL.medium}"></span>${esc(t("riskMedium"))}</span>
-      <span class="lg"><span class="sw" style="background:${NO_DATA_FILL}"></span>${esc(t("noDataLegend"))}</span>`;
-  }
-  const max = Math.max(...Object.values(home.dengue).map((v) => Number(v.value)));
-  return `<span class="lg dengue-scale"><span>0</span><span class="ramp" style="background:linear-gradient(90deg, rgb(${DENGUE_LIGHT}), rgb(${DENGUE_DARK}))"></span>
-      <span>${esc(num(max))} ${esc(t("casesWord"))}</span></span>
-    <span class="lg"><span class="sw" style="background:${NO_DATA_FILL}"></span>${esc(t("noDataLegend"))}</span>`;
-}
-
-function dengueFill(value, max) {
-  const s = Math.sqrt(value / max);  // square root so smaller districts still show a difference
-  return `rgb(${DENGUE_LIGHT.map((v, i) => Math.round(v + (DENGUE_DARK[i] - v) * s)).join(",")})`;
+function mapLegendsHtml(home, mode) {
+  const max = Math.max(...home.map.provinces.map((p) => p.dengue?.cases || 0));
+  const flood = `<div class="legend-block"><b>${esc(t("floodLegendTitle"))}</b>
+      <span class="lg"><span class="sw" style="background:${LEVEL_FILL.high}"></span>${esc(t("riskHigh"))}</span>
+      <span class="lg"><span class="sw" style="background:${LEVEL_FILL.medium}"></span>${esc(t("riskMedium"))}</span>
+      <span class="lg"><span class="sw" style="background:${NO_DATA_FILL}"></span>${esc(t("noDataLegend"))}</span>
+      <span class="legend-rule">${esc(t("floodRule"))}</span></div>`;
+  const dengue = `<div class="legend-block"><b>${esc(t("dengueLegendTitle"))}</b>
+      <span class="lg"><span>0</span><span class="ramp" style="background:linear-gradient(90deg, rgb(${PLUM_LIGHT}), rgb(${PLUM_DARK}))"></span>
+        <span>${esc(num(max))}</span></span>
+      <span class="lg"><span class="sw" style="background:${NO_DATA_FILL}"></span>${esc(t("noDataLegend"))}</span>
+      <span class="legend-rule">${esc(t("dengueRule"))}</span></div>`;
+  const sea = `<div class="legend-block"><b>${esc(t("seaLegendTitle"))}</b><span class="lg">${wavySwatch()}${esc(t("warmSea"))}</span></div>`;
+  return (mode === "dengue" ? dengue : flood) + sea;
 }
 
 function applyMapMode(home, mode) {
   state.homeMapMode = mode;
-  const hazard = Object.fromEntries(home.districts.map((d) => [d.name, d.hazard_level]));
-  const max = Math.max(...Object.values(home.dengue).map((v) => Number(v.value)));
-  app.querySelectorAll(".home-map .district-shape").forEach((p) => {
-    const name = p.dataset.district;
-    let fill = NO_DATA_FILL;
-    if (name && mode === "risk" && RISK_FILL[hazard[name]]) fill = RISK_FILL[hazard[name]];
-    if (name && mode === "dengue" && home.dengue[name]) fill = dengueFill(Number(home.dengue[name].value), max);
-    p.style.fill = fill;
+  const max = Math.max(...home.map.provinces.map((p) => p.dengue?.cases || 0));
+  home.map.provinces.forEach((p) => {
+    const shape = app.querySelector(`.home-map .province-shape[data-province="${p.ubigeo}"]`);
+    if (shape) shape.style.fill = mode === "dengue" ? (p.dengue ? plumFill(p.dengue.cases, max) : NO_DATA_FILL) : (LEVEL_FILL[p.flood_level] || NO_DATA_FILL);
+    const dark = mode === "dengue" && p.dengue && p.dengue.cases / max > 0.35;  // white labels on the darker plums
+    app.querySelector(`.home-map .province-label[data-province="${p.ubigeo}"]`)?.classList.toggle("on-dark", Boolean(dark));
   });
   app.querySelectorAll("[data-map-mode]").forEach((b) => b.setAttribute("aria-checked", String(b.dataset.mapMode === mode)));
   const legend = document.getElementById("map-legend");
-  if (legend) legend.innerHTML = mapLegendHtml(home, mode);
+  if (legend) legend.innerHTML = mapLegendsHtml(home, mode);
 }
 
-function noDataCardHtml(f) {
-  return `<div class="dc-head"><div><b>${esc(titleCaseName(f.name))}</b><span class="muted small"> · ${esc(f.province)}</span></div>
+function levelWordLower(level) {
+  return level ? t("risk" + level[0].toUpperCase() + level.slice(1)).toLowerCase() : t("noDataShort");
+}
+
+function provinceCardHtml(p, home, fn) {
+  const rows = p.districts.map((d) => {
+    const cases = home.dengue[d.name];
+    return `<li><div class="pc-row"><b>${esc(d.name)}</b><span class="pc-level ${esc(d.hazard_level)}">${esc(levelWordLower(d.hazard_level))}</span>
+        ${cases ? `<span class="pc-cases">${esc(num(Number(cases.value)))} ${esc(t("casesWord"))}${footnote(cases.id, fn)}</span>` : ""}</div>
+      <button type="button" class="btn btn-small dc-plan" data-plan-for="${esc(d.name)}">${esc(STR[store.lang].planFor(d.name))}</button></li>`;
+  }).join("");
+  return `<div class="dc-head"><div><b>${esc(p.name)}</b><span class="muted small"> · ${esc(t("provinceLevel"))}: ${esc(levelWordLower(p.flood_level))}</span></div>
       <button type="button" class="icon-btn dc-close" aria-label="${esc(t("close"))}">✕</button></div>
-    <p class="dc-none">${esc(t("noDataCard"))}</p>`;
+    ${rows ? `<ul class="pc-list">${rows}</ul>` : `<p class="dc-none">${esc(t("provinceNone"))}</p>`}
+    ${p.dengue ? `<p class="dc-dengue">${esc(STR[store.lang].provinceDengue(num(p.dengue.cases)))}</p>` : ""}`;
 }
 
 function shortFact(text, max = 150) {
@@ -588,55 +549,6 @@ function shortFact(text, max = 150) {
   if (s.length <= max) return s;
   const cut = s.slice(0, max);
   return `${cut.slice(0, cut.lastIndexOf(" ") > 80 ? cut.lastIndexOf(" ") : max)}…`;
-}
-
-// A short label from the data's "topic" column, so a quote read on its own still says what it is about.
-const TOPIC_LABELS = {
-  es: { flooding: "Inundación", river_flow: "Caudal del río", rainfall: "Lluvias", housing: "Viviendas", people_affected: "Personas afectadas",
-        roads_bridges: "Carreteras y puentes", dengue: "Dengue", business_losses: "Comercio", economic_losses: "Pérdidas", closure_duration: "Cierres" },
-  en: { flooding: "Flooding", river_flow: "River flow", rainfall: "Rain", housing: "Housing", people_affected: "People affected",
-        roads_bridges: "Roads and bridges", dengue: "Dengue", business_losses: "Business", economic_losses: "Losses", closure_duration: "Closures" },
-};
-
-// Some Spanish source quotes are table rows ("DIST. CATACAOS 590 32090"). Those are shown as a short Spanish
-// sentence built from the same row's value and unit (the footnote still opens the source).
-const MONTHS_ES = { January: "enero", February: "febrero", March: "marzo", April: "abril", May: "mayo" };
-function readableQuote(q) {
-  return Boolean(q) && !/^(DIST\.|PROV\.|Tabla)/i.test(q.trim()) && (q.match(/\b[a-záéíóúñ]{4,}\b/g) || []).length >= 4;
-}
-function spanishFromRow(f, det) {
-  const v = num(Number(String(f.value).replace(/,/g, "")));
-  const month = MONTHS_ES[(det.fact_en || "").match(/January|February|March|April|May/)?.[0] || (f.unit.match(/\((\w+)\)/) || [])[1]];
-  if (f.topic === "people_affected" && /^Damnificados/i.test(det.fact_en || "")) {
-    const afectados = (det.fact_en.match(/;\s*([\d,]+) afectados/) || [])[1];
-    return afectados ? `${v} damnificados y ${afectados} afectados por las lluvias.` : `${v} damnificados por las lluvias.`;
-  }
-  if (f.topic === "housing" && f.unit === "persons") return `${v} personas en viviendas damnificadas o afectadas.`;
-  if (f.topic === "rainfall" && /above normal/.test(f.unit)) return `${month ? `En ${month}, ` : ""}${v}% por encima de lo normal.`;
-  if (f.topic === "rainfall" && /^mm/.test(f.unit)) return `${month ? `En ${month}, ` : ""}${v} mm de lluvia.`;
-  if (f.topic === "river_flow" && f.unit === "m3/s") {
-    const river = ((det.fact_en || "").match(/R[íi]o (Piura|Chira)/) || [])[1];
-    return `El río${river ? ` ${river}` : ""} llegó a ${v} m³/s.`;
-  }
-  return null;
-}
-function factText(f, det) {
-  if (store.lang === "en") return det.fact_en;
-  return readableQuote(det.fact_es) ? det.fact_es : (spanishFromRow(f, det) || det.fact_es);
-}
-
-function districtCardHtml(d, home, fn) {
-  const facts = d.facts.map((f) => {
-    const det = home.source_details[f.id] || {};
-    const topic = TOPIC_LABELS[store.lang][f.topic];
-    return `<li><b>${esc(f.event)}</b> ${topic ? `<span class="dc-topic">${esc(topic)}:</span> ` : ""}${esc(shortFact(factText(f, det)))}${footnote(f.id, fn)}</li>`;
-  }).join("");
-  return `<div class="dc-head"><div><b>${esc(d.name)}</b><span class="muted small"> · ${esc(d.province)}</span></div>
-      <button type="button" class="icon-btn dc-close" aria-label="${esc(t("close"))}">✕</button></div>
-    <div class="dc-risk ${esc(d.hazard_level)}">${esc(t("floodRisk"))}: <b>${esc(t("risk" + d.hazard_level[0].toUpperCase() + d.hazard_level.slice(1)).toLowerCase())}</b></div>
-    ${facts ? `<ul class="dc-facts">${facts}</ul>` : ""}
-    ${home.dengue?.[d.name] ? `<p class="dc-dengue"><b>${esc(t("mapDengue"))}:</b> ${esc(STR[store.lang].dengueLine(num(Number(home.dengue[d.name].value))))}${footnote(home.dengue[d.name].id, fn)}</p>` : ""}
-    <button type="button" class="btn btn-primary dc-plan" data-plan-for="${esc(d.name)}">${esc(STR[store.lang].planFor(d.name))}</button>`;
 }
 
 // Numbers in "Why it matters": parsed from the CSV value text ("12-18", "13", "79643").
@@ -710,7 +622,7 @@ async function renderHome() {
       ${wavesSvg()}
     </section>
     <section class="map-section glass" aria-labelledby="map-heading">
-      <h2 id="map-heading">${esc(t("mapTitleReal"))}</h2>
+      <h2 id="map-heading">${esc(t("mapTitleProv"))}</h2>
         <figure class="map-figure home-map">
           <div class="map-toggle" role="radiogroup" aria-label="${esc(t("mapModeLabel"))}">
             <button type="button" role="radio" data-map-mode="risk" aria-checked="true">${esc(t("mapRisk"))}</button>
@@ -719,9 +631,9 @@ async function renderHome() {
           ${homeMapSvg(home)}
           <div class="district-card glass-read" id="district-card" role="dialog" aria-live="polite" hidden></div>
           <figcaption>
-            <span class="map-legend" id="map-legend"></span>
-            <span>${esc(t("tapDistrict"))}</span>
-            <span class="muted">${esc(t("warmBand"))} ${esc(t("boundaryNote"))}</span>
+            <div class="map-legends" id="map-legend"></div>
+            <span>${esc(t("tapProvince"))}</span>
+            <span class="muted">${esc(t("boundaryNote"))}</span>
           </figcaption>
         </figure>
     </section>
@@ -749,52 +661,44 @@ async function renderHome() {
   });
   countUpImpacts();
   applyMapMode(home, state.homeMapMode || "risk");
-  separateLabels(".inset-label");
-  wireDistrictCards(home, fn);
+  wireProvinceCards(home, fn);
 }
 
-function wireDistrictCards(home, fn) {
+function wireProvinceCards(home, fn) {
   const figure = app.querySelector(".home-map");
   const card = document.getElementById("district-card");
   if (!figure || !card) return;
   let pinned = null, closeTimer = null;
-  const keyOf = (el) => el.dataset.district || el.dataset.boundary;
-  const mark = (el) => {
-    app.querySelectorAll(".district-shape.active").forEach((x) => x.classList.remove("active"));
-    if (el) app.querySelectorAll(".district-shape").forEach((x) => x.classList.toggle("active", keyOf(x) === keyOf(el)));
-  };
+  const mark = (el) => app.querySelectorAll(".province-shape").forEach((x) => x.classList.toggle("active", x === el));
   const open = (el, pin) => {
     clearTimeout(closeTimer);
-    const d = el.dataset.district && home.districts.find((x) => x.name === el.dataset.district);
-    const f = !d && home.map.features.find((x) => x.ubigeo === el.dataset.boundary);
-    if (!d && !f) return;
-    card.innerHTML = d ? districtCardHtml(d, home, fn) : noDataCardHtml(f);
+    const p = home.map.provinces.find((x) => x.ubigeo === el.dataset.province);
+    if (!p) return;
+    card.innerHTML = provinceCardHtml(p, home, fn);
     card.hidden = false;
     mark(el);
     const fr = figure.getBoundingClientRect(), r = el.getBoundingClientRect();
     const w = card.offsetWidth, h = card.offsetHeight;
-    let left = r.left - fr.left + r.width / 2 - w / 2;
-    left = Math.max(0, Math.min(fr.width - w, left));
-    let top = r.bottom - fr.top + 8;
-    if (top + h > fr.height && r.top - fr.top - h - 8 >= 0) top = r.top - fr.top - h - 8;
-    card.style.left = `${left}px`; card.style.top = `${Math.max(0, top)}px`;
+    const left = Math.max(0, Math.min(fr.width - w, r.left - fr.left + r.width / 2 - w / 2));
+    const top = Math.max(0, Math.min(fr.height - h, r.top - fr.top + r.height / 2 - h / 2));
+    card.style.left = `${left}px`; card.style.top = `${top}px`;
     if (pin) pinned = el;
   };
   const close = () => { card.hidden = true; pinned = null; mark(null); };
   figure.addEventListener("pointerover", (e) => {
-    const el = e.target.closest?.(".district-shape");
+    const el = e.target.closest?.(".province-shape");
     if (el && e.pointerType === "mouse" && !pinned) open(el, false);
     if (e.target.closest?.("#district-card")) clearTimeout(closeTimer);
   });
   figure.addEventListener("pointerout", (e) => {
     if (e.pointerType !== "mouse" || pinned) return;
-    if (e.target.closest?.(".district-shape") || e.target.closest?.("#district-card")) closeTimer = setTimeout(close, 300);
+    if (e.target.closest?.(".province-shape") || e.target.closest?.("#district-card")) closeTimer = setTimeout(close, 300);
   });
   figure.addEventListener("click", (e) => {
     const mode = e.target.closest("[data-map-mode]");
     if (mode) { applyMapMode(home, mode.dataset.mapMode); return; }
-    const el = e.target.closest(".district-shape");
-    if (el) { if (pinned && keyOf(pinned) === keyOf(el)) close(); else open(el, true); return; }
+    const el = e.target.closest(".province-shape");
+    if (el) { if (pinned === el) close(); else open(el, true); return; }
     if (e.target.closest(".dc-close")) { close(); return; }
     const plan = e.target.closest("[data-plan-for]");
     if (plan) {
@@ -804,7 +708,7 @@ function wireDistrictCards(home, fn) {
     }
   });
   figure.addEventListener("keydown", (e) => {
-    const el = e.target.closest?.(".district-shape");
+    const el = e.target.closest?.(".province-shape");
     if (el && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); open(el, true); card.querySelector(".dc-plan, .dc-close")?.focus(); }
     if (e.key === "Escape") close();
   });
@@ -812,7 +716,7 @@ function wireDistrictCards(home, fn) {
   state.homeAbort = new AbortController();
   document.addEventListener("click", (e) => {
     if (!pinned || card.hidden) return;
-    if (card.contains(e.target) || e.target.closest(".district-shape") || fnPop.contains(e.target) || e.target.closest(".fn")) return;
+    if (card.contains(e.target) || e.target.closest(".province-shape") || fnPop.contains(e.target) || e.target.closest(".fn")) return;
     close();
   }, { signal: state.homeAbort.signal });
 }
@@ -1508,7 +1412,7 @@ function agentMapHtml() {
       `<span style="left:${((i * 7.3) + 3) % 100}%;animation-delay:${((i * 0.37) % 2.4).toFixed(2)}s;animation-duration:${(1.6 + (i % 5) * 0.25).toFixed(2)}s"></span>`).join("")}</div>
     <svg viewBox="${L.view}" role="img" aria-label="${esc(t("mapAria"))}">
       <defs>
-        <linearGradient id="bar-g" x1="0" x2="1"><stop offset="0%" stop-color="#F2785C"/><stop offset="100%" stop-color="#FFB347"/></linearGradient>
+        <linearGradient id="bar-g" x1="0" x2="1"><stop offset="0%" stop-color="#E8664A"/><stop offset="100%" stop-color="#E9B949"/></linearGradient>
         ${["dim", "lit"].map((v) => `<marker id="rev-arrow-${v}" viewBox="0 0 10 10" refX="10" refY="5" markerUnits="userSpaceOnUse"
           markerWidth="10" markerHeight="10" orient="auto"><path d="M0 0 L10 5 L0 10 z" class="rev-head-${v}"/></marker>`).join("")}
       </defs>
@@ -1938,12 +1842,12 @@ function gaugeSvg(level) {
   const word = level ? t("risk" + level[0].toUpperCase() + level.slice(1)) : "—";
   return `<div class="gauge" role="img" aria-label="${esc(t("risk"))}: ${esc(word)}">
     <svg viewBox="0 0 200 112">
-      <defs><linearGradient id="gauge-g" x1="0" x2="1" y1="0" y2="0"><stop offset="0%" stop-color="#FFB347"/><stop offset="100%" stop-color="#F2785C"/></linearGradient></defs>
+      <defs><linearGradient id="gauge-g" x1="0" x2="1" y1="0" y2="0"><stop offset="0%" stop-color="#E9B949"/><stop offset="100%" stop-color="#E8664A"/></linearGradient></defs>
       <path class="track" d="M20 100 A80 80 0 0 1 180 100" fill="none" stroke-width="14" stroke-linecap="round"/>
       <path class="fill" d="M20 100 A80 80 0 0 1 180 100" fill="none" stroke="url(#gauge-g)" stroke-width="14" stroke-linecap="round"
             stroke-dasharray="${ARC.toFixed(1)}" stroke-dashoffset="${ARC.toFixed(1)}"/>
-      <g class="needle" style="transform: rotate(-90deg)"><line x1="100" y1="100" x2="100" y2="34" stroke="#E8EEF5" stroke-width="3" stroke-linecap="round"/></g>
-      <circle cx="100" cy="100" r="7" fill="#E8EEF5"/>
+      <g class="needle" style="transform: rotate(-90deg)"><line x1="100" y1="100" x2="100" y2="34" stroke="#2B2622" stroke-width="3" stroke-linecap="round"/></g>
+      <circle cx="100" cy="100" r="7" fill="#2B2622"/>
     </svg>
     <div class="level ${level ? "risk-" + esc(level) : ""}">${esc(word)}<span>${esc(t("risk"))}</span></div>
   </div>`;
@@ -2027,6 +1931,12 @@ Object.assign(STR.es, {
   jarCaption: (a, b, w) => `Después de tus compras tienes ${a}. Tu fondo para ${w} debe llegar a ${b}.`,
   jarFull: "Tu fondo de emergencia está completo.", gapLabel: "Faltan", goalLabel: "Meta",
   budgetCaption: (a, b, c) => `Gastas ${a} de tu presupuesto de ${b}; te quedan ${c}.`, leftLabel: "Queda",
+  budgetWhy: {
+    nothing_fits: (n, fmt, left) => `Quedan ${fmt(left)} sin gastar porque la siguiente acción útil cuesta ${fmt(Math.round(toCents(n.cheapest_left)))}, más de lo que queda.`,
+    nothing_left: (n, fmt, left) => `Quedan ${fmt(left)} sin gastar porque tu plan ya incluye todas las acciones útiles para tu negocio.`,
+    no_more_value: (n, fmt, left) => `Quedan ${fmt(left)} sin gastar porque las demás acciones no protegerían más a tu negocio.`,
+  },
+  budgetToFund: "Puedes sumarlo a tu fondo de emergencia.",
   waIntro: (code) => `Mi plan Pirca para El Niño costero (código ${code}). Lo más importante esta semana:`,
   waOpen: "Ver el plan completo:", printTitle: "Mi plan Pirca", meter: "1 m",
 });
@@ -2042,6 +1952,12 @@ Object.assign(STR.en, {
   jarCaption: (a, b, w) => `After your purchases you have ${a}. Your fund for ${w} should reach ${b}.`,
   jarFull: "Your emergency fund is complete.", gapLabel: "Gap", goalLabel: "Goal",
   budgetCaption: (a, b, c) => `You spend ${a} of your ${b} budget; ${c} is left.`, leftLabel: "Left",
+  budgetWhy: {
+    nothing_fits: (n, fmt, left) => `${fmt(left)} is left because the next useful action costs ${fmt(Math.round(toCents(n.cheapest_left)))}, more than what is left.`,
+    nothing_left: (n, fmt, left) => `${fmt(left)} is left because your plan already includes every useful action for your shop.`,
+    no_more_value: (n, fmt, left) => `${fmt(left)} is left because the other actions would not protect your shop any further.`,
+  },
+  budgetToFund: "You can put it toward your emergency fund.",
   waIntro: (code) => `My Pirca plan for coastal El Niño (code ${code}). Most important this week:`,
   waOpen: "See the full plan:", printTitle: "My Pirca plan", meter: "1 m",
 });
@@ -2128,15 +2044,6 @@ function actionIcon(a) {
   return (WORD_ICONS.find(([re]) => re.test(a.text)) || [null, "✅"])[1];
 }
 
-// The cost a card shows: catalog actions it cites that have a price in the plan's facts.
-function actionCost(a, buys, facts, details) {
-  const priced = (a.cats || [a.cat]).filter((c) => facts[`cat_${c.slice(4)}_cost`] !== undefined);
-  if (!priced.length) return t("noCost");
-  const total = priced.reduce((sum, c) => sum + Number(facts[`cat_${c.slice(4)}_cost`]), 0);
-  const names = priced.map((c) => buys.find((b) => b.cat === c)?.name || sourceTitle(details[c] || { title: c }));
-  return a.cat ? (a.costText || money(total)) : `${money(total)} · ${names.join(", ")}`;
-}
-
 function topActions(actions) {
   const now = actions.steps.filter((s) => s.phase === 0);
   return [...now, ...actions.buys].slice(0, 3);
@@ -2197,27 +2104,50 @@ function jarSvg(f) {
 
 // Purchases are colored by what they protect (a classification of the catalog actions, shown in the key).
 const PROTECT_GROUPS = [
-  { id: "stock", color: "#2EC4B6", cats: ["CAT-01", "CAT-03", "CAT-05", "CAT-08"], label: { es: "Mercadería", en: "Stock" } },
-  { id: "building", color: "#E9C46A", cats: ["CAT-02", "CAT-04", "CAT-10", "CAT-11"], label: { es: "Tu local", en: "Shop building" } },
-  { id: "power", color: "#6EC3E8", cats: ["CAT-07", "CAT-12", "CAT-15"], label: { es: "Luz y registros", en: "Power and records" } },
-  { id: "health", color: "#F2785C", cats: ["CAT-09", "CAT-13"], label: { es: "Salud", en: "Health" } },
+  { id: "stock", color: "#6E9E5C", cats: ["CAT-01", "CAT-03", "CAT-05", "CAT-08"], label: { es: "Mercadería", en: "Stock" } },
+  { id: "building", color: "#E9B949", cats: ["CAT-02", "CAT-04", "CAT-10", "CAT-11"], label: { es: "Tu local", en: "Shop building" } },
+  { id: "power", color: "#C8643B", cats: ["CAT-07", "CAT-12", "CAT-15"], label: { es: "Luz y registros", en: "Power and records" } },
+  { id: "health", color: "#E8664A", cats: ["CAT-09", "CAT-13"], label: { es: "Salud", en: "Health" } },
 ];
-const OTHER_GROUP = { id: "other", color: "#A9B6C6", cats: [], label: { es: "Otros", en: "Other" } };
+const OTHER_GROUP = { id: "other", color: "#B9B0A6", cats: [], label: { es: "Otros", en: "Other" } };
 const protectGroup = (cat) => PROTECT_GROUPS.find((g) => g.cats.includes(cat)) || OTHER_GROUP;
 const byProtectGroup = (buys) => [...PROTECT_GROUPS, OTHER_GROUP]
   .map((g) => ({ group: g, items: buys.filter((b) => protectGroup(b.cat) === g) })).filter((x) => x.items.length);
 
+// Amounts in the shown currency, in whole cents. Group totals use largest-remainder rounding so they add up
+// exactly to the rounded amount spent (no "S/ 0.01" gaps when converting to dollars).
+function toCents(soles) { return (store.currency === "usd" ? soles / state.meta.pen_per_usd : soles) * 100; }
+function exactCents(values) {
+  const exact = values.map(toCents);
+  const total = Math.round(exact.reduce((x, y) => x + y, 0));
+  const out = exact.map(Math.floor);
+  let rest = total - out.reduce((x, y) => x + y, 0);
+  exact.map((v, i) => [v - out[i], i]).sort((x, y) => y[0] - x[0]).forEach(([, i]) => { if (rest > 0) { out[i] += 1; rest -= 1; } });
+  return { cents: out, total };
+}
+function centsText(cents) {
+  const text = (cents / 100).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return `${store.currency === "usd" ? "$" : "S/ "}${text}`;
+}
+
+function purchaseGroups(buys) {
+  const groups = byProtectGroup(buys).map(({ group, items }) => ({ group, soles: items.reduce((x, it) => x + Number(it.cost || 0), 0) }));
+  const { cents, total } = exactCents(groups.map((g) => g.soles));
+  return { groups: groups.map((g, i) => ({ ...g, cents: cents[i] })), totalCents: total };
+}
+
 function budgetSvg(f, buys) {
-  const budget = Number(f.budget || 0) || buys.reduce((s, b) => s + Number(b.cost || 0), 0) + Number(f.money_left || 0);
+  const budget = Number(f.budget || 0) || buys.reduce((x, it) => x + Number(it.cost || 0), 0) + Number(f.money_left || 0);
+  const { groups } = purchaseGroups(buys);
   const W = 180;
   let x = 10;
-  const parts = byProtectGroup(buys).flatMap(({ group, items }) => items.map((b) => {
-    const w = budget ? (W * Number(b.cost || 0)) / budget : 0;
+  const parts = groups.map(({ group, soles, cents }) => {
+    const w = budget ? (W * soles) / budget : 0;
     const seg = `<rect x="${x.toFixed(1)}" y="52" width="${Math.max(0, w - 1).toFixed(1)}" height="40" rx="3" class="buy" fill="${group.color}"
-      data-buy="${esc(b.cat)}" tabindex="0" role="button" aria-label="${esc(b.name)}: ${esc(money(Number(b.cost || 0)))}"><title>${esc(b.name)}: ${esc(money(Number(b.cost || 0)))}</title></rect>`;
+      data-group="${esc(group.id)}" tabindex="0" role="button" aria-label="${esc(L(group.label))}: ${esc(centsText(cents))}"><title>${esc(L(group.label))}: ${esc(centsText(cents))}</title></rect>`;
     x += w;
     return seg;
-  })).join("");
+  }).join("");
   return `<svg viewBox="0 0 200 150" class="pic budget-pic" role="img" aria-label="${esc(t("purchases"))}">
     <rect x="10" y="52" width="${W}" height="40" rx="4" class="budget-track"/>
     ${parts}
@@ -2228,31 +2158,37 @@ function budgetSvg(f, buys) {
   </svg>`;
 }
 
-// Key under the bar: one line per purchase (color dot, name, cost), grouped by what it protects.
-function budgetKeyHtml(buys) {
-  return `<div class="budget-key">${byProtectGroup(buys).map(({ group, items }) => `<div class="key-group">
-    <div class="key-group-name"><span class="key-dot" style="background:${group.color}" aria-hidden="true"></span>${esc(L(group.label))}</div>
-    <ul>${items.map((b) => `<li data-buy="${esc(b.cat)}" tabindex="0"><span class="key-dot" style="background:${group.color}" aria-hidden="true"></span>
-      <span class="key-name">${esc(b.name)}</span><span class="key-cost">${esc(money(Number(b.cost || 0)))}</span></li>`).join("")}</ul></div>`).join("")}</div>`;
+// Under the bar: one line per group (dot, name, total), the exact spend, and why any budget is left.
+function budgetKeyHtml(buys, f, note) {
+  const { groups, totalCents } = purchaseGroups(buys);
+  const budgetCents = Math.round(toCents(Number(f.budget || 0)));
+  const S = STR[store.lang];
+  const leftCents = budgetCents - totalCents;
+  const why = note ? S.budgetWhy[note.reason]?.(note, centsText, leftCents) : "";
+  return `<ul class="budget-key">${groups.map(({ group, cents }) => `<li data-group="${esc(group.id)}" tabindex="0">
+      <span class="key-dot" style="background:${group.color}" aria-hidden="true"></span>
+      <span class="key-name">${esc(L(group.label))}</span><span class="key-cost">${esc(centsText(cents))}</span></li>`).join("")}</ul>
+    <p class="pic-caption">${esc(S.budgetCaption(centsText(totalCents), centsText(budgetCents), centsText(leftCents)))}</p>
+    ${why ? `<p class="pic-caption budget-note">${esc(why)}${note.cash_gap > 0 ? ` ${esc(t("budgetToFund"))}` : ""}</p>` : ""}`;
 }
 
-// Hover or tap a block (or a key line) to highlight both; tapping again or elsewhere clears it.
+// Hover or tap a group's block (or its key line) to highlight both; tapping again or elsewhere clears it.
 function wireBudgetKey() {
   const fig = app.querySelector(".budget-figure");
   if (!fig) return;
   let pinned = null;
-  const show = (cat) => {
-    fig.classList.toggle("has-focus", Boolean(cat));
-    fig.querySelectorAll("[data-buy]").forEach((el) => el.classList.toggle("focus", el.dataset.buy === cat));
+  const show = (id) => {
+    fig.classList.toggle("has-focus", Boolean(id));
+    fig.querySelectorAll("[data-group]").forEach((el) => el.classList.toggle("focus", el.dataset.group === id));
   };
-  fig.addEventListener("pointerover", (e) => { const el = e.target.closest?.("[data-buy]"); if (el && e.pointerType === "mouse" && !pinned) show(el.dataset.buy); });
-  fig.addEventListener("pointerout", (e) => { if (e.target.closest?.("[data-buy]") && e.pointerType === "mouse" && !pinned) show(null); });
+  fig.addEventListener("pointerover", (e) => { const el = e.target.closest?.("[data-group]"); if (el && e.pointerType === "mouse" && !pinned) show(el.dataset.group); });
+  fig.addEventListener("pointerout", (e) => { if (e.target.closest?.("[data-group]") && e.pointerType === "mouse" && !pinned) show(null); });
   fig.addEventListener("click", (e) => {
-    const el = e.target.closest("[data-buy]");
-    pinned = el && pinned !== el.dataset.buy ? el.dataset.buy : null;
+    const el = e.target.closest("[data-group]");
+    pinned = el && pinned !== el.dataset.group ? el.dataset.group : null;
     show(pinned);
   });
-  fig.addEventListener("focusin", (e) => { const el = e.target.closest?.("[data-buy]"); if (el) show(el.dataset.buy); });
+  fig.addEventListener("focusin", (e) => { const el = e.target.closest?.("[data-group]"); if (el) show(el.dataset.group); });
   fig.addEventListener("focusout", () => { if (!pinned) show(null); });
 }
 
@@ -2446,8 +2382,7 @@ function renderPlanView(code, data) {
       <h2 id="top-title">${esc(t("topTitle"))}</h2>
       <ol class="top-cards">${top.map((a, i) => `<li class="top-card glass-read">
         <span class="top-icon" aria-hidden="true">${actionIcon(a)}</span>
-        <div><span class="top-num">${i + 1}</span><p>${esc(a.text)}</p>
-        <span class="top-cost">${esc(t("costLabel"))}: <b>${esc(actionCost(a, actions.buys, f, view.sourceDetails))}</b></span></div></li>`).join("")}</ol>
+        <div><span class="top-num">${i + 1}</span><p>${esc(a.text)}</p></div></li>`).join("")}</ol>
     </section>
     <section class="key-pictures" aria-label="${esc(t("numbersTitle"))}">
       <figure class="glass accent"><figcaption><span>${esc(t("stockAtRisk"))}</span><b data-count="${Number(f.stock_at_risk || 0)}">${esc(money(0))}</b></figcaption>
@@ -2455,7 +2390,7 @@ function renderPlanView(code, data) {
       <figure class="glass accent"><figcaption><span>${esc(t("fundGap"))}</span><b data-count="${Number(f.cash_gap || 0)}">${esc(money(0))}</b></figcaption>
         ${jarSvg(f)}<p class="pic-caption">${esc(Number(f.cash_gap || 0) > 0 ? S.jarCaption(money(Number(f.cash_after_purchases ?? f.cash_on_hand ?? 0)), money(Number(f.buffer_needed || 0)), weeks) : t("jarFull"))}</p></figure>
       <figure class="glass budget-figure"><figcaption><span>${esc(t("purchases"))}</span><b data-count="${Number(f.total_cost || 0)}">${esc(money(0))}</b></figcaption>
-        ${budgetSvg(f, actions.buys)}${budgetKeyHtml(actions.buys)}<p class="pic-caption">${esc(S.budgetCaption(money(Number(f.total_cost || 0)), money(Number(f.budget || 0)), money(Number(f.money_left || 0))))}</p></figure>
+        ${budgetSvg(f, actions.buys)}${budgetKeyHtml(actions.buys, f, r.budget_note)}</figure>
     </section>
     <section class="action-list glass-read" aria-labelledby="check-title">
       <div class="check-head"><h2 id="check-title">${esc(t("checklistTitle"))}</h2><span id="check-progress" class="check-count" aria-live="polite"></span></div>
