@@ -13,6 +13,7 @@ from pydantic import BaseModel
 
 from backend import config
 from backend.api import plans
+from backend.api.home import home_data
 from backend.api.preview import preview_profile
 from backend.api.routes import router
 from backend.tools import data_store, validate_profile
@@ -49,6 +50,12 @@ def meta() -> dict:
     fx = data_store.exchange_rate()
     return {"districts": districts, "actions": actions, "example_code": EXAMPLE_CODE, "enfen": latest_enfen(),
             "pen_per_usd": fx["pen_per_usd"], "fx_date": fx["date"], "model": config.MODEL_NAME}
+
+
+@app.get("/api/home")
+def home() -> dict:
+    """Start screen data (district dots, "why it matters" numbers, El Niño timeline), read from the data files."""
+    return home_data()
 
 
 @app.post("/api/validate")

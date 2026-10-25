@@ -449,3 +449,37 @@ Check in the browser in both languages: full flow with the sample shop, back/nex
 ```
 Commit the working tree changes with a sensible message.
 ```
+
+## Prompt 41 — Open
+
+```
+open
+```
+
+## Prompt 42 — Warmer start screen with a district map
+
+```
+First, a tiny fix in the intake wizard: the "Sí" answer to "¿Vendes productos perecibles?" uses a bandage icon (🩹); change it to a food icon such as 🍞 or 🥛.
+
+Then make Pirca's start screen (#/) more interesting and less "all blue", while staying professional and readable in both languages. Motion stays subtle and lightweight and turns off with prefers-reduced-motion.
+
+1. Colors: add a warm Piura palette next to the ocean blues: sand #E9C46A, terracotta #C8643B, algarrobo green #8AB17D, as CSS variables. The page goes from "ocean" at the top to "warm land" below: give the "why it matters" section a warm dark band (e.g. dark brown #2A211B), and give each feature card its own accent color (coral, teal, sand) instead of all blue. Keep text contrast WCAG AA.
+2. Map (replace the current one): a schematic map of the eastern Pacific and northern Peru. The sea uses a cool-to-warm color gradient with a small legend ("Temperatura del mar: normal → más caliente"), and the warm water slowly spreads toward the coast. Land in sand tones; draw the Piura and Chira rivers in light blue. Label it "Mapa esquemático, posiciones aproximadas".
+3. District dots on the map from data/districts.csv, colored by flood_hazard_level (high = coral/red, medium = amber). Tapping or hovering a dot opens a small card: district name, risk level, one sourced fact per event year available (1997-98, 2017, 2023) with footnote-style sources, and a button "Hacer mi plan para <district>" that opens the intake wizard with that district already selected.
+4. A "Por qué importa / Why it matters" row with 3 numbers that count up when scrolled into view, each with its source as a footnote, read from data/historical_impacts.csv (never hard-coded): business losses from closures in 2023 (HIST-2023-32), transport cost rise (HIST-2023-33), dengue cases in 2023 (HIST-2023-36).
+5. A small horizontal El Niño timeline: 1997-98, 2017, 2023, and "2026: alerta activa" (pulsing, from data/enfen/index.json), each with one short sourced fact.
+
+Check in the browser in both languages at desktop size plus one quick phone screenshot: dots open their cards, the district button prefills the wizard, numbers match the data files, no console errors. Save screenshots to output/screenshots/.
+```
+
+## Prompt 43 — Commit
+
+```
+Commit the working tree changes with a sensible message.
+```
+
+## Prompt 44 — Open
+
+```
+open
+```
