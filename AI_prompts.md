@@ -507,3 +507,32 @@ Fix the purchases bar in the plan view: the colored blocks have no legend. Under
 ```
 Commit the working tree changes with a sensible message.
 ```
+
+## Prompt 49 — Open
+
+```
+open
+```
+
+## Prompt 50 — Real district map
+
+```
+Replace the start-screen map with a real one. Use a free public GeoJSON of Peru's district boundaries (cite its source in the README), simplified to Piura region and saved in data/. Draw the districts as a choropleth: coral = high flood risk, amber = medium, gray = no data, from data/districts.csv, with a legend. Add a toggle to switch to "Dengue cases 2023" per district (from the HIST-2023 rows), shaded light to dark. Add a zoom inset for Piura city so the small districts (Castilla, Veintiséis de Octubre, Catacaos, Cura Mori, La Arena, La Unión, El Tallán) are labeled and clickable. Show the warm water as a band along the coast, not a circle. Tapping a district opens the existing card with "Hacer mi plan para <district>". Both languages; take a desktop screenshot.
+```
+
+## Prompt 51 — Warm Piura afternoon in the agent map
+
+```
+The agent map scene still looks dark and blue. Make it a warm Piura afternoon:
+- Sky: warm gradient from soft sand/peach at the horizon to a muted warm dusk at the top (no navy), getting brighter as the run progresses; the sun is brighter and larger and rises higher.
+- Ground: sandy beige land; only the river stays blue.
+- Pirca stones in natural stone tones (beige, ochre, terracotta), the shop with a terracotta roof and a warm lit window.
+- Agent cards: warm dark glass (#24201C) with lighter text so they stand out against the sky; working = coral outline, done = algarrobo green outline instead of teal.
+Keep text contrast WCAG AA and take one screenshot mid-run and one finished.
+```
+
+## Prompt 52 — Commit
+
+```
+Commit the working tree changes with a sensible message.
+```

@@ -385,93 +385,202 @@ Object.assign(STR.en, {
                    people_affected: (v) => `${v} people affected by the rains in the region.` },
 });
 
-// Schematic projection: longitude -82.2..-79.4 and latitude -3.75..-6.15, 175 units per degree (490 x 420).
-const mx = (lon) => (lon + 82.2) * 175;
-const my = (lat) => (-3.75 - lat) * 175;
-const pts = (list) => list.map(([lat, lon]) => `${mx(lon).toFixed(1)},${my(lat).toFixed(1)}`).join(" ");
-const COAST_N_PERU = [[-3.75, -80.74], [-4.1, -81.05], [-4.27, -81.22], [-4.58, -81.27],
-  [-4.67, -81.33], [-5.09, -81.11], [-5.5, -80.95], [-5.79, -81.06], [-6.1, -80.6], [-6.15, -80.5]];
-const RIVER_CHIRA = [[-4.4, -80.05], [-4.55, -80.35], [-4.67, -80.53], [-4.9, -80.69], [-4.98, -81.07]];
-const RIVER_PIURA = [[-5.3, -79.75], [-5.18, -79.97], [-5.1, -80.15], [-4.93, -80.34], [-5.05, -80.52], [-5.195, -80.63],
-  [-5.27, -80.67], [-5.4, -80.74], [-5.7, -80.8]];
-// Approximate location of each district's capital (schematic only; dots are spread apart so none overlap).
-const DISTRICT_LATLON = {
-  "Piura": [-5.195, -80.63], "Castilla": [-5.2, -80.61], "Veintiséis de Octubre": [-5.175, -80.68], "Catacaos": [-5.265, -80.675],
-  "Cura Mori": [-5.32, -80.66], "La Arena": [-5.345, -80.71], "El Tallán": [-5.41, -80.68], "La Unión": [-5.4, -80.74],
-  "Tambogrande": [-4.93, -80.34], "Chulucanas": [-5.09, -80.16], "Sullana": [-4.9, -80.685], "Bellavista": [-4.89, -80.68],
-  "Paita": [-5.09, -81.11], "Talara": [-4.58, -81.27], "Sechura": [-5.555, -80.82],
-};
-// Names shown on the map (the rest appear in their card); "left" labels sit on the sea side of the dot.
-const MAP_LABELS = { Piura: "left", Paita: "left", Talara: "left", Sechura: "left", Sullana: "right", Chulucanas: "right", Tambogrande: "right" };
+// ---- start-screen map: Piura region's real district boundaries (data/geo/piura_districts.geojson via /api/home),
+// colored by flood risk or by dengue cases in 2023, with a zoom inset for Piura city and the warm sea as a coastal band.
 
-function spreadDots(districts) {
-  const dots = districts.filter((d) => DISTRICT_LATLON[d.name]).map((d) => {
-    const [lat, lon] = DISTRICT_LATLON[d.name];
-    return { ...d, x0: mx(lon), y0: my(lat), x: mx(lon), y: my(lat) };
-  });
-  const MIN = 16;
-  for (let it = 0; it < 120; it += 1) {
-    for (let i = 0; i < dots.length; i += 1) {
-      for (let j = i + 1; j < dots.length; j += 1) {
-        let dx = dots[j].x - dots[i].x, dy = dots[j].y - dots[i].y;
-        let dist = Math.hypot(dx, dy);
-        if (dist >= MIN) continue;
-        if (dist < 0.01) { dx = 1; dy = (j % 2 ? 1 : -1); dist = Math.hypot(dx, dy); }
-        const push = (MIN - dist) / 2;
-        dots[i].x -= (dx / dist) * push; dots[i].y -= (dy / dist) * push;
-        dots[j].x += (dx / dist) * push; dots[j].y += (dy / dist) * push;
-      }
-    }
-    dots.forEach((d) => { d.x += (d.x0 - d.x) * 0.02; d.y += (d.y0 - d.y) * 0.02; });  // stay near the true place
-  }
-  return dots;
+Object.assign(STR.es, {
+  mapRisk: "Riesgo de inundación", mapDengue: "Casos de dengue 2023", noDataLegend: "Sin datos en Pirca",
+  noDataCard: "Pirca todavía no tiene datos de inundación de este distrito.", insetTitle: "Ciudad de Piura",
+  boundaryNote: "Límites distritales: INEI, edición 2022 (GeoGPS Perú, vía pe-atlas).", dengueLine: (n) => `${n} casos`,
+  mapTitleReal: "Mapa de los distritos de la región Piura", tapDistrict: "Toca un distrito para ver qué pasó allí.",
+  casesWord: "casos", mapModeLabel: "Qué muestra el mapa", warmBand: "Franja cálida: mar más caliente frente a la costa.",
+});
+Object.assign(STR.en, {
+  mapRisk: "Flood risk", mapDengue: "Dengue cases 2023", noDataLegend: "No data in Pirca",
+  noDataCard: "Pirca has no flood data for this district yet.", insetTitle: "Piura city",
+  boundaryNote: "District boundaries: INEI, 2022 edition (GeoGPS Perú, via pe-atlas).", dengueLine: (n) => `${n} cases`,
+  mapTitleReal: "Map of the districts of Piura region", tapDistrict: "Tap a district to see what happened there.",
+  casesWord: "cases", mapModeLabel: "What the map shows", warmBand: "Warm band: warmer sea along the coast.",
+});
+
+const PIURA_CITY = ["Piura", "Castilla", "Veintiséis de Octubre", "Catacaos", "Cura Mori", "La Arena", "La Unión", "El Tallán"];
+const MAIN_LABELS = ["Sullana", "Paita", "Talara", "Chulucanas", "Tambogrande", "Sechura"];
+const RISK_FILL = { high: "#F2785C", medium: "#F2B84B" };
+const NO_DATA_FILL = "#4A535E";
+const DENGUE_LIGHT = [253, 231, 204], DENGUE_DARK = [168, 45, 38];
+const MAP_W = 560, SEA_DEG = 1.32;  // open sea west of the coast for the warm band and the inset
+
+function mapFrame(features) {
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  features.forEach((f) => f.coordinates.forEach((p) => p.forEach((r) => r.forEach(([x, y]) => {
+    minX = Math.min(minX, x); maxX = Math.max(maxX, x); minY = Math.min(minY, y); maxY = Math.max(maxY, y);
+  }))));
+  const pad = 0.05, lon0 = minX - SEA_DEG, lat0 = maxY + pad;
+  const k = MAP_W / (maxX + pad - lon0);  // about 5°S, so one degree of longitude ≈ one of latitude
+  return { k, H: Math.round((lat0 - (minY - pad)) * k), project: ([x, y]) => [(x - lon0) * k, (lat0 - y) * k] };
 }
 
-// A label starts past any dot on the same row next to it, so crowded names (Piura) stay readable.
-function labelX(d, dots) {
-  const left = MAP_LABELS[d.name] === "left";
-  const row = dots.filter((o) => Math.abs(o.y - d.y) < 10 && (left ? o.x <= d.x && d.x - o.x < 40 : o.x >= d.x && o.x - d.x < 40));
-  const edge = left ? Math.min(...row.map((o) => o.x)) : Math.max(...row.map((o) => o.x));
-  return edge + (left ? -11 : 11);
+function shapePath(coords, project) {
+  return coords.map((poly) => poly.map((r) => r.map((pt, i) => {
+    const [x, y] = project(pt);
+    return `${i ? "L" : "M"}${x.toFixed(1)} ${y.toFixed(1)}`;
+  }).join("") + "Z").join("")).join("");
+}
+
+// Label point: area-weighted centroid of the district's largest polygon.
+function shapeCentroid(coords, project) {
+  let best = null, bestArea = 0;
+  coords.forEach((poly) => {
+    const r = poly[0].map(project);
+    let a = 0, cx = 0, cy = 0;
+    for (let i = 0, j = r.length - 1; i < r.length; j = i++) {
+      const c = r[j][0] * r[i][1] - r[i][0] * r[j][1];
+      a += c; cx += (r[j][0] + r[i][0]) * c; cy += (r[j][1] + r[i][1]) * c;
+    }
+    if (a && Math.abs(a / 2) > bestArea) { bestArea = Math.abs(a / 2); best = [cx / (3 * a), cy / (3 * a)]; }
+  });
+  return best || project(coords[0][0][0]);
+}
+
+// Coastline: the westernmost boundary point in each thin band of latitude, smoothed seaward.
+function coastPoints(features, project) {
+  const bins = new Map();
+  features.forEach((f) => f.coordinates.forEach((p) => p[0].forEach(([x, y]) => {
+    const b = Math.round(y / 0.025);
+    if (!bins.has(b) || x < bins.get(b)[0]) bins.set(b, [x, y]);
+  })));
+  const pts = [...bins.values()].sort((a, b) => b[1] - a[1]);
+  return pts.map((p, i) => [Math.min(p[0], pts[i - 1]?.[0] ?? Infinity, pts[i + 1]?.[0] ?? Infinity), p[1]]).map(project);
+}
+
+function titleCaseName(name) {
+  const small = new Set(["de", "la", "el", "del", "los", "las", "y"]);
+  return name.toLowerCase().split(" ").map((w, i) => (i && small.has(w) ? w : w.charAt(0).toUpperCase() + w.slice(1))).join(" ");
+}
+
+function districtShape(f, project, cls = "") {
+  const label = f.district || titleCaseName(f.name);
+  const data = f.district ? `data-district="${esc(f.district)}"` : `data-boundary="${esc(f.ubigeo)}"`;
+  return `<path class="district-shape ${cls}" d="${shapePath(f.coordinates, project)}" ${data} tabindex="0" role="button"
+    aria-label="${esc(label)}, ${esc(f.province)}"/>`;
 }
 
 function homeMapSvg(home) {
-  const dots = spreadDots(home.districts);
+  const feats = home.map.features;
+  const F = mapFrame(feats), P = F.project;
+  const coast = coastPoints(feats, P);
+  const line = coast.map(([x, y], i) => `${i ? "L" : "M"}${x.toFixed(1)} ${y.toFixed(1)}`).join("");
+  const [x0] = coast[0], [x1] = coast[coast.length - 1];
+  const sea = `${line}L${x1.toFixed(1)} ${F.H}L0 ${F.H}L0 0L${x0.toFixed(1)} 0Z`;
+
+  // Inset: the Piura city districts, zoomed into a box over the sea.
+  const city = feats.filter((f) => PIURA_CITY.includes(f.district));
+  let a = Infinity, b = -Infinity, c = Infinity, d = -Infinity;
+  city.forEach((f) => f.coordinates.forEach((p) => p[0].forEach(([x, y]) => { a = Math.min(a, x); b = Math.max(b, x); c = Math.min(c, y); d = Math.max(d, y); })));
+  const box = { x: 8, w: Math.min(200, coast.reduce((m, p) => Math.min(m, p[0]), Infinity) - 18) };
+  box.h = Math.min(F.H - 120, box.w * 1.35); box.y = F.H - box.h - 8;
+  const ik = Math.min((box.w - 16) / (b - a), (box.h - 34) / (d - c));
+  const IP = ([x, y]) => [box.x + 8 + (x - a) * ik + ((box.w - 16) - (b - a) * ik) / 2, box.y + 26 + (d - y) * ik + ((box.h - 34) - (d - c) * ik) / 2];
+  const [lx0, ly0] = P([a, d]), [lx1, ly1] = P([b, c]);
+  const labels = (list, project, cls) => list.map((f) => {
+    const [x, y] = shapeCentroid(f.coordinates, project);
+    const words = f.district.split(" ");
+    const lines = f.district.length > 12 && words.length > 1 ? [words[0], words.slice(1).join(" ")] : [f.district];
+    return `<text class="map-label strong ${cls}" x="${x.toFixed(1)}" y="${(y + 3 - (lines.length - 1) * 5).toFixed(1)}" text-anchor="middle">${
+      lines.map((l, i) => `<tspan x="${x.toFixed(1)}" dy="${i ? "1.1em" : 0}">${esc(l)}</tspan>`).join("")}</text>`;
+  }).join("");
   const ocean = store.lang === "es" ? "Océano Pacífico" : "Pacific Ocean";
-  const level = (l) => t("risk" + l[0].toUpperCase() + l.slice(1)).toLowerCase();
-  return `<svg viewBox="0 0 490 420" role="img" aria-labelledby="map-title">
-    <title id="map-title">${esc(t("mapTitleNew"))}</title>
+  return `<svg viewBox="0 0 ${MAP_W} ${F.H}" role="img" aria-labelledby="map-title" class="real-map">
+    <title id="map-title">${esc(t("mapTitleReal"))}</title>
     <defs>
-      <linearGradient id="sea-cool-warm" x1="0" x2="1" y1="0" y2="0">
-        <stop offset="0%" stop-color="#123A5A"/><stop offset="60%" stop-color="#17506A"/><stop offset="100%" stop-color="#2A6F7A"/></linearGradient>
-      <radialGradient id="warm-water-g" cx="50%" cy="50%" r="50%">
-        <stop offset="0%" stop-color="#FFB347" stop-opacity="0.75"/><stop offset="50%" stop-color="#F2785C" stop-opacity="0.45"/>
-        <stop offset="100%" stop-color="#C8643B" stop-opacity="0"/></radialGradient>
+      <linearGradient id="sea-g2" x1="0" x2="1"><stop offset="0%" stop-color="#123A5A"/><stop offset="100%" stop-color="#1D5A72"/></linearGradient>
       <linearGradient id="legend-g" x1="0" x2="1"><stop offset="0%" stop-color="#2A6F97"/><stop offset="55%" stop-color="#FFB347"/><stop offset="100%" stop-color="#F2785C"/></linearGradient>
-      <linearGradient id="land-g" x1="0" x2="1" y1="0" y2="1"><stop offset="0%" stop-color="#8F7743"/><stop offset="100%" stop-color="#6E5A33"/></linearGradient>
+      <clipPath id="sea-clip"><path d="${sea}"/></clipPath>
+      <filter id="band-blur" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="7"/></filter>
+      <clipPath id="inset-clip"><rect x="${box.x}" y="${box.y}" width="${box.w}" height="${box.h}" rx="8"/></clipPath>
     </defs>
-    <rect width="490" height="420" fill="url(#sea-cool-warm)"/>
-    <g class="warm-spread"><ellipse cx="${mx(-81.75)}" cy="${my(-5.0)}" rx="150" ry="130" fill="url(#warm-water-g)"/></g>
-    <polygon class="land" points="${pts(COAST_N_PERU)} 490,420 490,0"/>
-    <polyline class="river" points="${pts(RIVER_CHIRA)}"/><polyline class="river" points="${pts(RIVER_PIURA)}"/>
-    <text class="map-label river-label" x="${mx(-80.3)}" y="${my(-4.48)}">${esc(t("riverChira"))}</text>
-    <text class="map-label river-label" x="${mx(-80.05)}" y="${my(-5.23)}">${esc(t("riverPiura"))}</text>
-    <text class="map-label strong" x="410" y="390">${store.lang === "es" ? "PERÚ" : "PERU"}</text>
-    <text class="map-label sea-label" x="18" y="330">${esc(ocean)}</text>
-    <g class="sea-legend" transform="translate(18 370)">
-      <rect x="0" y="0" width="150" height="8" rx="4" fill="url(#legend-g)"/>
-      <text class="map-label" x="0" y="24">${esc(t("seaLegend"))}</text></g>
-    ${dots.map((d) => {
-      const moved = Math.hypot(d.x - d.x0, d.y - d.y0) > 3;
-      return `${moved ? `<line class="leader" x1="${d.x0.toFixed(1)}" y1="${d.y0.toFixed(1)}" x2="${d.x.toFixed(1)}" y2="${d.y.toFixed(1)}"/><circle class="true-spot" cx="${d.x0.toFixed(1)}" cy="${d.y0.toFixed(1)}" r="1.6"/>` : ""}
-        <g class="district-dot ${esc(d.hazard_level)}" tabindex="0" role="button" data-district="${esc(d.name)}"
-           aria-label="${esc(d.name)}: ${esc(t("floodRisk"))} ${esc(level(d.hazard_level))}">
-          <circle class="hit" cx="${d.x.toFixed(1)}" cy="${d.y.toFixed(1)}" r="11"/>
-          <circle class="dot" cx="${d.x.toFixed(1)}" cy="${d.y.toFixed(1)}" r="6.5"/>
-          ${MAP_LABELS[d.name] ? `<text class="map-label strong dot-label" x="${labelX(d, dots).toFixed(1)}" y="${(d.y + 4).toFixed(1)}" text-anchor="${MAP_LABELS[d.name] === "left" ? "end" : "start"}">${esc(d.name)}</text>` : ""}
-        </g>`;
-    }).join("")}
+    <rect width="${MAP_W}" height="${F.H}" class="other-land"/>
+    <path d="${sea}" fill="url(#sea-g2)"/>
+    <g clip-path="url(#sea-clip)" class="coast-band-group"><g filter="url(#band-blur)">
+      <path d="${line}" class="coast-band outer"/><path d="${line}" class="coast-band inner"/>
+    </g></g>
+    <text class="map-label sea-label" x="14" y="${Math.round(box.y - 14)}">${esc(ocean)}</text>
+    <g class="sea-legend" transform="translate(12 16)"><rect x="0" y="0" width="140" height="8" rx="4" fill="url(#legend-g)"/>
+      <text class="map-label" x="0" y="22">${esc(t("seaLegend"))}</text></g>
+    <g class="main-shapes">${feats.map((f) => districtShape(f, P)).join("")}</g>
+    ${labels(feats.filter((f) => MAIN_LABELS.includes(f.district)), P, "main-label")}
+    <rect class="locator" x="${lx0.toFixed(1)}" y="${ly0.toFixed(1)}" width="${(lx1 - lx0).toFixed(1)}" height="${(ly1 - ly0).toFixed(1)}"/>
+    <line class="locator-line" x1="${lx0.toFixed(1)}" y1="${ly1.toFixed(1)}" x2="${box.x + box.w}" y2="${box.y}"/>
+    <g class="inset">
+      <rect class="inset-frame" x="${box.x}" y="${box.y}" width="${box.w}" height="${box.h}" rx="8"/>
+      <g clip-path="url(#inset-clip)">${feats.map((f) => districtShape(f, IP, PIURA_CITY.includes(f.district) ? "in-city" : "context")).join("")}
+        ${labels(city, IP, "inset-label")}</g>
+      <text class="map-label strong inset-title" x="${box.x + 10}" y="${box.y + 16}">${esc(t("insetTitle"))}</text>
+    </g>
   </svg>`;
+}
+
+function separateLabels(selector) {
+  const els = [...app.querySelectorAll(selector)];
+  for (let pass = 0; pass < 12; pass += 1) {
+    let moved = false;
+    for (let i = 0; i < els.length; i += 1) {
+      for (let j = i + 1; j < els.length; j += 1) {
+        let a, b;
+        try { a = els[i].getBBox(); b = els[j].getBBox(); } catch { return; }
+        const overlapX = Math.min(a.x + a.width, b.x + b.width) - Math.max(a.x, b.x);
+        const overlapY = Math.min(a.y + a.height, b.y + b.height) - Math.max(a.y, b.y);
+        if (overlapX > 1 && overlapY > 0) {
+          const lower = a.y > b.y ? els[i] : els[j], dy = (overlapY / 2) + 1;
+          [lower, lower === els[i] ? els[j] : els[i]].forEach((el, k) => {
+            const shift = k ? -dy : dy;
+            el.setAttribute("y", (Number(el.getAttribute("y")) + shift).toFixed(1));
+          });
+          moved = true;
+        }
+      }
+    }
+    if (!moved) break;
+  }
+}
+
+function mapLegendHtml(home, mode) {
+  if (mode === "risk") {
+    return `<span class="lg"><span class="sw" style="background:${RISK_FILL.high}"></span>${esc(t("riskHigh"))}</span>
+      <span class="lg"><span class="sw" style="background:${RISK_FILL.medium}"></span>${esc(t("riskMedium"))}</span>
+      <span class="lg"><span class="sw" style="background:${NO_DATA_FILL}"></span>${esc(t("noDataLegend"))}</span>`;
+  }
+  const max = Math.max(...Object.values(home.dengue).map((v) => Number(v.value)));
+  return `<span class="lg dengue-scale"><span>0</span><span class="ramp" style="background:linear-gradient(90deg, rgb(${DENGUE_LIGHT}), rgb(${DENGUE_DARK}))"></span>
+      <span>${esc(num(max))} ${esc(t("casesWord"))}</span></span>
+    <span class="lg"><span class="sw" style="background:${NO_DATA_FILL}"></span>${esc(t("noDataLegend"))}</span>`;
+}
+
+function dengueFill(value, max) {
+  const s = Math.sqrt(value / max);  // square root so smaller districts still show a difference
+  return `rgb(${DENGUE_LIGHT.map((v, i) => Math.round(v + (DENGUE_DARK[i] - v) * s)).join(",")})`;
+}
+
+function applyMapMode(home, mode) {
+  state.homeMapMode = mode;
+  const hazard = Object.fromEntries(home.districts.map((d) => [d.name, d.hazard_level]));
+  const max = Math.max(...Object.values(home.dengue).map((v) => Number(v.value)));
+  app.querySelectorAll(".home-map .district-shape").forEach((p) => {
+    const name = p.dataset.district;
+    let fill = NO_DATA_FILL;
+    if (name && mode === "risk" && RISK_FILL[hazard[name]]) fill = RISK_FILL[hazard[name]];
+    if (name && mode === "dengue" && home.dengue[name]) fill = dengueFill(Number(home.dengue[name].value), max);
+    p.style.fill = fill;
+  });
+  app.querySelectorAll("[data-map-mode]").forEach((b) => b.setAttribute("aria-checked", String(b.dataset.mapMode === mode)));
+  const legend = document.getElementById("map-legend");
+  if (legend) legend.innerHTML = mapLegendHtml(home, mode);
+}
+
+function noDataCardHtml(f) {
+  return `<div class="dc-head"><div><b>${esc(titleCaseName(f.name))}</b><span class="muted small"> · ${esc(f.province)}</span></div>
+      <button type="button" class="icon-btn dc-close" aria-label="${esc(t("close"))}">✕</button></div>
+    <p class="dc-none">${esc(t("noDataCard"))}</p>`;
 }
 
 function shortFact(text, max = 150) {
@@ -526,6 +635,7 @@ function districtCardHtml(d, home, fn) {
       <button type="button" class="icon-btn dc-close" aria-label="${esc(t("close"))}">✕</button></div>
     <div class="dc-risk ${esc(d.hazard_level)}">${esc(t("floodRisk"))}: <b>${esc(t("risk" + d.hazard_level[0].toUpperCase() + d.hazard_level.slice(1)).toLowerCase())}</b></div>
     ${facts ? `<ul class="dc-facts">${facts}</ul>` : ""}
+    ${home.dengue?.[d.name] ? `<p class="dc-dengue"><b>${esc(t("mapDengue"))}:</b> ${esc(STR[store.lang].dengueLine(num(Number(home.dengue[d.name].value))))}${footnote(home.dengue[d.name].id, fn)}</p>` : ""}
     <button type="button" class="btn btn-primary dc-plan" data-plan-for="${esc(d.name)}">${esc(STR[store.lang].planFor(d.name))}</button>`;
 }
 
@@ -586,7 +696,7 @@ async function renderHome() {
   const accents = ["accent-coral", "accent-teal", "accent-sand"];
   app.innerHTML = `
     <section class="hero glass">
-      <div class="hero-grid">
+      <div class="hero-grid hero-text">
         <div>
           ${enfenChip()}
           <h1>${title}</h1>
@@ -596,17 +706,24 @@ async function renderHome() {
             <a class="btn" href="#/plan/${esc(state.meta.example_code)}">${esc(t("openExample"))}</a>
           </div>
         </div>
+      </div>
+      ${wavesSvg()}
+    </section>
+    <section class="map-section glass" aria-labelledby="map-heading">
+      <h2 id="map-heading">${esc(t("mapTitleReal"))}</h2>
         <figure class="map-figure home-map">
+          <div class="map-toggle" role="radiogroup" aria-label="${esc(t("mapModeLabel"))}">
+            <button type="button" role="radio" data-map-mode="risk" aria-checked="true">${esc(t("mapRisk"))}</button>
+            <button type="button" role="radio" data-map-mode="dengue" aria-checked="false">${esc(t("mapDengue"))}</button>
+          </div>
           ${homeMapSvg(home)}
           <div class="district-card glass-read" id="district-card" role="dialog" aria-live="polite" hidden></div>
           <figcaption>
-            <span class="dot-legend"><span class="key high"></span>${esc(t("riskHigh"))} <span class="key medium"></span>${esc(t("riskMedium"))} · ${esc(t("dotsLegend"))}</span>
-            <span>${esc(t("tapDot"))}</span>
-            <span class="muted">${esc(t("mapNote"))} ${esc(t("mapCaption"))}</span>
+            <span class="map-legend" id="map-legend"></span>
+            <span>${esc(t("tapDistrict"))}</span>
+            <span class="muted">${esc(t("warmBand"))} ${esc(t("boundaryNote"))}</span>
           </figcaption>
         </figure>
-      </div>
-      ${wavesSvg()}
     </section>
     <div class="home-land">
       <div class="facts-strip">
@@ -631,6 +748,8 @@ async function renderHome() {
     el.textContent = el._impact.format(el._impact.targets.map(() => 0));
   });
   countUpImpacts();
+  applyMapMode(home, state.homeMapMode || "risk");
+  separateLabels(".inset-label");
   wireDistrictCards(home, fn);
 }
 
@@ -639,39 +758,43 @@ function wireDistrictCards(home, fn) {
   const card = document.getElementById("district-card");
   if (!figure || !card) return;
   let pinned = null, closeTimer = null;
-  const open = (dot, pin) => {
+  const keyOf = (el) => el.dataset.district || el.dataset.boundary;
+  const mark = (el) => {
+    app.querySelectorAll(".district-shape.active").forEach((x) => x.classList.remove("active"));
+    if (el) app.querySelectorAll(".district-shape").forEach((x) => x.classList.toggle("active", keyOf(x) === keyOf(el)));
+  };
+  const open = (el, pin) => {
     clearTimeout(closeTimer);
-    const d = home.districts.find((x) => x.name === dot.dataset.district);
-    if (!d) return;
-    card.innerHTML = districtCardHtml(d, home, fn);
+    const d = el.dataset.district && home.districts.find((x) => x.name === el.dataset.district);
+    const f = !d && home.map.features.find((x) => x.ubigeo === el.dataset.boundary);
+    if (!d && !f) return;
+    card.innerHTML = d ? districtCardHtml(d, home, fn) : noDataCardHtml(f);
     card.hidden = false;
-    app.querySelectorAll(".district-dot.active").forEach((x) => x.classList.remove("active"));
-    dot.classList.add("active");
-    const f = figure.getBoundingClientRect(), r = dot.getBoundingClientRect();
+    mark(el);
+    const fr = figure.getBoundingClientRect(), r = el.getBoundingClientRect();
     const w = card.offsetWidth, h = card.offsetHeight;
-    let left = r.left - f.left + r.width / 2 - w / 2;
-    left = Math.max(0, Math.min(f.width - w, left));
-    let top = r.bottom - f.top + 8;
-    if (top + h > f.height && r.top - f.top - h - 8 >= 0) top = r.top - f.top - h - 8;
-    card.style.left = `${left}px`; card.style.top = `${top}px`;
-    if (pin) pinned = dot;
+    let left = r.left - fr.left + r.width / 2 - w / 2;
+    left = Math.max(0, Math.min(fr.width - w, left));
+    let top = r.bottom - fr.top + 8;
+    if (top + h > fr.height && r.top - fr.top - h - 8 >= 0) top = r.top - fr.top - h - 8;
+    card.style.left = `${left}px`; card.style.top = `${Math.max(0, top)}px`;
+    if (pin) pinned = el;
   };
-  const close = () => {
-    card.hidden = true; pinned = null;
-    app.querySelectorAll(".district-dot.active").forEach((x) => x.classList.remove("active"));
-  };
+  const close = () => { card.hidden = true; pinned = null; mark(null); };
   figure.addEventListener("pointerover", (e) => {
-    const dot = e.target.closest?.(".district-dot");
-    if (dot && e.pointerType === "mouse" && !pinned) open(dot, false);
+    const el = e.target.closest?.(".district-shape");
+    if (el && e.pointerType === "mouse" && !pinned) open(el, false);
     if (e.target.closest?.("#district-card")) clearTimeout(closeTimer);
   });
   figure.addEventListener("pointerout", (e) => {
     if (e.pointerType !== "mouse" || pinned) return;
-    if (e.target.closest?.(".district-dot") || e.target.closest?.("#district-card")) closeTimer = setTimeout(close, 300);
+    if (e.target.closest?.(".district-shape") || e.target.closest?.("#district-card")) closeTimer = setTimeout(close, 300);
   });
   figure.addEventListener("click", (e) => {
-    const dot = e.target.closest(".district-dot");
-    if (dot) { if (pinned === dot) close(); else open(dot, true); return; }
+    const mode = e.target.closest("[data-map-mode]");
+    if (mode) { applyMapMode(home, mode.dataset.mapMode); return; }
+    const el = e.target.closest(".district-shape");
+    if (el) { if (pinned && keyOf(pinned) === keyOf(el)) close(); else open(el, true); return; }
     if (e.target.closest(".dc-close")) { close(); return; }
     const plan = e.target.closest("[data-plan-for]");
     if (plan) {
@@ -681,15 +804,15 @@ function wireDistrictCards(home, fn) {
     }
   });
   figure.addEventListener("keydown", (e) => {
-    const dot = e.target.closest?.(".district-dot");
-    if (dot && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); open(dot, true); card.querySelector(".dc-plan")?.focus(); }
+    const el = e.target.closest?.(".district-shape");
+    if (el && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); open(el, true); card.querySelector(".dc-plan, .dc-close")?.focus(); }
     if (e.key === "Escape") close();
   });
   state.homeAbort?.abort();  // one page-wide listener, replaced on each re-render
   state.homeAbort = new AbortController();
   document.addEventListener("click", (e) => {
     if (!pinned || card.hidden) return;
-    if (card.contains(e.target) || e.target.closest(".district-dot") || fnPop.contains(e.target) || e.target.closest(".fn")) return;
+    if (card.contains(e.target) || e.target.closest(".district-shape") || fnPop.contains(e.target) || e.target.closest(".fn")) return;
     close();
   }, { signal: state.homeAbort.signal });
 }
@@ -1294,7 +1417,7 @@ const SCENES = {
   wide: { w: 680, bankX: 430, wallX: 534, stoneW: 13, shopX: 634 },
   narrow: { w: 360, bankX: 170, wallX: 228, stoneW: 10, shopX: 312 },
 };
-const STONE_FILLS = ["#7C8DA3", "#5E6F86", "#94A3B5", "#6B7C92"];
+const STONE_FILLS = ["#D9C7A3", "#C49A5B", "#B86B47", "#A99B84"];  // beige, ochre, terracotta, gray-beige
 
 function riverWavePath(w, y, amp, period) {
   let d = `M${-period} ${y}`;
@@ -1351,8 +1474,9 @@ function sceneApply(ts, e, map) {
   if (ts.sceneEnd === "stopped") p = Math.min(p, 0.12);
   // Sun arc (percent of the panel): up the free left margin, then along the top toward the middle.
   const q = (a, b, c) => (1 - p) ** 2 * a + 2 * (1 - p) * p * b + p ** 2 * c;
-  map.style.setProperty("--sun-x", `${q(5, 5, 48).toFixed(1)}%`);
-  map.style.setProperty("--sun-y", `${q(46, -2, 5).toFixed(1)}%`);
+  map.style.setProperty("--sun-x", `${(5 + 43 * p ** 3).toFixed(1)}%`);  // stays in the free left margin, then crosses the top
+  map.style.setProperty("--sun-y", `${q(72, -6, 4).toFixed(1)}%`);
+  map.style.setProperty("--day", (ts.sceneEnd === "stopped" ? 0.15 : 0.15 + 0.85 * p).toFixed(2));  // the afternoon brightens
   map.style.setProperty("--rain", Math.max(0, Math.min(1, 1 - (p - 0.55) / 0.4)).toFixed(2));
   map.classList.toggle("scene-done", ts.sceneEnd === "done");
   map.classList.toggle("scene-stopped", ts.sceneEnd === "stopped");

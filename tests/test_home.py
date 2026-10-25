@@ -64,3 +64,32 @@ def test_every_cited_id_has_source_details():
     assert cited <= set(body["source_details"])
     for i in cited:
         assert body["source_details"][i]["url"].startswith("http")
+
+
+# ---------------------------------------------------------------- district map
+
+def test_map_has_every_piura_district_and_matches_each_pirca_district_once():
+    body = home()
+    features = body["map"]["features"]
+    assert len(features) == 65 and all(f["ubigeo"].startswith("20") for f in features)
+    matched = [f["district"] for f in features if f["district"]]
+    assert sorted(matched) == sorted(DISTRICTS)  # each of the 15 districts exactly once
+    by_name = {f["district"]: f for f in features if f["district"]}
+    assert by_name["Talara"]["name"] == "PARIÑAS" and by_name["Bellavista"]["province"] == "Sullana"
+    assert "pe-atlas" in body["map"]["source"]
+
+
+def test_boundaries_are_inside_piura_region():
+    for f in home()["map"]["features"]:
+        for poly in f["coordinates"]:
+            for ring in poly:
+                assert len(ring) >= 4
+                assert all(-81.5 < x < -79.0 and -6.5 < y < -3.9 for x, y in ring)
+
+
+def test_dengue_2023_values_match_the_csv():
+    dengue = home()["dengue"]
+    rows = {r["district"]: r for r in HIST.values() if r["event"] == "2023" and r["topic"] == "dengue" and r["unit"] == "cases"}
+    assert set(dengue) <= set(DISTRICTS) and len(dengue) == 15
+    for name, v in dengue.items():
+        assert HIST[v["id"]]["value"] == v["value"] and rows[name]["id"] == v["id"]
