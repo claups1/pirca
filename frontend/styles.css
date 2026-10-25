@@ -373,10 +373,13 @@ dialog ol, dialog ul { padding-left: var(--s3); }
 .map-link.active { stroke: rgba(242, 120, 92, 0.75); }
 .map-rev { fill: none; stroke: rgba(232, 238, 245, 0.12); stroke-width: 1.5; stroke-dasharray: 5 5; transition: stroke 0.4s; }
 .map-rev.lit { stroke: var(--coral); stroke-dasharray: none; stroke-width: 2; }
-.rev-head { fill: rgba(232, 238, 245, 0.2); }
+.rev-head-dim { fill: rgba(232, 238, 245, 0.28); }
+.rev-head-lit { fill: var(--coral); }
 .map-rev.lit + .rev-label, .rev-label.lit { fill: var(--sunset); }
 .rev-label { fill: transparent; font: 600 11px var(--font); }
-#rev-arrow .rev-head { fill: var(--coral); }
+.rev-badge { opacity: 0; transition: opacity 0.4s; }
+.rev-badge.lit { opacity: 1; }
+.rev-pill { fill: rgba(11, 23, 38, 0.94); stroke: rgba(242, 120, 92, 0.65); stroke-width: 1; }
 .team-total { fill: var(--text-muted); font: 11px var(--font); }
 .pulse { fill: var(--sunset); }
 .rain { position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: var(--rain, 1); transition: opacity 1.2s ease; }
@@ -414,7 +417,7 @@ dialog ol, dialog ul { padding-left: var(--s3); }
 
 @media (prefers-reduced-motion: reduce) {
   .rain { display: none; }
-  .map-node rect, .map-link, .map-rev { transition: none !important; }
+  .map-node rect, .map-link, .map-rev, .rev-badge { transition: none !important; }
   .wave { animation: none; }
   .stone, .scene-sun { transition: none !important; }
 }
@@ -744,3 +747,37 @@ html.printing .all-done { display: none; }
 .home-hero-grid, .hero-grid:has(.home-map) { grid-template-columns: 0.95fr 1.05fr; }
 @media (max-width: 720px) { .hero-grid:has(.home-map) { grid-template-columns: 1fr; } }
 .dc-topic { color: var(--text-muted); font-weight: 600; }
+
+/* Supplier rows: Product | City | ✕ on one line, the perishable choice as a full-width 3-way segmented control below. */
+.supplier-row { grid-template-columns: 1.2fr 1fr auto; align-items: end; padding-bottom: var(--s2); margin-bottom: var(--s2);
+  border-bottom: 1px solid var(--glass-border); }
+.supplier-row .supplier-remove { height: 44px; align-self: end; }
+.supplier-row .perishable-field { grid-column: 1 / -1; }
+.segmented-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1.5px solid var(--glass-border);
+  border-radius: var(--radius-small); overflow: hidden; }
+.segmented-3 .chip { border: 0; border-radius: 0; min-height: 44px; padding: 8px 12px; white-space: nowrap; font-size: 14.5px; }
+.segmented-3 .chip + .chip { border-left: 1.5px solid var(--glass-border); }
+.segmented-3 .chip[aria-checked="true"] { background: rgba(242, 120, 92, 0.2); box-shadow: inset 0 0 0 1.5px var(--coral); }
+@media (max-width: 720px) {
+  .supplier-row { grid-template-columns: 1fr 1fr auto; }
+  .supplier-row .field:first-child { grid-column: auto; }
+  .segmented-3 .chip { white-space: normal; line-height: 1.25; font-size: 13.5px; padding: 6px 6px; }
+}
+
+/* Purchases bar: key under the bar, colored by what each purchase protects; hover/tap highlights block and line. */
+.budget-key { display: grid; gap: 8px; margin: 4px 0 10px; font-size: 13.5px; }
+.key-group-name { display: flex; align-items: center; gap: 6px; font-weight: 700; color: var(--text); font-size: 13px; }
+.key-group ul { list-style: none; margin: 2px 0 0; padding: 0 0 0 4px; }
+.key-group li { display: grid; grid-template-columns: 10px 1fr auto; align-items: center; gap: 8px; padding: 3px 6px; border-radius: 6px; cursor: pointer; }
+.key-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex: none; }
+.key-name { color: var(--text); line-height: 1.3; }
+.key-cost { color: var(--text-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.budget-figure .buy { cursor: pointer; transition: opacity 0.2s; outline: none; }
+.budget-figure.has-focus .buy:not(.focus) { opacity: 0.3; }
+.budget-figure .buy.focus { stroke: #fff; stroke-width: 1.5; }
+.budget-figure li.focus { background: rgba(255, 255, 255, 0.1); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35); }
+.budget-figure.has-focus li:not(.focus) { opacity: 0.55; }
+html.printing .budget-key { font-size: 9.5px; gap: 2px; margin: 0; }
+html.printing .key-name, html.printing .key-group-name { color: #111; }
+html.printing .key-cost { color: #333; }
+@media (prefers-reduced-motion: reduce) { .budget-figure .buy { transition: none; } }

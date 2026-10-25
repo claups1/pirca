@@ -707,7 +707,7 @@ Object.assign(STR.es, {
   previewWaiting: "Responde las preguntas sobre tu local para ver tu riesgo.",
   previewDistrict: (lvl) => `Riesgo de inundación del distrito: ${lvl}`, previewStock: (m) => `Mercadería a menos de 1 m: ${m}`,
   previewFree: "Calculado con código, sin IA: 0 tokens.", missingAnswers: "Falta responder:", stepCheck: "Revisa esto:",
-  notAnswered: "Sin responder", perishableAuto: "Detectar", levelUnverified: "sin verificar", wallLabel: "Tu pirca crece con cada paso",
+  notAnswered: "Sin responder", perishableAuto: "No sé (Pirca lo revisa)", levelUnverified: "sin verificar", wallLabel: "Tu pirca crece con cada paso",
   daysUnit: "días", peopleUnit: "personas", alreadyHave: "¿Qué ya tienes? (toca lo que tengas)", noneSelected: "Nada marcado",
 });
 Object.assign(STR.en, {
@@ -719,7 +719,7 @@ Object.assign(STR.en, {
   previewWaiting: "Answer the questions about your shop to see your risk.",
   previewDistrict: (lvl) => `District flood risk: ${lvl}`, previewStock: (m) => `Stock less than 1 m above the floor: ${m}`,
   previewFree: "Calculated with code, no AI: 0 tokens.", missingAnswers: "Still to answer:", stepCheck: "Please check:",
-  notAnswered: "Not answered", perishableAuto: "Detect", levelUnverified: "unverified", wallLabel: "Your pirca grows with each step",
+  notAnswered: "Not answered", perishableAuto: "Not sure (Pirca checks)", levelUnverified: "unverified", wallLabel: "Your pirca grows with each step",
   daysUnit: "days", peopleUnit: "people", alreadyHave: "What do you already have? (tap all that apply)", noneSelected: "Nothing ticked",
 });
 
@@ -979,10 +979,10 @@ function supplierRowHtml(s, i) {
       <input id="sp-${i}" name="product" value="${esc(s.product || "")}" placeholder="${store.lang === "es" ? "abarrotes, pan, bebidas…" : "groceries, bread, drinks…"}"></div>
     <div class="field"><label for="sc-${i}">${store.lang === "es" ? "Ciudad" : "City"}</label>
       <input id="sc-${i}" name="city" value="${esc(s.city || "")}" placeholder="Piura, Chiclayo…"></div>
-    <div class="field"><span class="label-like">${store.lang === "es" ? "¿Perecible?" : "Perishable?"}</span>
-      <div class="chips" role="radiogroup">${Object.entries(opts).map(([k, txt]) =>
-        `<button type="button" class="chip" role="radio" data-perishable="${k}" aria-checked="${pv === k}">${esc(k === "" ? t("perishableAuto") : txt)}</button>`).join("")}</div></div>
-    <button class="icon-btn" type="button" data-remove="${i}" aria-label="${esc(t("remove"))}">✕</button>
+    <button class="icon-btn supplier-remove" type="button" data-remove="${i}" aria-label="${esc(t("remove"))}">✕</button>
+    <div class="field perishable-field"><span class="label-like" id="spp-${i}">${store.lang === "es" ? "¿Perecible?" : "Perishable?"}</span>
+      <div class="segmented-3" role="radiogroup" aria-labelledby="spp-${i}">${["true", "false", ""].map((k) =>
+        `<button type="button" class="chip" role="radio" data-perishable="${k}" aria-checked="${pv === k}">${esc(k === "" ? t("perishableAuto") : opts[k])}</button>`).join("")}</div></div>
   </div>`;
 }
 
@@ -1258,14 +1258,14 @@ const MAP_LAYOUTS = {
     nodes: { manager: { x: 200, y: 62, w: 180, h: 84 }, gate: { x: 440, y: 62, w: 150, h: 84 }, plan: { x: 610, y: 62, w: 110, h: 84 },
              risk_analyst: { x: 95, y: 215, w: 172, h: 84 }, planner: { x: 300, y: 215, w: 172, h: 84 }, critic: { x: 505, y: 215, w: 172, h: 84 } },
     toGate: "M290 62 H365", toPlan: "M515 62 H555",
-    revision: "M505 257 C505 308, 300 308, 300 262", revLabel: [402, 314], team: [665, 122], teamAnchor: "end",
+    revision: "M505 257 C505 297, 300 297, 300 257", revLabel: [402.5, 306], team: [665, 122], teamAnchor: "end",
   },
   narrow: {
     view: "0 0 360 540", toolChars: 15,
     nodes: { manager: { x: 180, y: 52, w: 190, h: 84 }, gate: { x: 180, y: 380, w: 220, h: 84 }, plan: { x: 180, y: 480, w: 150, h: 64 },
              risk_analyst: { x: 62, y: 200, w: 114, h: 92 }, planner: { x: 180, y: 200, w: 114, h: 92 }, critic: { x: 298, y: 200, w: 114, h: 92 } },
     toGate: "M85 52 H12 V380 H70", toPlan: "M180 422 V448",
-    revision: "M298 246 C298 300, 180 300, 180 251", revLabel: [239, 304], team: [180, 528], teamAnchor: "middle",
+    revision: "M298 246 C298 282, 180 282, 180 246", revLabel: [239, 292], team: [180, 528], teamAnchor: "middle",
   },
 };
 
@@ -1291,7 +1291,7 @@ const PIRCA_ROWS = [8, 7, 6, 5, 4];                      // 30 stones, bottom ro
 const PIRCA_STONES = PIRCA_ROWS.reduce((a, b) => a + b, 0);
 const STONES_PER_STEP = 3;                               // an agent finishes or a code check passes
 const SCENES = {
-  wide: { w: 680, bankX: 410, wallX: 496, stoneW: 13, shopX: 604 },
+  wide: { w: 680, bankX: 430, wallX: 534, stoneW: 13, shopX: 634 },
   narrow: { w: 360, bankX: 170, wallX: 228, stoneW: 10, shopX: 312 },
 };
 const STONE_FILLS = ["#7C8DA3", "#5E6F86", "#94A3B5", "#6B7C92"];
@@ -1385,13 +1385,14 @@ function agentMapHtml() {
     <svg viewBox="${L.view}" role="img" aria-label="${esc(t("mapAria"))}">
       <defs>
         <linearGradient id="bar-g" x1="0" x2="1"><stop offset="0%" stop-color="#F2785C"/><stop offset="100%" stop-color="#FFB347"/></linearGradient>
-        <marker id="rev-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-          <path d="M0 0 L10 5 L0 10 z" class="rev-head"/></marker>
+        ${["dim", "lit"].map((v) => `<marker id="rev-arrow-${v}" viewBox="0 0 10 10" refX="10" refY="5" markerUnits="userSpaceOnUse"
+          markerWidth="10" markerHeight="10" orient="auto"><path d="M0 0 L10 5 L0 10 z" class="rev-head-${v}"/></marker>`).join("")}
       </defs>
       ${WORKERS.map((id) => `<path class="map-link" id="link-${id}" d="${linkPath(L, id)}"/>`).join("")}
       <path class="map-link" id="link-gate" d="${L.toGate}"/><path class="map-link" id="link-plan" d="${L.toPlan}"/>
-      <path class="map-rev" id="rev-path" d="${L.revision}" marker-end="url(#rev-arrow)"/>
-      <text class="rev-label" id="rev-label" x="${L.revLabel[0]}" y="${L.revLabel[1]}" text-anchor="middle">${esc(t("revisionLabel"))}</text>
+      <path class="map-rev" id="rev-path" d="${L.revision}" marker-end="url(#rev-arrow-dim)"/>
+      <g class="rev-badge" id="rev-badge"><rect class="rev-pill" id="rev-pill" rx="8"/>
+        <text class="rev-label" id="rev-label" x="${L.revLabel[0]}" y="${L.revLabel[1]}" text-anchor="middle" dominant-baseline="middle">${esc(t("revisionLabel"))}</text></g>
       ${AGENTS.map(agentNode).join("")}
       <g class="map-node gate" id="node-gate">${box(g)}
         <text class="node-name" x="${g.x}" y="${gt + 20}" text-anchor="middle">${esc(t("gateTitle"))}</text>
@@ -1404,6 +1405,12 @@ function agentMapHtml() {
 }
 
 function fitMapText() {
+  const label = document.getElementById("rev-label"), pill = document.getElementById("rev-pill");
+  try {
+    const b = label.getBBox();
+    pill.setAttribute("x", (b.x - 9).toFixed(1)); pill.setAttribute("y", (b.y - 4).toFixed(1));
+    pill.setAttribute("width", (b.width + 18).toFixed(1)); pill.setAttribute("height", (b.height + 8).toFixed(1));
+  } catch { /* not rendered yet */ }
   document.querySelectorAll("#agent-map .node-name, #agent-map .node-status").forEach((el) => {
     const node = el.closest(".map-node")?.querySelector("rect");
     const max = node ? Number(node.getAttribute("width")) - 14 : 0;
@@ -1451,8 +1458,11 @@ function mapApply(ts, e) {
     document.getElementById(`link-${e.agent}`)?.classList.add("active");
     pulse(`link-${e.agent}`, false, ts);
     if (e.agent === "planner" && e.run > 1) {  // the Critic asked for a revision
-      document.getElementById("rev-path")?.classList.add("lit");
+      const rev = document.getElementById("rev-path");
+      rev?.classList.add("lit");
+      rev?.setAttribute("marker-end", "url(#rev-arrow-lit)");
       document.getElementById("rev-label")?.classList.add("lit");
+      document.getElementById("rev-badge")?.classList.add("lit");
       pulse("rev-path", false, ts);
     }
   }
@@ -2061,17 +2071,30 @@ function jarSvg(f) {
   </svg>`;
 }
 
+// Purchases are colored by what they protect (a classification of the catalog actions, shown in the key).
+const PROTECT_GROUPS = [
+  { id: "stock", color: "#2EC4B6", cats: ["CAT-01", "CAT-03", "CAT-05", "CAT-08"], label: { es: "Mercadería", en: "Stock" } },
+  { id: "building", color: "#E9C46A", cats: ["CAT-02", "CAT-04", "CAT-10", "CAT-11"], label: { es: "Tu local", en: "Shop building" } },
+  { id: "power", color: "#6EC3E8", cats: ["CAT-07", "CAT-12", "CAT-15"], label: { es: "Luz y registros", en: "Power and records" } },
+  { id: "health", color: "#F2785C", cats: ["CAT-09", "CAT-13"], label: { es: "Salud", en: "Health" } },
+];
+const OTHER_GROUP = { id: "other", color: "#A9B6C6", cats: [], label: { es: "Otros", en: "Other" } };
+const protectGroup = (cat) => PROTECT_GROUPS.find((g) => g.cats.includes(cat)) || OTHER_GROUP;
+const byProtectGroup = (buys) => [...PROTECT_GROUPS, OTHER_GROUP]
+  .map((g) => ({ group: g, items: buys.filter((b) => protectGroup(b.cat) === g) })).filter((x) => x.items.length);
+
 function budgetSvg(f, buys) {
   const budget = Number(f.budget || 0) || buys.reduce((s, b) => s + Number(b.cost || 0), 0) + Number(f.money_left || 0);
   const W = 180;
   let x = 10;
-  const parts = buys.map((b, i) => {
+  const parts = byProtectGroup(buys).flatMap(({ group, items }) => items.map((b) => {
     const w = budget ? (W * Number(b.cost || 0)) / budget : 0;
-    const seg = `<rect x="${x.toFixed(1)}" y="52" width="${Math.max(0, w - 1).toFixed(1)}" height="40" rx="3" class="buy buy-${i % 4}"><title>${esc(b.name)}: ${esc(money(Number(b.cost || 0)))}</title></rect>`;
+    const seg = `<rect x="${x.toFixed(1)}" y="52" width="${Math.max(0, w - 1).toFixed(1)}" height="40" rx="3" class="buy" fill="${group.color}"
+      data-buy="${esc(b.cat)}" tabindex="0" role="button" aria-label="${esc(b.name)}: ${esc(money(Number(b.cost || 0)))}"><title>${esc(b.name)}: ${esc(money(Number(b.cost || 0)))}</title></rect>`;
     x += w;
     return seg;
-  }).join("");
-  return `<svg viewBox="0 0 200 150" class="pic" role="img" aria-label="${esc(t("purchases"))}">
+  })).join("");
+  return `<svg viewBox="0 0 200 150" class="pic budget-pic" role="img" aria-label="${esc(t("purchases"))}">
     <rect x="10" y="52" width="${W}" height="40" rx="4" class="budget-track"/>
     ${parts}
     <text x="10" y="40" class="pic-label">0</text>
@@ -2079,6 +2102,34 @@ function budgetSvg(f, buys) {
     ${Number(f.money_left || 0) > 0 ? `<line x1="${x.toFixed(1)}" x2="${x.toFixed(1)}" y1="94" y2="104" class="goal-line"/>
       <text x="190" y="116" text-anchor="end" class="pic-label">${esc(t("leftLabel"))} ${esc(money(Number(f.money_left)))}</text>` : ""}
   </svg>`;
+}
+
+// Key under the bar: one line per purchase (color dot, name, cost), grouped by what it protects.
+function budgetKeyHtml(buys) {
+  return `<div class="budget-key">${byProtectGroup(buys).map(({ group, items }) => `<div class="key-group">
+    <div class="key-group-name"><span class="key-dot" style="background:${group.color}" aria-hidden="true"></span>${esc(L(group.label))}</div>
+    <ul>${items.map((b) => `<li data-buy="${esc(b.cat)}" tabindex="0"><span class="key-dot" style="background:${group.color}" aria-hidden="true"></span>
+      <span class="key-name">${esc(b.name)}</span><span class="key-cost">${esc(money(Number(b.cost || 0)))}</span></li>`).join("")}</ul></div>`).join("")}</div>`;
+}
+
+// Hover or tap a block (or a key line) to highlight both; tapping again or elsewhere clears it.
+function wireBudgetKey() {
+  const fig = app.querySelector(".budget-figure");
+  if (!fig) return;
+  let pinned = null;
+  const show = (cat) => {
+    fig.classList.toggle("has-focus", Boolean(cat));
+    fig.querySelectorAll("[data-buy]").forEach((el) => el.classList.toggle("focus", el.dataset.buy === cat));
+  };
+  fig.addEventListener("pointerover", (e) => { const el = e.target.closest?.("[data-buy]"); if (el && e.pointerType === "mouse" && !pinned) show(el.dataset.buy); });
+  fig.addEventListener("pointerout", (e) => { if (e.target.closest?.("[data-buy]") && e.pointerType === "mouse" && !pinned) show(null); });
+  fig.addEventListener("click", (e) => {
+    const el = e.target.closest("[data-buy]");
+    pinned = el && pinned !== el.dataset.buy ? el.dataset.buy : null;
+    show(pinned);
+  });
+  fig.addEventListener("focusin", (e) => { const el = e.target.closest?.("[data-buy]"); if (el) show(el.dataset.buy); });
+  fig.addEventListener("focusout", () => { if (!pinned) show(null); });
 }
 
 // ---- read aloud with the browser's own voices (speechSynthesis); hidden when there is no voice for the language
@@ -2279,8 +2330,8 @@ function renderPlanView(code, data) {
         ${shelfSvg(f)}<p class="pic-caption">${esc(S.shelfCaption(money(Number(f.stock_at_risk || 0)), money(Number(f.stock_value || 0))))}</p></figure>
       <figure class="glass accent"><figcaption><span>${esc(t("fundGap"))}</span><b data-count="${Number(f.cash_gap || 0)}">${esc(money(0))}</b></figcaption>
         ${jarSvg(f)}<p class="pic-caption">${esc(Number(f.cash_gap || 0) > 0 ? S.jarCaption(money(Number(f.cash_after_purchases ?? f.cash_on_hand ?? 0)), money(Number(f.buffer_needed || 0)), weeks) : t("jarFull"))}</p></figure>
-      <figure class="glass"><figcaption><span>${esc(t("purchases"))}</span><b data-count="${Number(f.total_cost || 0)}">${esc(money(0))}</b></figcaption>
-        ${budgetSvg(f, actions.buys)}<p class="pic-caption">${esc(S.budgetCaption(money(Number(f.total_cost || 0)), money(Number(f.budget || 0)), money(Number(f.money_left || 0))))}</p></figure>
+      <figure class="glass budget-figure"><figcaption><span>${esc(t("purchases"))}</span><b data-count="${Number(f.total_cost || 0)}">${esc(money(0))}</b></figcaption>
+        ${budgetSvg(f, actions.buys)}${budgetKeyHtml(actions.buys)}<p class="pic-caption">${esc(S.budgetCaption(money(Number(f.total_cost || 0)), money(Number(f.budget || 0)), money(Number(f.money_left || 0))))}</p></figure>
     </section>
     <section class="action-list glass-read" aria-labelledby="check-title">
       <div class="check-head"><h2 id="check-title">${esc(t("checklistTitle"))}</h2><span id="check-progress" class="check-count" aria-live="polite"></span></div>
@@ -2308,6 +2359,7 @@ function renderPlanView(code, data) {
 
   applyTextSize();
   wirePlanEasy(code, actions, top, checks, planText, showing);
+  wireBudgetKey();
 
   countUp(!view.counted);
   view.counted = true;

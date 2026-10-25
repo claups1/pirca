@@ -483,3 +483,27 @@ Commit the working tree changes with a sensible message.
 ```
 open
 ```
+
+## Prompt 45 — Supplier rows in the wizard
+
+```
+Fix the supplier rows in the intake wizard (step 4): the "Perishable?" options are stacked vertically in a narrow column and the text wraps. Put them on their own line under Product and City as a horizontal segmented control with three equal buttons that never wrap on desktop (they may wrap to two lines only on phones). Rename "Detect" to "Not sure (Pirca checks)" / "No sé (Pirca lo revisa)". Keep the ✕ remove button aligned with the Product and City fields. Check with 3 suppliers in both languages and take one screenshot.
+```
+
+## Prompt 46 — Revision arrow in the agent map
+
+```
+Fix the "1 revision" arrow in the agent map: draw it as one smooth, symmetric curve from the bottom of Critic to the bottom of Planner, with the arrowhead attached to the line (SVG marker, orient="auto") instead of a separate triangle. Center the "1 revision" label under the curve on a small dark pill, not touching the pirca wall. Replace the revision-arrow screenshot.
+```
+
+## Prompt 47 — Purchases bar legend
+
+```
+Fix the purchases bar in the plan view: the colored blocks have no legend. Under the bar, add a small key listing each purchase with its color dot, name and cost (e.g. "● Sacos de arena  S/ 77"). Tapping or hovering a block highlights it and its key line. Give the colors a meaning: group them by what the purchase protects (stock, health, power/records, shop building), with the group names in the key. Both languages.
+```
+
+## Prompt 48 — Commit
+
+```
+Commit the working tree changes with a sensible message.
+```
