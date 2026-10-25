@@ -741,3 +741,33 @@ its on github
 ```
 Commit the README clone URL fix and push it to GitHub.
 ```
+
+## Prompt 78 — Start the report
+
+```
+hey now we are going to do the report, the app is ok
+```
+
+## Prompt 79 — Final report (report.html)
+
+```
+Write Pirca's final report as report.html in the project root, for MGT 409. It must follow the course structure exactly, be self-contained (all images embedded as base64, no external files, opens by double-click on any computer), and print to 10–15 pages (add print CSS with sensible page breaks; check the page count by printing to PDF in a headless browser). Same visual style as the app (light theme, sand, terracotta, coral). Use only facts and numbers that exist in the repo (output/, data/, plans/examples/, git history); never invent anything. Every number must match its source file.
+
+Sections, in this order:
+1. Title + links: "Pirca", my name (Claudia Palacios Surco), repo link https://github.com/claups1/pirca, the live app link if the app is online (at the very top), one-sentence description, and how to run it locally from the README. Then a short "Why the name Pirca" paragraph (3–4 sentences): a pirca (from the Quechua "pirqa", wall) is a dry-stone wall, built by stacking stones without mortar, used across the Andes and Peru's coast to protect fields, terraces and homes. Verify the definition and cite it (e.g. the RAE dictionary entry for "pirca" at dle.rae.es/pirca). Explain the metaphor: like a pirca, the plan is built stone by stone, each agent adds a stone and the code checks make sure every stone holds, so a small shop has a wall between it and the next flood. Show the finished-wall screenshot from the agent map next to it.
+2. Motivation: who has the problem (small shop owners in Piura), what it costs today in money, time and frustration, with sourced numbers from data/historical_impacts.csv (e.g. 2023 business losses from closures HIST-2023-32, transport cost rise HIST-2023-33, dengue 2023 HIST-2023-36, the 1998 and 2017 floods), and the current ENFEN alert.
+3. What is new: named existing alternatives with links (verify each exists): CENEPRED's SIGRID platform, INDECI's public preparedness guidance, consultant-written risk plans, and asking ChatGPT directly. An honest comparison table, and what Pirca does differently (shop-specific numbers computed in code, affordability check, sourced citations, Spanish read-aloud and pictures for owners of any background).
+4. The agents: each agent's role, tools and model (gpt-6-luna, and why); the agent map screenshot as the diagram; the revision loop and code checks; then ONE real run traced step by step (PIU-CAST26) with screenshots from the trace and the final plan.
+5. Tokenomics: measured input, cached input, cache-write and output tokens per run (table from output/tokenomics.md), cost per run, per shop per month, at 100 and 10,000 shops (USD and soles), cost by agent, caching savings, translation vs rerun, and every cost-cutting step with its evidence and any tradeoff. State all assumptions.
+6. Safety: the relevant risks (prompt injection, invented facts, wrong or unaffordable advice, evacuation orders, runaway loops/overspending, private data on shared computers) and each defense, with evidence from output/safety/ and screenshots of at least two defenses working. Include the two real bugs found in testing and the code checks added for them (risk level mismatch, unaffordable stock-up).
+7. Impact: put numbers on it: money saved, hours saved, faster turnaround, better quality, more people served, or something that was impossible before and now is possible. Say where your numbers come from (your own tests, a pilot user, public data, a careful estimate). The strongest evidence is a real user trying it.
+8. Limits + next steps: honest limits (illustrative estimates, Promart web prices, Critic asks for a revision on every run, data snapshot dates, read-aloud depends on browser voices, and hosting limits if online) and next steps (WhatsApp access, district rollup for a municipality, live ENFEN updates).
+
+Keep the writing plain and specific. When done, tell me the page count, list every screenshot used, and list every number with its source file so I can check them.
+```
+
+## Prompt 80 — Commit and push the report
+
+```
+Commit the report and its screenshots, and push to GitHub.
+```
