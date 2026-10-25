@@ -2018,7 +2018,7 @@ Object.assign(STR.en, {
 const GLOSSARY = {
   es: [
     ["ENFEN", "El comité oficial del Perú que vigila El Niño y La Niña en el mar. Publica comunicados con el estado de alerta."],
-    ["El Niño costero", "Cuando el mar frente a la costa norte del Perú se calienta. Puede traer lluvias fuertes, ríos desbordados e inundaciones en Piura, como pasó en 1998 y 2017."],
+    ["El Niño costero", "Cuando el mar frente a la costa norte del Perú se calienta. Puede traer lluvias fuertes, ríos desbordados e inundaciones en Piura, como pasó en 1998, 2017 y 2023."],
     ["SENAMHI", "El servicio oficial del clima del Perú. Da los avisos de lluvias fuertes y del nivel de los ríos."],
     ["INDECI", "El Instituto Nacional de Defensa Civil. Coordina la ayuda en emergencias. Si hay que evacuar, lo indican INDECI y tu municipalidad."],
     ["Fondo de emergencia", "Dinero que separas para pagar tus gastos fijos (alquiler, sueldos, servicios) si tienes que cerrar unas semanas por una inundación."],
@@ -2026,7 +2026,7 @@ const GLOSSARY = {
   ],
   en: [
     ["ENFEN", "Peru's official committee that watches El Niño and La Niña in the ocean. It publishes statements with the current alert level."],
-    ["Coastal El Niño", "When the sea off Peru's northern coast gets warmer. It can bring heavy rain, overflowing rivers and floods in Piura, as in 1998 and 2017."],
+    ["Coastal El Niño", "When the sea off Peru's northern coast gets warmer. It can bring heavy rain, overflowing rivers and floods in Piura, as in 1998, 2017 and 2023."],
     ["SENAMHI", "Peru's official weather service. It issues warnings about heavy rain and river levels."],
     ["INDECI", "Peru's National Civil Defense Institute. It coordinates help in emergencies. If people must evacuate, INDECI and your municipality say so."],
     ["Emergency fund", "Money you set aside to pay your fixed costs (rent, wages, utilities) if you have to close for a few weeks because of a flood."],

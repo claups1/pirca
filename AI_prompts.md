@@ -624,3 +624,21 @@ Test all four cases in the browser and add a short note to output/safety/summary
 ```
 Commit the working tree changes with a sensible message.
 ```
+
+## Prompt 63 — Open
+
+```
+open please
+```
+
+## Prompt 64 — Glossary years
+
+```
+In the "¿Qué significa?" glossary in frontend/app.js, the El Niño costero entry still says "como pasó en 1998 y 2017" / "as in 1998 and 2017". Change both languages to "1998, 2017 y 2023" / "1998, 2017 and 2023".
+```
+
+## Prompt 65 — Commit
+
+```
+Commit the working tree changes with a sensible message.
+```
