@@ -845,3 +845,22 @@ Report: replace the "Real user test" placeholder with both calls (say he's from 
 Slides: same summary and quote on the Impact slide; add "Landlords of commercial premises (requested by a user)" to next steps.
 Remove all "[TO FILL…]" placeholders, keep 10–15 pages and 10 slides, then commit and push.
 ```
+
+## Prompt 90 — Open
+
+```
+open please
+```
+
+## Prompt 91 — Only slides and report changed?
+
+```
+the changes should only have been done in slides and report, right?
+```
+
+## Prompt 92 — Closing slide: README line and English headline
+
+```
+In slides.html, on the closing slide, replace the gray command box with one line: "Run it in about 5 minutes: step-by-step guide in the README" (linking to the repo). Keep the tagline, the repo link and my name. Commit and push.
+In slides.html, on the closing slide, make the main message English: "Each agent adds a stone to your pirca." as the large headline (with "pirca" in the accent color), and the Spanish "Cada agente agrega piedras a tu pirca" as the small subtitle below it. Commit and push.
+```
