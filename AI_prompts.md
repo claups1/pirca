@@ -827,3 +827,21 @@ Test navigation with arrow keys, F for fullscreen  check that every slide fits a
 ```
 when finish, please open the slides
 ```
+
+## Prompt 88 — Open app
+
+```
+open app
+```
+
+## Prompt 89 — Real user feedback in the report and slides
+
+```
+Add my real user feedback to report.html and slides.html..
+User: business owner from Lima (not Piura), business type: real state sector. Two calls:
+- Call 1: dark colors didn't fit El Niño costero (rising temperatures), so we switched to the light theme; the map had too much info, so we simplified it to Piura's 8 provinces.
+- Call 2: he found the final app useful. Gap: no option for owners who rent out commercial premises (building damage, tenants who stop paying, insurance, lease terms).
+Report: replace the "Real user test" placeholder with both calls (say he's from Lima), add before/after screenshots (dark vs light start page, district vs province map), and add the landlord gap to Limits and next steps as "requested by a user".
+Slides: same summary and quote on the Impact slide; add "Landlords of commercial premises (requested by a user)" to next steps.
+Remove all "[TO FILL…]" placeholders, keep 10–15 pages and 10 slides, then commit and push.
+```
